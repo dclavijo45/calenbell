@@ -1,0 +1,66 @@
+<app-nav></app-nav>
+<div class="section">
+  <div class="row">
+    <div class="col s12 center">
+      <div [ngClass]="{'log-in': login}" class="container-cus-1 mx-auto mt-6">
+        <div class="box-cus-1"></div>
+        <div class="container-forms">
+          <div class="container-info">
+            <div class="info-item">
+              <div class="table-cus-1">
+                <div class="table-cell">
+                  <p>
+                    ¿Ya tienes una cuenta?
+                  </p>
+                  <div (click)="login=!login" class="btn-cus-1">
+                    Inicia sesión
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="info-item">
+              <div class="table-cus-1">
+                <div class="table-cell">
+                  <p>
+                    ¿No tienes una cuenta?
+                  </p>
+                  <div (click)="login=!login" class="btn-cus-1 px-2">
+                    Crear
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="container-form">
+            <div class="form-item log-in">
+              <div class="table-cus-1">
+                <div class="table-cell">
+                  <h5 class="center-align">Iniciar sesión</h5>
+                  <input name="Username" placeholder="Username" type="text"><input name="Password"
+                    placeholder="Password" type="Password">
+                  <div class="btn waves-effect waves-light pink accent-1 mt-2">
+                    Iniciar sesión
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-item sign-up">
+              <div class="table-cus-1">
+                <div class="table-cell">
+                  <h5 class="center-align">Crea tu cuenta</h5>
+                  <input name="email" placeholder="Email" type="text"><input name="fullName" placeholder="Full Name"
+                    type="text"><input name="Username" placeholder="Username" type="text"><input name="Password"
+                    placeholder="Password" type="Password">
+                  <div class="btn waves-effect waves-light pink accent-1 mt-2">
+                    Crear cuenta
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>
