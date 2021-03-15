@@ -6,3 +6,27 @@
 body{
   background-color: #e3f2fd;
 }
+
+.d-none{
+  display: none;
+}
+
+.d-block{
+  display: block;
+}
+
+.p-3{
+  padding: 3%;
+}
+
+.px-3{
+  padding-left: 3%;
+  padding-right: 3%;
+}
+
+.px-10{
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+

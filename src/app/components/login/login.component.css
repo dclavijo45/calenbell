@@ -37,7 +37,7 @@
 }
 .container-cus-1 .box-cus-1:before,
 .container-cus-1 .box-cus-1:after {
-  content: " ";
+  /* content: " "; */
   position: absolute;
   left: 152px;
   top: 50px;
@@ -140,7 +140,7 @@
   transition: all 0.5s;
 }
 .container-cus-1 .container-form:before {
-  content: "✔";
+  /* content: "✔"; */
   position: absolute;
   left: 160px;
   top: -50px;
@@ -201,7 +201,7 @@
 .container-cus-1.active {
   width: 260px;
   height: 140px;
-  margin-top: -70px;
+  margin-top: 141px;
 }
 .container-cus-1.active .container-form {
   left: 30px;
@@ -209,7 +209,6 @@
   height: 200px;
 }
 .container-cus-1.active .container-form:before {
-  content: "✔";
   position: absolute;
   left: 51px;
   top: 5px;
@@ -251,10 +250,24 @@ input{
   margin-top: 2%;
 }
 
-.ml-29{
+.ml-29 {
   margin-left: 29%;
 }
 
-.mt-6{
+.mt-6 {
   margin-top: 6%;
 }
+
+.success {
+  color: #5356ad;
+  font-size: 130px;
+}
+
+.error {
+  font-size: 130px;
+}
+
+input[type=text]:focus, input[type=password]:focus, input[type=email]:focus {
+  border-bottom: 1px solid #000 !important;
+  box-shadow: 0 1px 0 0 #000 !important;
+ }
