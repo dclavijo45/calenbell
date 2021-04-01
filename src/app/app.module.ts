@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { NavComponent } from './components/nav/nav.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { FooterComponent } from './components/footer/footer.component';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
     AppRoutingModule
   ],
   providers: [],

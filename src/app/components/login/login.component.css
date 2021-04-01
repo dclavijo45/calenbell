@@ -1,7 +1,6 @@
 @charset "UTF-8";
 @import url(https://fonts.googleapis.com/css?family=Oswald|Roboto);
 
-
 .table-cus-1 {
   display: table;
   width: 100%;
@@ -233,20 +232,20 @@
   opacity: 0;
 }
 
-input{
-  height: 1rem!important;
+input {
+  height: 1rem !important;
 }
 
-.px-2{
-  padding-left: 2%!important;
-  padding-right: 2%!important;
+.px-2 {
+  padding-left: 2% !important;
+  padding-right: 2% !important;
 }
 
-.ml-27{
+.ml-27 {
   margin-left: 27%;
 }
 
-.mt-2{
+.mt-2 {
   margin-top: 2%;
 }
 
@@ -267,7 +266,23 @@ input{
   font-size: 130px;
 }
 
-input[type=text]:focus, input[type=password]:focus, input[type=email]:focus {
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
   border-bottom: 1px solid #000 !important;
   box-shadow: 0 1px 0 0 #000 !important;
- }
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.font-family-cus-1 {
+  font-family: serif;
+}
+
+.hover-cus-1:hover {
+  color: #000000;
+  font-weight: 500;
+  cursor: pointer;
+}
