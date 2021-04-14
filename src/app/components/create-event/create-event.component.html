@@ -1,0 +1,92 @@
+<app-nav></app-nav>
+
+<div class="section overflow-hidden">
+    <div class="row">
+        <div class="col l3">
+            <app-aside-info></app-aside-info>
+        </div>
+        <div class="col l9">
+            <div class="container">
+                <div class="row" [formGroup]="formEvent">
+                    <div class="row">
+                        <div class="col l12 center">
+                            <h2>Crear evento</h2>
+                        </div>
+                    </div>
+
+                    <div class="col l6">
+                        <div class="input-field">
+                            <i class="material-icons prefix">assignment</i>
+                            <input formControlName="titulo" id="tituloEvento" type="text" class=""
+                                [ngClass]="{'valid': formEvent.value.titulo && formEvent.touched, 'invalid': !formEvent.value.titulo && formEvent.touched}"
+                                (ngModelChange)="fixErrorFormEvent()">
+                            <label for="tituloEvento">Titulo del evento</label>
+                        </div>
+                        <div class="input-field">
+                            <i class="material-icons prefix">alarm</i>
+                            <input formControlName="hora" type="text" class="timepicker" #horaEvento
+                                [ngClass]="{'valid': formEvent.value.hora && formEvent.touched, 'invalid': !formEvent.value.hora && formEvent.touched}"
+                                placeholder="Hora del evento" (click)="setHour(horaEvento.value)"
+                                (blur)="setHour(horaEvento.value)" (change)="setHour(horaEvento.value)">
+                        </div>
+                        <div class="input-field">
+                            <i class="material-icons prefix">event</i>
+                            <input formControlName="fecha" type="text" class="datepicker" placeholder="Fecha del evento"
+                                #fechaEvento
+                                [ngClass]="{'valid': formEvent.value.fecha && formEvent.touched, 'invalid': !formEvent.value.fecha && formEvent.touched}"
+                                (click)="setDate(fechaEvento.value)" (blur)="setDate(fechaEvento.value)"
+                                (change)="setDate(fechaEvento.value)">
+                        </div>
+                    </div>
+
+                    <div class="col l6">
+                        <div class="input-field">
+                            <i class="material-icons prefix">announcement</i>
+                            <input formControlName="descripcion" id="descripcionEvento" type="text" class=""
+                                [ngClass]="{'valid': formEvent.value.descripcion&& formEvent.touched, 'invalid': !formEvent.value.descripcion&& formEvent.touched}"
+                                (ngModelChange)="fixErrorFormEvent()">
+                            <label for="descripcionEvento">Descripción del evento</label>
+                        </div>
+                        <div class="input-field">
+                            <i class="material-icons prefix " *ngIf="!formEvent.touched">drag_handle</i>
+
+                            <i class="material-icons prefix color-valid"
+                                *ngIf="formEvent.value.tipo_evento && formEvent.touched">check</i>
+
+                            <i class="material-icons prefix color-invalid"
+                                *ngIf="!formEvent.value.tipo_evento && formEvent.touched">close</i>
+
+                            <select formControlName="tipo_evento" (ngModelChange)="fixErrorFormEvent()">
+                                <option value="" selected hidden>
+                                    Seleccione una opción</option>
+                                <option value="1">Evento individual</option>
+                                <option value="2">Evento grupal</option>
+                            </select>
+                            <label>Tipo de evento</label>
+                        </div>
+
+                        <div class="input-field">
+                            <i class="material-icons prefix">insert_emoticon</i>
+                            <input type="text" formControlName="icono" id="iconoEvento"
+                                [ngClass]="{'valid': formEvent.value.icono&& formEvent.touched, 'invalid': !formEvent.value.icono&& formEvent.touched}"
+                                (ngModelChange)="fixErrorFormEvent()">
+                            <label for="iconoEvento">Icono personalizado</label>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col l12 center">
+                            <button (click)="createEvent()" [disabled]="loading" class="waves-effect waves-light btn"><i
+                                    class="material-icons left">content_paste</i>Crear evento</button>
+                            <div class="progress w-50 mx-auto mt-4" *ngIf="loading">
+                                <div class="indeterminate"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

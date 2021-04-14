@@ -8,7 +8,7 @@ export class ClientService {
 
     constructor(private http: HttpClient) { }
 
-    public _server: string = '';
+    public _server: string = 'http://localhost:5000';
 
     getRequest(route: string, token?: string) {
 
@@ -19,7 +19,6 @@ export class ClientService {
             const header = new HttpHeaders().set('Authorization', `Bearer ${token}`);
             config["headers"] = header;
         }
-        console.log(config);
 
         return this.http.get(route, config);
     }

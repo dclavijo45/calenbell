@@ -286,3 +286,18 @@ input[type="email"]:focus {
   font-weight: 500;
   cursor: pointer;
 }
+
+.font-size-20px{
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.mt-15px{
+    margin-top: 15px !important;
+}
+
+.style-cus-1{
+    /* margin-top: 10px; */
+    display: block;
+    margin-bottom: 10px;
+}

@@ -1,92 +1,130 @@
 <app-nav></app-nav>
-<link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
+
 <div class="section overflow-hidden">
-  <div class="row">
-    <div class="col s12 center">
-      <div [ngClass]="{'log-in': login, 'active': loading}" class="container-cus-1 mx-auto mt-6">
-        <div class="box-cus-1"></div>
-        <div class="container-forms">
-          <div class="container-info">
-            <div class="info-item">
-              <div class="table-cus-1">
-                <div class="table-cell">
-                  <p>
-                    ¿Ya tienes una cuenta?
-                  </p>
-                  <div (click)="login=!login" class="btn-cus-1">
-                    Inicia sesión
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="info-item">
-              <div class="table-cus-1">
-                <div class="table-cell">
-                  <p>
-                    ¿No tienes una cuenta?
-                  </p>
-                  <div (click)="login=!login" class="btn-cus-1 px-2">
-                    Crear
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="container-form">
-            <div class="form-item log-in">
-              <div class="table-cus-1">
-                <div class="table-cell">
-                  <div class="load-cus-1 px-10">
-                    <span *ngIf="success && !error" class="success">✔</span>
-                    <span *ngIf="!success && error" class="error red-text text-accent-4">X</span>
-                    <div [ngClass]="{'d-none': !loading && (!success || !error)}" class="progress blue accent-1">
-                      <div class="indeterminate blue accent-2"></div>
+    <div class="row">
+        <div class="col s12 center">
+            <div [ngClass]="{'log-in': login, 'active': loading}" class="container-cus-1 mx-auto mt-6">
+                <div class="box-cus-1"></div>
+                <div class="container-forms">
+                    <div class="container-info">
+                        <div class="info-item">
+                            <div class="table-cus-1">
+                                <div class="table-cell">
+                                    <p (mousedown)="false">
+                                        ¿Ya tienes una cuenta?
+                                    </p>
+                                    <div (click)="login=!login" class="btn-cus-1" (mousedown)="false">
+                                        Inicia sesión
+                                    </div>
+                                    <span class="mt-2 d-block" (mousedown)="false">ó</span>
+                                    <span class="style-cus-1" (mousedown)="false">Crear cuenta con</span>
+                                    <div (mousedown)="false" (click)="googleInit('register')"
+                                        class="btn-cus-1 px-2 mt-15px" (mousedown)="false">
+                                        <span class="font-size-20px">
+                                            <span class="blue-text">G</span><span class="red-text">o</span><span
+                                                class="yellow-text">o</span><span class="blue-text">g</span><span
+                                                class="green-text">l</span><span class="red-text">e</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="table-cus-1">
+                                <div class="table-cell">
+                                    <p (mousedown)="false">
+                                        ¿No tienes una cuenta?
+                                    </p>
+                                    <div (mousedown)="false" (click)="login=!login" class="btn-cus-1 px-2">
+                                        Crear
+                                    </div>
+                                    <span class="mt-2 d-block" (mousedown)="false">ó</span>
+                                    <span class="style-cus-1" (mousedown)="false">Iniciar sesión con</span>
+                                    <div (click)="googleInit('login')" class="btn-cus-1 px-2 mt-2">
+                                        <span class="font-size-20px">
+                                            <span class="blue-text">G</span><span class="red-text">o</span><span
+                                                class="yellow-text">o</span><span class="blue-text">g</span><span
+                                                class="green-text">l</span><span class="red-text">e</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <span [formGroup]="formLogin">
-                    <h5 class="center-align" [ngClass]="{'d-none': loading}">Iniciar sesión</h5>
-                    <input formControlName="user" (keydown.enter)="loginUser()" placeholder="Usuario" type="text"
-                      autofocus>
-                    <input formControlName="password" placeholder="Contraseña" (keydown.enter)="loginUser()"
-                      type="password">
-                    <p class="grey-text text-darken-4 hover-cus-1" [ngClass]="{'d-none': loading}">Olvidaste tu
-                      contraseña?</p>
-                    <div [ngClass]="{'d-none': loading}" (click)="loginUser()"
-                      class="btn waves-effect waves-light pink accent-1 mt-2">
-                      Iniciar sesión
+
+                    <div class="container-form" [ngClass]="{'w-90': recoveryPwd}">
+                        <div class="form-item log-in">
+                            <div class="table-cus-1">
+                                <div class="table-cell">
+                                    <div class="load-cus-1 px-10">
+                                        <span *ngIf="success && !error" class="success">✔</span>
+                                        <span *ngIf="!success && error" class="error red-text text-accent-4">X</span>
+                                        <div [ngClass]="{'d-none': !loading && (!success || !error)}"
+                                            class="progress blue accent-1">
+                                            <div class="indeterminate blue accent-2"></div>
+                                        </div>
+                                    </div>
+                                    <span [formGroup]="formLogin" *ngIf="!recoveryPwd">
+                                        <h5 class="center-align" [ngClass]="{'d-none': loading}" (mousedown)="false">
+                                            Iniciar sesión</h5>
+                                        <input formControlName="user" (keydown.enter)="loginUser()"
+                                            placeholder="Usuario" type="text" autofocus>
+                                        <input formControlName="password" placeholder="Contraseña"
+                                            (keydown.enter)="loginUser()" type="password">
+                                        <p class="grey-text text-darken-4 hover-cus-1" [ngClass]="{'d-none': loading}"
+                                            (mousedown)="false" (click)="recoveryPwd = !recoveryPwd">
+                                            Olvidaste tu
+                                            contraseña?</p>
+                                        <div [ngClass]="{'d-none': loading}" (click)="loginUser()"
+                                            class="btn waves-effect waves-light pink accent-1 mt-2" (mousedown)="false">
+                                            Iniciar sesión
+                                        </div>
+                                    </span>
+                                    <span [formGroup]="formRecoveryPwd" *ngIf="recoveryPwd && !loading">
+                                        <h5 class="center-align" [ngClass]="{'d-none': loading}" (mousedown)="false">
+                                            Recupera tu cuenta</h5>
+                                        <input type="text" formControlName="account" (keydown.enter)="recoveryAccount()"
+                                            placeholder="Ingrese número o correo" class="text-center">
+                                        <button class="btn waves-effect waves-light pink accent-1"
+                                            (click)="recoveryPwd = !recoveryPwd">Volver</button>
+                                        <button class="btn waves-effect waves-light blue accent-3 ml-3"
+                                            (click)="recoveryAccount()">Recuperar</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-item sign-up">
+                            <div class="table-cus-1">
+                                <div [formGroup]="formRegister" class="table-cell">
+                                    <div class="load-cus-1 px-10">
+                                        <span *ngIf="success && !error" class="success">✔</span>
+                                        <span *ngIf="!success && error" class="error red-text text-accent-4">X</span>
+                                        <div [ngClass]="{'d-none': !loading && (!success || !error)}"
+                                            class="progress blue accent-1">
+                                            <div class="indeterminate blue accent-2"></div>
+                                        </div>
+                                    </div>
+                                    <h5 class="center-align" [ngClass]="{'d-none': loading}" (mousedown)="false">Crea tu
+                                        cuenta</h5>
+                                    <input formControlName="name" (keydown.enter)="registerUser()" placeholder="Nombres"
+                                        type="text">
+                                    <input formControlName="email" (keydown.enter)="registerUser()" placeholder="Correo"
+                                        type="email">
+                                    <input formControlName="user" (keydown.enter)="registerUser()" placeholder="Usuario"
+                                        type="text">
+                                    <input formControlName="password" (keydown.enter)="registerUser()"
+                                        placeholder="Contraseña" type="password">
+                                    <div class="btn waves-effect waves-light pink accent-1 mt-2"
+                                        [ngClass]="{'d-none': loading}" (click)="registerUser()" (mousedown)="false">
+                                        Crear cuenta
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </span>
                 </div>
-              </div>
             </div>
-            <div class="form-item sign-up">
-              <div class="table-cus-1">
-                <div [formGroup]="formRegister" class="table-cell">
-                  <div class="load-cus-1 px-10">
-                    <span *ngIf="success && !error" class="success">✔</span>
-                    <span *ngIf="!success && error" class="error red-text text-accent-4">X</span>
-                    <div [ngClass]="{'d-none': !loading && (!success || !error)}" class="progress blue accent-1">
-                      <div class="indeterminate blue accent-2"></div>
-                    </div>
-                  </div>
-                  <h5 class="center-align" [ngClass]="{'d-none': loading}">Crea tu cuenta</h5>
-                  <input formControlName="name" (keydown.enter)="registerUser()" placeholder="Nombres" type="text">
-                  <!-- <input placeholder="Cargo" type="text"> -->
-                  <input formControlName="email" (keydown.enter)="registerUser()" placeholder="Correo" type="email">
-                  <input formControlName="user" (keydown.enter)="registerUser()" placeholder="Usuario" type="text">
-                  <input formControlName="password" (keydown.enter)="registerUser()" placeholder="Contraseña"
-                    type="password">
-                  <div class="btn waves-effect waves-light pink accent-1 mt-2" [ngClass]="{'d-none': loading}"
-                    (click)="registerUser()">
-                    Crear cuenta
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 <app-footer></app-footer>

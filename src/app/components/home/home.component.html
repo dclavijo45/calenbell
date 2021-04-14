@@ -1,0 +1,107 @@
+<app-nav></app-nav>
+
+<div class="section overflow-hidden">
+    <div class="row">
+        <div class="col l3">
+            <app-aside-info></app-aside-info>
+        </div>
+        <div class="col l6">
+            <!-- <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="title">
+                    <th mat-header-cell *matHeaderCellDef> Detect </th>
+                    <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef> Detect </th>
+                    <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="hour">
+                    <th mat-header-cell *matHeaderCellDef> Detect </th>
+                    <td mat-cell *matCellDef="let element"> {{element.hour}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="description">
+                    <th mat-header-cell *matHeaderCellDef> Detect </th>
+                    <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table> -->
+
+            <div class="row">
+                <div class="col l12 center">
+                    <div class="row">
+                        <div class="col l12">
+                            <div class="input-field">
+                                <i class="material-icons prefix">menu</i>
+                                <input type="text" class="validate">
+                                <label for="icon_prefix">Search</label>
+
+                                <a routerLink="/crearevento"
+                                    class="btn-floating btn-small waves-effect waves-light left mt-2 cyan darken-4 mr-4"><i
+                                        class="material-icons">add</i></a>
+                                <a class="waves-effect waves-light btn left mt-2 cyan lighten-1 mr-4"><i
+                                        class="material-icons left">assignment</i>Editar</a>
+                                <a class="waves-effect waves-light btn left mt-2 red"><i
+                                        class="material-icons left mt-2">cancel</i>Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="max-h-301px overflow-auto scroll-1">
+                        <table class="white border-radius-5px position-relative">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>titulo</th>
+                                    <th>hora</th>
+                                    <th>Fecha</th>
+                                    <th>Descripcion</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <ng-container *ngFor="let item of eventsRequest.slice().reverse()">
+                                    <tr>
+                                        <td class="center"><label>
+                                                <input type="checkbox" />
+                                                <span> </span>
+                                            </label></td>
+                                        <td *ngIf="item.title.length > 15" [title]="item.title">
+                                            {{item.title.slice(0,
+                                            15)+"..."}}</td>
+                                        <td *ngIf="item.title.length <= 15" [title]="item.title">
+                                            {{item.title}}</td>
+                                        <td>{{item.hour}}</td>
+                                        <td>{{item.day <= 9 ? "0" +item.day.toString() : item.day}}/{{item.month <=9
+                                                ? "0" +item.month : item.month}}/{{item.year}}</td>
+                                        <td *ngIf="item.description.length >= 22" [title]="item.description">
+                                            {{item.description.slice(0,
+                                            22)+"..."}}</td>
+                                        <td *ngIf="item.description.length <= 21" [title]="item.description">
+                                            {{item.description}}</td>
+                                    </tr>
+                                </ng-container>
+
+                            </tbody>
+
+                        </table>
+                        <div class="progress" *ngIf="loading">
+                            <div class="indeterminate"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col l3">
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptas voluptate doloremque necessitatibus eos
+            perferendis dicta ullam esse temporibus, similique reiciendis aliquid maxime quis, nobis dolore veniam animi
+            deserunt a unde.
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

@@ -1,0 +1,65 @@
+<div class="row" (mousedown)="false">
+    <div class="col l12">
+        <div class="calendario grey lighten-5">
+            <div class="calendar">
+                <div class="calendar__info">
+                    <div class="calendar__prev material-icons black-text" id="prev-month" (click)="prevMonth()">
+                        chevron_left</div>
+                    <div class="calendar__month" id="month">{{daysMonth.month}}</div>
+                    <div class="calendar__year" id="year">{{daysMonth.year}}</div>
+                    <div class="calendar__next material-icons black-text" id="next-month" (click)="nextMonthClick()">
+                        chevron_right</div>
+                </div>
+                <div class="calendar__week">
+                    <div class="calendar__day calendar__item style-cus-1">Lu</div>
+                    <div class="calendar__day calendar__item style-cus-1">Ma</div>
+                    <div class="calendar__day calendar__item style-cus-1">Mi</div>
+                    <div class="calendar__day calendar__item style-cus-1">Ju</div>
+                    <div class="calendar__day calendar__item style-cus-1">Vi</div>
+                    <div class="calendar__day calendar__item style-cus-1">Sa</div>
+                    <div class="calendar__day calendar__item style-cus-1">Do</div>
+                </div>
+                <div class="calendar__dates" id="dates">
+                    <ng-container *ngFor="let item of daysMonth.data">
+                        <div *ngIf="item.isLast && (!item.today && !item.event)"
+                            class="calendar__date calendar__item calendar__last-days style-cus-2">
+                            {{item.day}}
+                        </div>
+                        <!--Dias de mes pasado-->
+
+                        <div *ngIf="item.today && (!item.event && !item.isLast)"
+                            class="calendar__date calendar__item style-cus-2 teal lighten-1 white-text">
+                            {{item.day}}</div>
+                        <!--Dia de hoy-->
+
+                        <div *ngIf="item.event && (!item.isLast && !item.today)"
+                            class="calendar__date calendar__item style-cus-2" [ngClass]="randomClasses()">
+                            {{item.day}}
+                            <span class=""
+                                [ngClass]="{'floating-ball': item.day <= 9, 'floating-ball-fix-l2': item.day >= 10}">{{item.numEv}}</span>
+                        </div>
+                        <!--Dias con eventos-->
+
+                        <div *ngIf="!item.event && (!item.isLast && !item.today)"
+                            class="calendar__date calendar__item style-cus-2">{{item.day}}
+                        </div>
+                        <!--Dias normales-->
+
+                    </ng-container>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="mt-4 teal accent-1">
+            <h5 class="pt-2 center">Eventos de hoy</h5>
+            <div class="min-max-h-89px px-4 overflow-auto scroll-1">
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatem commodi dolores aperiam dolorem!
+                Ratione voluptatem laudantium quia ut animi aut et at Lorem ipsum dolor sit amet consectetur adipisicing
+                elit. Odio, cum! Numquam, vero ad perspiciatis placeat dicta aliquid est, laborum non quasi dolor
+                obcaecati modi omnis cum mollitia sunt error et, ducimus <button (click)="alert()"
+                    class="btn">Log</button>
+            </div>
+        </div>
+    </div>
