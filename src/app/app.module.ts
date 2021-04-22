@@ -19,6 +19,8 @@ import {
     GoogleLoginProvider,
     FacebookLoginProvider
 } from 'angularx-social-login';
+import { AsideInfoEventComponent } from './components/aside-info-event/aside-info-event.component';
+import { GetSizeScrollDirective } from './directives/get-size-scroll.directive';
 
 @NgModule({
     declarations: [
@@ -28,7 +30,9 @@ import {
         FooterComponent,
         HomeComponent,
         CreateEventComponent,
-        AsideInfoComponent
+        AsideInfoComponent,
+        AsideInfoEventComponent,
+        GetSizeScrollDirective
     ],
     imports: [
         BrowserModule,
