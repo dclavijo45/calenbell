@@ -2,7 +2,7 @@
   /*background: #4ecdc4; Color fondo*/
   max-width: 600px;
   padding: 0.5em 0;
-  height: 366px;
+  height: 327px;
   /* font-family: sans-serif; */
 }
 
@@ -60,9 +60,9 @@
 }
 .calendar__item {
   text-align: center;
-  font-size: 15px;
-  margin-top: 20%;
-  margin-bottom: 20%;
+  font-size: 13px;
+  margin-top: 12%;
+  margin-bottom: 18%;
   color: #787e77;
   /* font-family: consolas; */
 }
@@ -100,9 +100,9 @@
     width: 90%;
 }
 
-.min-max-h-89px{
-    min-height: 89px;
-    max-height: 89px;
+.min-max-h-125px{
+    min-height: 125px;
+    max-height: 125px;
 }
 
 /* Colores de eventos */
@@ -162,4 +162,33 @@
     color: white;
     background-color: red;
     border-radius: 50%;
+}
+
+/* Box floating info calendar */
+
+.rex > .box-info-float {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 0.3s, opacity 0.3s linear;
+}
+.rex:hover > .box-info-float {
+	visibility: visible;
+	opacity: 1;
+	position: absolute;
+	transition-delay: 0s;
+}
+
+.box-info-float {
+	position: absolute;
+	margin-top: -10.3%;
+    max-height: 150px;
+    min-height: 150px;
+    max-width: 200px;
+    min-width: 200px;
+    margin-left: 0%;
+    z-index: 1000;
+}
+
+.font-size-17px{
+    font-size: 17px;
 }

@@ -1,7 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { DataCalendar } from 'src/app/interfaces/data-calendar';
 import { DateEvents } from 'src/app/interfaces/date-events';
+import { ClientService } from 'src/app/services/client.service';
 import { CreateCalendarService } from 'src/app/services/create-calendar.service';
+import { TokenAuthStateService } from 'src/app/services/token-auth-state.service';
 
 @Component({
     selector: 'app-aside-info',
@@ -10,7 +13,10 @@ import { CreateCalendarService } from 'src/app/services/create-calendar.service'
 })
 export class AsideInfoComponent implements OnInit {
 
-    constructor(private createCalendarService: CreateCalendarService) { }
+    constructor(private createCalendarService: CreateCalendarService,
+        private Router: Router,
+        private _client: ClientService,
+        private _auth: TokenAuthStateService) { }
 
     private meses: string[] = [
         "Enero",
@@ -39,6 +45,8 @@ export class AsideInfoComponent implements OnInit {
         year: null
     }
     private dateEvents: DateEvents = this.createCalendarService.dateEvents;
+    private _server: string = this._client._server;
+    private token: string = localStorage.getItem('token') || null;
 
     @ViewChild("dates") dates: ElementRef;
     @ViewChild("month") month: ElementRef;
@@ -51,7 +59,6 @@ export class AsideInfoComponent implements OnInit {
     // }
 
     ngOnInit(): void {
-        // this.writeMonth(this.numeroDeMes);
         this.createCalendarService.isChanged().subscribe(
             (data: DateEvents) => {
                 this.daysMonth = {
@@ -65,7 +72,16 @@ export class AsideInfoComponent implements OnInit {
                 console.log();
 
             }
-        )
+        );
+
+        this.getEvents();
+
+        this.createCalendarService.listenerdetectCreateNewEvent().subscribe(
+            (res: boolean) => {
+                res ? this.getEvents() : false;
+            }
+        );
+
     }
 
     prevMonth() {
@@ -88,7 +104,6 @@ export class AsideInfoComponent implements OnInit {
         }
 
         for (let i = 1; i <= this.obtenerTotalDeDias(month); i++) {
-
 
             if (i === this._DIAHOY && month === this._MESHOY && this.daysMonth.year == this._ANIOHOY) { // para dia actual / mes = mes - 1
                 this.daysMonth.data.push({
@@ -122,8 +137,6 @@ export class AsideInfoComponent implements OnInit {
                     }
                 }
 
-
-
             }
             else { // Para dias normales
                 this.daysMonth.data.push({
@@ -134,9 +147,6 @@ export class AsideInfoComponent implements OnInit {
                     numEv: 0
                 })
             }
-
-
-
 
         }
     };
@@ -213,5 +223,59 @@ export class AsideInfoComponent implements OnInit {
     randomClasses() {
         let classes = [{ 'b-color-1': true }, { 'b-color-2': true }, { 'b-color-3': true }, { 'b-color-4': true }, { 'b-color-5': true }, { 'b-color-6': true }, { 'b-color-7': true }, { 'b-color-8': true }, { 'b-color-9': true }]
         return classes[Math.floor(Math.random() * classes.length)];
+    }
+
+    createEventSelectDate(day: number, month: string, year: number): void {
+        this.createCalendarService.currentDateSelected.day = day;
+        this.createCalendarService.currentDateSelected.month = month;
+        this.createCalendarService.currentDateSelected.year = year;
+        this.Router.navigate(['/crearevento']);
+        this.createCalendarService.currentDateHasChanged();
+    }
+
+    getEvents(): void {
+        this._client.getRequest(`${this._server}/user/manage/events`, this.token).subscribe(
+            (res: any) => {
+                this.createCalendarService.loadingHome = false;
+                this.createCalendarService.LoadingChanged();
+
+                if (res.auth_token) {
+                    this.createCalendarService.eventsRequest = res.events;
+                    this.createCalendarService.EventsRequestChanged();
+                } else {
+                    this.createCalendarService.eventsRequest = [];
+                    this.createCalendarService.EventsRequestChanged();
+                    this._auth.logout();
+                }
+
+                this.createCalendarService.dateEvents = {
+                    day: [],
+                    month: [],
+                    year: [],
+                    type: [],
+                    status: [],
+                    description: [],
+                    title: [],
+                    time: []
+                }
+
+                for (let i = 0; i < this.createCalendarService.eventsRequest.length; i++) {
+                    this.createCalendarService.dateEvents.day.push(this.createCalendarService.eventsRequest[i].day)
+                    this.createCalendarService.dateEvents.month.push((this.createCalendarService.eventsRequest[i].month - 1) == 0 ? 12 : this.createCalendarService.eventsRequest[i].month - 1)
+                    this.createCalendarService.dateEvents.year.push(this.createCalendarService.eventsRequest[i].year)
+                    this.createCalendarService.dateEvents.description.push(this.createCalendarService.eventsRequest[i].description)
+                    this.createCalendarService.dateEvents.status.push(1)
+                    this.createCalendarService.dateEvents.type.push(parseInt(this.createCalendarService.eventsRequest[i].type_ev))
+                    this.createCalendarService.dateEvents.title.push(this.createCalendarService.eventsRequest[i].title)
+                    this.createCalendarService.dateEvents.time.push(this.createCalendarService.eventsRequest[i].hour)
+
+                }
+                this.createCalendarService.change();
+
+            },
+            (err) => {
+                console.log(err);
+            }
+        )
     }
 }
