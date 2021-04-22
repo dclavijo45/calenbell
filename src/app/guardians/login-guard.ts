@@ -6,24 +6,25 @@ import { TokenAuthStateService } from '../services/token-auth-state.service';
 @Injectable({
     providedIn: 'root'
 })
-export class HomeGuard implements CanActivate {
+export class LoginGuard implements CanActivate {
+
     constructor(private tokenAuth: TokenAuthStateService,
         private route: Router) { }
-
     canActivate(
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
         return new Promise((resolve, reject) => {
             this.tokenAuth.isLoggedIn().subscribe(
                 (login: boolean) => {
-                    if (login) {
+                    if (!login) {
                         resolve(true);
                     } else {
-                        this.route.navigate(['/login']);
+                        this.route.navigate(['/']);
                         resolve(false);
                     }
                 }
             )
-        })
+        });
     }
+
 }

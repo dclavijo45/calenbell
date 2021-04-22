@@ -1,5 +1,10 @@
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+     height: 100%; 
+}
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif; 
+}
 
 .mx-auto{
   margin-left: auto !important;
@@ -124,6 +129,10 @@ body{
     text-align: center;
 }
 
+.border-radius-10px{
+    border-radius: 10px;
+}
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -134,4 +143,35 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.box-shadow-1{
+    box-shadow: 0 2px 2px 0 rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 12%), 0 1px 5px 0 rgb(0 0 0 / 20%);
+}
+
+.cursor-pointer{
+    cursor: pointer !important;
+}
+
+.mr-2{
+    margin-right: 2%;
+}
+
+.mx-2{
+    margin-right: 2%;
+    margin-left: 2%;
+}
+
+.px-2{
+    padding-right: 2%;
+    padding-left: 2%;
+}
+
+.line-select-input-hide {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Versión sin prefijo, actualmente compatible con Chrome y Opera */
 }

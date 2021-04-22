@@ -8,6 +8,8 @@ import { ClientService } from 'src/app/services/client.service';
 import { GoogleClientService } from 'src/app/services/google-client.service';
 import { GoogleClient } from 'src/app/interfaces/google-client';
 import { RecoveredStatus, RecoveryAccount, RecoveryAttempt } from 'src/app/interfaces/recovery-account';
+import { TokenAuthStateService } from 'src/app/services/token-auth-state.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -20,7 +22,9 @@ export class LoginComponent implements OnInit {
     constructor(
         public formB: FormBuilder,
         private _client: ClientService,
-        private Google: GoogleClientService) { }
+        private Google: GoogleClientService,
+        private _auth: TokenAuthStateService,
+        private Router: Router) { }
 
     public login: boolean = false;
     private _server: string = this._client._server;
@@ -44,6 +48,7 @@ export class LoginComponent implements OnInit {
     public recoveryAttemptCode: number = 0;
     public intervalTimeClock: any;
     private token_recovery: string = null;
+    public GoogleAttempt: boolean = false;
 
     ngOnInit(): void {
         M.AutoInit();
@@ -133,17 +138,20 @@ export class LoginComponent implements OnInit {
         let data = {
             user: this.formLogin.value.user,
             password: this.formLogin.value.password,
-            type: this.action ? 'Google' : 'normal',
+            type: this.GoogleAttempt ? 'Google' : 'normal',
             id_token: id_token || null
         }
 
-        if (this.formLogin.valid || this.action) {
+        if (this.formLogin.valid || this.GoogleAttempt) {
 
             this.loading = true;
 
             this._client.postRequest(`${this._server}/user/login`, data).subscribe(
                 ((response: LoginResponse) => {
                     this.loading = false;
+                    console.log(`RESPONSE: ${this.action}`);
+                    console.log(response);
+
 
                     if (response.logged) {
                         this.action = null;
@@ -152,20 +160,21 @@ export class LoginComponent implements OnInit {
                                 type: 'success',
                                 text: "✔ Inicio correcto",
                                 stay: false,
-                                time: 2,
+                                time: 1,
                                 position: "top"
                             });
                             setTimeout(function () {
                                 resolve(true);
-                            }, 2000);
+                            }, 1000);
                         });
                         loggedNotify.then((e) => {
                             console.log("LOGGED");
+                            this._auth.login(response.token);
+                            this.Router.navigate(['/'])
                         });
                     } else {
                         this.loading = false;
-                        if (this.action) {
-                            this.action = null;
+                        if (this.GoogleAttempt) {
                             notie.alert({
                                 type: 'info',
                                 text: "Registrate para poder iniciar con Google!",
@@ -282,7 +291,7 @@ export class LoginComponent implements OnInit {
         } else {
             notie.alert({
                 type: 'info',
-                text: "<div>Rellena todos los campos</div>",
+                text: "Rellena todos los campos",
                 stay: false,
                 time: 3,
                 position: "top"
@@ -294,6 +303,7 @@ export class LoginComponent implements OnInit {
     googleInit(action: string): void {
         this.loading = true;
         this.action = action;
+        this.GoogleAttempt = true;
         this.Google.GoogleInit();
     }
 

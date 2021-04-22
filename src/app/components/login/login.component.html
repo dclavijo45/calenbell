@@ -1,6 +1,6 @@
 <app-nav></app-nav>
 
-<div class="section overflow-hidden">
+<div class="section overflow-hidden mt-3-mobile">
     <div class="row">
         <div class="col s12 center">
             <div [ngClass]="{'log-in': login, 'active': loading}" class="container-cus-1 mx-auto mt-6">
@@ -77,10 +77,16 @@
                                             (mousedown)="false" (click)="recoveryPwd = !recoveryPwd">
                                             Olvidaste tu
                                             contraseña?</p>
-                                        <div [ngClass]="{'d-none': loading}" (click)="loginUser()"
+                                        <div [ngClass]="{'d-none': loading}" (click)="GoogleAttemp=false;loginUser()"
                                             class="btn waves-effect waves-light pink accent-1 mt-2" (mousedown)="false">
                                             Iniciar sesión
                                         </div>
+
+                                        <div class="btn waves-effect waves-light pink accent-1 mt-2 ml-2 mobile"
+                                            [ngClass]="{'d-none': loading}" (click)="login=!login" (mousedown)="false">
+                                            Crear cuenta
+                                        </div>
+
                                     </span>
 
                                     <span [formGroup]="formRecoveryPwd" *ngIf="recoveryPwd && !loading">
@@ -130,6 +136,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="form-item sign-up">
                             <div class="table-cus-1">
                                 <div [formGroup]="formRegister" class="table-cell">
@@ -147,14 +154,20 @@
                                         type="text">
                                     <input formControlName="email" (keydown.enter)="registerUser()" placeholder="Correo"
                                         type="email">
-                                    <input formControlName="user" (keydown.enter)="registerUser()" placeholder="Usuario"
-                                        type="text">
+                                    <input formControlName="user" (keydown.enter)="GoogleAttempt=false;registerUser()"
+                                        placeholder="Usuario" type="text">
                                     <input formControlName="password" (keydown.enter)="registerUser()"
                                         placeholder="Contraseña" type="password">
-                                    <div class="btn waves-effect waves-light pink accent-1 mt-2"
+
+                                    <div class="btn waves-effect waves-light pink accent-1 mt-2 mobile"
+                                        [ngClass]="{'d-none': loading}" (click)="login=!login" (mousedown)="false">
+                                        Volver
+                                    </div>
+                                    <div class="btn waves-effect waves-light pink accent-1 mt-2 ml-2"
                                         [ngClass]="{'d-none': loading}" (click)="registerUser()" (mousedown)="false">
                                         Crear cuenta
                                     </div>
+
                                 </div>
                             </div>
                         </div>

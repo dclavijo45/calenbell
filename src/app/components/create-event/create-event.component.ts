@@ -5,6 +5,12 @@ import { BehaviorSubject } from 'rxjs';
 import { EventsRequest } from 'src/app/interfaces/events-request';
 import { ClientService } from 'src/app/services/client.service';
 import * as M from 'src/app/services/materialize.js';
+import notie from 'notie';
+import { Router } from '@angular/router';
+import { TokenAuthStateService } from 'src/app/services/token-auth-state.service';
+import { CreateEventRequest } from 'src/app/interfaces/create-event-request';
+import { CreateCalendarService } from 'src/app/services/create-calendar.service';
+import { DateInfo } from 'src/app/interfaces/date-info';
 
 @Component({
     selector: 'app-create-event',
@@ -14,7 +20,10 @@ import * as M from 'src/app/services/materialize.js';
 export class CreateEventComponent implements OnInit {
 
     constructor(public formB: FormBuilder,
-        private _client: ClientService) { }
+        private _client: ClientService,
+        private Router: Router,
+        private _auth: TokenAuthStateService,
+        private createCalendarService: CreateCalendarService) { }
 
     public formEvent: FormGroup;
     private token: string = localStorage.getItem('token')
@@ -30,6 +39,7 @@ export class CreateEventComponent implements OnInit {
     }
     private intervalHour: any;
     private intervalDate: any;
+    public obsHour = new BehaviorSubject<string>("");
 
     ngOnInit(): void {
         M.AutoInit();
@@ -54,14 +64,23 @@ export class CreateEventComponent implements OnInit {
 
         this.isChangedDate().subscribe(
             (value: string) => {
-                this.formEvent.value.fecha = value;
+                // this.formEvent.value.fecha = value;
             }
         );
-    }
 
-    ngOnDestroy(): void {
-        // this.clearIntervalDate();
-        // this.clearIntervalHour();
+        this.createCalendarService.listenerDetectCurrentDateChange().subscribe(
+            (data: DateInfo) => {
+                if (data.day && data.month && data.year) {
+                    let meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+
+                    let mes: number = meses.indexOf(data.month) + 1;
+
+                    this.dataEntry.date = `${data.year}-${mes <= 9 ? "0" + mes : mes}-${data.day <= 9 ? "0" + data.day : data.day}`
+                    console.log("Click day!");
+                }
+
+            }
+        )
     }
 
     createEvent() {
@@ -78,9 +97,48 @@ export class CreateEventComponent implements OnInit {
         if (data.date && data.description && data.hour && data.icon && data.title && data.type_ev) {
             this.loading = true;
             this._client.postRequest(`${this._server}/user/manage/events`, data, this.token).subscribe(
-                (res: EventsRequest[]) => {
+                (res: CreateEventRequest) => {
                     console.log(res);
                     this.loading = false;
+
+                    if (!res.auth_token) this._auth.logout();
+
+                    if (res.saved) {
+                        let Notify = new Promise((resolve) => {
+                            notie.alert({
+                                type: 'success',
+                                text: "Evento agregado",
+                                stay: false,
+                                time: 1,
+                                position: "top"
+                            });
+                            setTimeout(function () {
+                                resolve(true);
+                            }, 1000);
+                        })
+                        Notify.then((e) => {
+                            console.log("EVENT ADD SUCCESS");
+                            this.createCalendarService.createNewEventChanged();
+                            this.Router.navigate(['/']);
+                        });
+                    } else {
+                        let Notify = new Promise((resolve) => {
+                            notie.alert({
+                                type: 'error',
+                                text: "Evento no agregado",
+                                stay: false,
+                                time: 1,
+                                position: "top"
+                            });
+                            setTimeout(function () {
+                                resolve(true);
+                            }, 1000);
+                        })
+                        Notify.then((e) => {
+                            console.log("EVENT ADD ERROR");
+                        });
+                    }
+
                 },
                 (err: any) => {
                     console.log(err);
@@ -90,27 +148,36 @@ export class CreateEventComponent implements OnInit {
         } else {
             console.log(this.formEvent.status);
             console.log(data);
+            let Notify = new Promise((resolve) => {
+                notie.alert({
+                    type: 'info',
+                    text: "Rellene los campos",
+                    stay: false,
+                    time: 1,
+                    position: "top"
+                });
+                setTimeout(function () {
+                    resolve(true);
+                }, 1000);
+            })
+            Notify.then((e) => {
+                console.log("EVENT ADD ERROR");
+            });
         }
     }
 
     setHour(h) {
         this.dataEntry.hour = h;
-        // this.intervalHour = setInterval(() => {
-        //     this.formEvent.value.hora = h.value;
-        // }, 50)
         this.changeHour(h)
     }
 
     fixErrorFormEvent() {
         this.formEvent.value.hora = this.dataEntry.hour;
-        this.formEvent.value.fecha = this.dataEntry.date;
+        // this.formEvent.value.fecha = this.dataEntry.date;
     }
 
     setDate(f) {
         this.dataEntry.date = f;
-        // this.intervalDate = setInterval(() => {
-        //     this.formEvent.value.fecha = f.value;
-        // }, 50)
         this.changeDate(f)
     }
 
@@ -126,7 +193,6 @@ export class CreateEventComponent implements OnInit {
         alert("exit")
     }
 
-    public obsHour = new BehaviorSubject<string>("");
 
     isChangedHour(): Observable<string> {
         return this.obsHour.asObservable();

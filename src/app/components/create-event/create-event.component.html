@@ -24,18 +24,22 @@
                         </div>
                         <div class="input-field">
                             <i class="material-icons prefix">alarm</i>
-                            <input formControlName="hora" type="text" class="timepicker" #horaEvento
-                                [ngClass]="{'valid': formEvent.value.hora && formEvent.touched, 'invalid': !formEvent.value.hora && formEvent.touched}"
+                            <input formControlName="hora" type="text" class="timepicker line-select-input-hide"
+                                #horaEvento
+                                [ngClass]="{'valid': dataEntry.hour && formEvent.touched, 'invalid': !formEvent.value.hora && formEvent.touched}"
                                 placeholder="Hora del evento" (click)="setHour(horaEvento.value)"
-                                (blur)="setHour(horaEvento.value)" (change)="setHour(horaEvento.value)">
+                                (blur)="setHour(horaEvento.value)" (change)="setHour(horaEvento.value)"
+                                [(ngModel)]="dataEntry.hour" (keydown)="false" (paste)="false" (mouseover)="false"
+                                (mousedown)="false">
                         </div>
                         <div class="input-field">
                             <i class="material-icons prefix">event</i>
-                            <input formControlName="fecha" type="text" class="datepicker" placeholder="Fecha del evento"
-                                #fechaEvento
+                            <input formControlName="fecha" type="text" class="datepicker line-select-input-hide"
+                                placeholder="Fecha del evento" #fechaEvento
                                 [ngClass]="{'valid': formEvent.value.fecha && formEvent.touched, 'invalid': !formEvent.value.fecha && formEvent.touched}"
                                 (click)="setDate(fechaEvento.value)" (blur)="setDate(fechaEvento.value)"
-                                (change)="setDate(fechaEvento.value)">
+                                (change)="setDate(fechaEvento.value)" [(ngModel)]="dataEntry.date" (keydown)="false"
+                                (paste)="false" (mouseover)="false" (mousedown)="false">
                         </div>
                     </div>
 
@@ -57,8 +61,8 @@
                                 *ngIf="!formEvent.value.tipo_evento && formEvent.touched">close</i>
 
                             <select formControlName="tipo_evento" (ngModelChange)="fixErrorFormEvent()">
-                                <option value="" selected hidden>
-                                    Seleccione una opción</option>
+                                <option value="" disabled selected>
+                                    Seleccione un tipo de evento</option>
                                 <option value="1">Evento individual</option>
                                 <option value="2">Evento grupal</option>
                             </select>

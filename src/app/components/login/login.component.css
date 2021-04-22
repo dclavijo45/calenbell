@@ -1,6 +1,18 @@
 @charset "UTF-8";
 @import url(https://fonts.googleapis.com/css?family=Oswald|Roboto);
 
+@media (max-width: 480px) {
+    .mobile{
+        display: inline-block !important;
+    }
+    .mt-3-mobile{
+        margin-top: 3%;
+    }
+}
+
+.mobile{
+    display: none;
+}
 .table-cus-1 {
   display: table;
   width: 100%;

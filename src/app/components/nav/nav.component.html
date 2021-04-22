@@ -1,14 +1,15 @@
 <nav class="blue darken-4">
     <div class="nav-wrapper">
-        <a href="#" class="brand-logo"><i class="material-icons">cloud</i>Calenbell</a>
+        <div class="brand-logo mx-2"><i class="material-icons">cloud</i>Calenbell</div>
         <!-- <ul class="right hide-on-med-and-down">
             <li><a href="#"><i class="material-icons">search</i></a></li>
             <li><a href="#"><i class="material-icons">view_module</i></a></li>
             <li><a href="#"><i class="material-icons">refresh</i></a></li>
             <li><a href="#"><i class="material-icons">more_vert</i></a></li>
         </ul> -->
-        <ul class="right hide-on-med-and-down">
-            <li><a href="#"><i class="material-icons">exit_to_app</i></a></li>
+        <ul class="right hide-on-med-and-down mx-2 cursor-pointer">
+            <li (click)="logout()"><i class="material-icons">exit_to_app</i>
+            </li>
         </ul>
     </div>
 </nav>

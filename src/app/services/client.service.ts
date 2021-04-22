@@ -8,7 +8,7 @@ export class ClientService {
 
     constructor(private http: HttpClient) { }
 
-    public _server: string = 'http://localhost:5000';
+    public _server: string = 'http://d6d13b42844d.ngrok.io';
 
     getRequest(route: string, token?: string) {
 
