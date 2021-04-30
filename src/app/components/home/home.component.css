@@ -4,3 +4,32 @@
 .max-h-301px{
     max-height: 301px;
 }
+
+.hover-cus-1:hover {
+    background-color: #e0e0e0 !important;
+}
+
+.nth-child-cus-1:nth-child(even) {
+    background-color: #eeeeee;
+}
+
+.p-cus-1{
+    padding: 10px 5px !important;
+}
+
+.checkbox-cus-1+ span:not(.lever):before, .checkbox-1:not(.filled-in) + span:not(.lever):after{
+    border: 2px solid #888787 ;
+    margin-top: 7px !important;
+}
+
+.checkbox-cus-1:checked + span:not(.lever):before {
+    top: -4px;
+    left: -5px;
+    width: 12px;
+    height: 22px;
+    border-top: 2px solid transparent;
+    border-left: 2px solid transparent;
+    border-right: 2px solid #26a69a;
+    border-bottom: 2px solid #26a69a;
+    transform: rotate(40deg);
+}

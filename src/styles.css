@@ -175,3 +175,71 @@ input[type=number] {
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Versión sin prefijo, actualmente compatible con Chrome y Opera */
 }
+
+.mb-0{
+    margin-bottom: 0% !important;
+}
+
+.mr-0{
+    margin-right: 0% !important;
+}
+
+.position-absolute{
+    position: absolute !important;
+}
+
+.overflow-hidden{
+    overflow: hidden;
+}
+
+.cursor-normal{
+    cursor: default;
+}
+
+.hide-line-input-write {
+	 color: transparent;
+	 text-shadow: 0 0 0 #000;
+}
+
+.hide-line-input-write:focus {
+	 outline: none;
+}
+
+.pl-2{
+    padding-left: 2% !important;
+}
+
+.pl-0{
+    padding-left: 0% !important;
+}
+
+.checkbox-1+ span:not(.lever):before, .checkbox-1:not(.filled-in) + span:not(.lever):after{
+    border: 2px solid #888787 !important;
+
+    /* content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 18px;
+    height: 18px;
+    z-index: 0;
+    border-radius: 1px;
+    margin-top: 3px;
+    transition: .2s; */
+}
+
+.checkbox-1:checked + span:not(.lever):before {
+    top: -4px;
+    left: -5px;
+    width: 12px;
+    height: 22px;
+    border-top: 2px solid transparent;
+    border-left: 2px solid transparent;
+    border-right: 2px solid #26a69a;
+    border-bottom: 2px solid #26a69a;
+    transform: rotate(40deg);
+}
+
+.break-word{
+    word-break: break-word;
+}

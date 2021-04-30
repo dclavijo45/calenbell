@@ -1,4 +1,5 @@
 export interface EventsRequest {
+    id: number,
     title: string,
     day: number,
     month: number,
@@ -6,5 +7,6 @@ export interface EventsRequest {
     hour: string,
     description: string,
     type_ev: string,
-    icon: string
+    icon: string,
+    check: boolean
 }

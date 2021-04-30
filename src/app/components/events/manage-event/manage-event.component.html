@@ -1,0 +1,149 @@
+<app-nav></app-nav>
+
+<div class="section overflow-hidden">
+    <div class="row">
+        <div class="col l3">
+            <app-aside-info></app-aside-info>
+        </div>
+        <div class="col l9">
+            <div class="container">
+                <div class="row" [formGroup]="formEvent">
+                    <div class="row">
+                        <div class="col l12 center">
+                            <h2>Crear evento</h2>
+                        </div>
+                    </div>
+
+                    <div class="col l6">
+                        <div class="input-field">
+                            <i class="material-icons prefix">assignment</i>
+                            <input formControlName="titulo" id="tituloEvento" type="text" class=""
+                                [ngClass]="{'valid': dataEntry.title && formEvent.touched, 'invalid': !formEvent.value.titulo && formEvent.touched}"
+                                (ngModelChange)="fixErrorFormEvent()" maxlength="70" [(ngModel)]="dataEntry.title">
+                            <label *ngIf="actionEvent != 'edit'" for="tituloEvento">Titulo del
+                                evento</label>
+                            <span *ngIf="actionEvent == 'edit'" class="mode-edit"
+                                [ngClass]="{'color-invalid': !dataEntry.title && formEvent.touched, 'color-valid': dataEntry.title && formEvent.touched}">Título
+                                del
+                                evento</span>
+                        </div>
+                        <div class="input-field">
+                            <i class="material-icons prefix">alarm</i>
+                            <input formControlName="hora" type="text" class="timepicker line-select-input-hide"
+                                #horaEvento
+                                [ngClass]="{'valid': dataEntry.hour && formEvent.touched, 'invalid': !formEvent.value.hora && formEvent.touched}"
+                                placeholder="Hora del evento" (click)="setHour(horaEvento.value)"
+                                (blur)="setHour(horaEvento.value)" (change)="setHour(horaEvento.value)"
+                                [(ngModel)]="dataEntry.hour" (keydown)="false" (paste)="false" (mouseover)="false"
+                                (mousedown)="false">
+                        </div>
+                        <div class="input-field">
+                            <i class="material-icons prefix">event</i>
+                            <input formControlName="fecha" type="text" class="datepicker line-select-input-hide"
+                                placeholder="Fecha del evento" #fechaEvento
+                                [ngClass]="{'valid': dataEntry.date && formEvent.touched, 'invalid': !dataEntry.date && formEvent.touched}"
+                                (click)="setDate(fechaEvento.value)" (blur)="setDate(fechaEvento.value)"
+                                (change)="setDate(fechaEvento.value)" [(ngModel)]="dataEntry.date" (keydown)="false"
+                                (paste)="false" (mouseover)="false" (mousedown)="false">
+                        </div>
+                    </div>
+
+                    <div class="col l6">
+                        <div class="input-field">
+                            <i class="material-icons prefix">announcement</i>
+                            <input formControlName="descripcion" id="descripcionEvento" type="text" class=""
+                                [ngClass]="{'valid': dataEntry.description&& formEvent.touched, 'invalid': !formEvent.value.descripcion&& formEvent.touched}"
+                                (ngModelChange)="fixErrorFormEvent()" maxlength="250"
+                                [(ngModel)]="dataEntry.description">
+                            <label *ngIf="actionEvent != 'edit'" for="descripcionEvento">Descripción del
+                                evento</label>
+                            <span *ngIf="actionEvent == 'edit'" class="mode-edit"
+                                [ngClass]="{'color-invalid': !dataEntry.description && formEvent.touched, 'color-valid': dataEntry.description && formEvent.touched}">Descripción
+                                del
+                                evento</span>
+                        </div>
+                        <div class="input-field">
+                            <i class="material-icons prefix " *ngIf="!formEvent.touched">drag_handle</i>
+
+                            <i class="material-icons prefix color-valid"
+                                *ngIf="dataEntry.type_ev && formEvent.touched">check</i>
+
+                            <i class="material-icons prefix color-invalid"
+                                *ngIf="!dataEntry.type_ev && formEvent.touched">close</i>
+
+                            <select formControlName="tipo_evento" (ngModelChange)="fixErrorFormEvent()"
+                                [(ngModel)]="dataEntry.type_ev">
+                                <option value="" disabled
+                                    [selected]="dataEntry.type_ev == '' || dataEntry.type_ev == null">
+                                    Seleccione un tipo de evento</option>
+                                <option value="1" [selected]="dataEntry.type_ev == '1'">Evento individual</option>
+                                <option value="2" [selected]="dataEntry.type_ev == '2'">Evento grupal</option>
+                            </select>
+                            <label>Tipo de evento</label>
+                        </div>
+
+                        <div class="input-field active-emojis-box">
+                            <i class="material-icons prefix cursor-normal">insert_emoticon</i>
+                            <input type="text" formControlName="icono" id="iconoEvento"
+                                [ngClass]="{'valid': dataEntry.icon && formEvent.touched, 'invalid': !dataEntry.icon && formEvent.touched}"
+                                (ngModelChange)="fixErrorFormEvent()" [(ngModel)]="dataEntry.icon" class="cursor-normal"
+                                (mousedown)="false">
+                            <span class="mode-edit-emoji"
+                                [ngClass]="{'color-invalid': !dataEntry.icon && formEvent.touched, 'color-valid': dataEntry.icon && formEvent.touched}">Icono
+                                personalizado</span>
+
+                            <span class="emojis-box emojis-box-floating grey lighten-5 p-2 box-shadow-1">
+                                <div class="row mb-0">
+                                    <div class="col l3 left-align red-text">
+                                        <!-- #region empty -->
+                                    </div>
+
+                                    <div class="col l2 offset-l5 right-align"><i class="fas fa-backspace cursor-pointer"
+                                            (click)="changeViewEmojis('delete')"></i>
+                                    </div>
+                                </div>
+                                <div class="row mr-0 mb-0">
+                                    <div class="col l12 overflow-hidden max-h-100px scroll-1 max-w-193px text-center"
+                                        (mousedown)="false">
+                                        <ng-container *ngFor="let item of emojis | slice:emojiView.init:emojiView.end">
+                                            <span class="emoji style-cus-1 cursor-pointer"
+                                                (click)="setEmoji(item.code)">{{item.code}}</span>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                                <div class="row mb-0 mr-0 mt-1px">
+                                    <div class="col l2 offset-l2">
+                                        <i class="fas fa-chevron-left cursor-pointer"
+                                            (click)="changeViewEmojis('left')"></i>
+
+                                    </div>
+                                    <div class="col l3 offset-l3">
+                                        <i class="fas fa-chevron-right cursor-pointer"
+                                            (click)="changeViewEmojis('rigth')"></i>
+                                    </div>
+                                </div>
+                            </span>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col l12 center">
+                            <button (click)="onBack()" [disabled]="loading"
+                                class="waves-effect waves-light red lighten-2 btn mr-2"><i
+                                    class="material-icons left">cancel</i>Cancelar</button>
+                            <button (click)="manageEvent()" [disabled]="loading || !formEvent.valid"
+                                class="waves-effect waves-light btn"><i class="material-icons left">{{actionEvent ==
+                                    'edit' ? 'create' : 'content_paste'}}</i>{{actionEvent == 'edit' ? 'Editar evento' :
+                                'Crear evento'}}</button>
+                            <div class="progress w-50 mx-auto mt-4" *ngIf="loading">
+                                <div class="indeterminate"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

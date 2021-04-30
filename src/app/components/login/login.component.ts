@@ -170,7 +170,7 @@ export class LoginComponent implements OnInit {
                         loggedNotify.then((e) => {
                             console.log("LOGGED");
                             this._auth.login(response.token);
-                            this.Router.navigate(['/'])
+                            this.Router.navigate(['/home'])
                         });
                     } else {
                         this.loading = false;

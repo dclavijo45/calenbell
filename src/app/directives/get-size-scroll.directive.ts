@@ -9,14 +9,13 @@ import { InfoCurrentEventService } from '../services/info-current-event.service'
 export class GetSizeScrollDirective {
 
     constructor(private elementRef: ElementRef,
-        private renderer: Renderer2,
         private infoCurrentEventService: InfoCurrentEventService,
         private createCalendarService: CreateCalendarService) {
     }
 
     // every event = 62
     // not event = 53
-    // size scroll >= 301 = -301
+    // size scroll =+ 301
     getScrollTop() {
         const HeigthScroll: number = this.elementRef.nativeElement.scrollHeight;
         const currentSizeScroll: number = this.elementRef.nativeElement.scrollTop + 301;
@@ -33,7 +32,7 @@ export class GetSizeScrollDirective {
         )
 
         console.clear();
-        console.log(`Scroll Heigth: ${HeigthScroll}`);
+        console.log(`Scroll Max Heigth: ${HeigthScroll}`);
 
         console.log(`Current location scroll: ${currentSizeScroll}`);
 
@@ -60,7 +59,7 @@ export class GetSizeScrollDirective {
 
                     this.infoCurrentEventService.lazyLoadCharge = this.infoCurrentEventService.lazyLoadCharge + 20;
                     this.infoCurrentEventService.lazyLoadChanged();
-                }, 1000);
+                }, 600);
 
                 break;
             } else if (currentSizeScroll === HeigthScroll && lazyLoadCharge != 20 && (lazyLoadCharge + 20 <= (elementsTotalEQ60 + 1) * 20)) {
@@ -74,7 +73,7 @@ export class GetSizeScrollDirective {
 
                     this.infoCurrentEventService.lazyLoadCharge = this.infoCurrentEventService.lazyLoadCharge + 20;
                     this.infoCurrentEventService.lazyLoadChanged();
-                }, 1000);
+                }, 600);
 
                 break;
             }

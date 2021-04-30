@@ -229,7 +229,7 @@ export class AsideInfoComponent implements OnInit {
         this.createCalendarService.currentDateSelected.day = day;
         this.createCalendarService.currentDateSelected.month = month;
         this.createCalendarService.currentDateSelected.year = year;
-        this.Router.navigate(['/crearevento']);
+        this.Router.navigate(['/controlevento']);
         this.createCalendarService.currentDateHasChanged();
     }
 

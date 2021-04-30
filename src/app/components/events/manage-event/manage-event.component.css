@@ -1,0 +1,87 @@
+.validSelect{
+    border-bottom: 2px solid #4caf50 !important;
+}
+.invalidSelect{
+    border-bottom: 2px solid #f44336 !important;
+}
+
+.color-invalid {
+    color: #f44336 !important;
+}
+
+.color-valid{
+    color: #4caf50 !important;
+}
+
+.emojis-box{
+    position: absolute;
+	margin-top: 16%;
+    border-radius: 10px;
+    max-height: 150px;
+    min-height: 150px;
+    max-width: 200px;
+    min-width: 200px;
+    margin-left: -60%;
+    z-index: 1000;
+}
+
+.max-h-100px{
+    max-height: 100px;
+    min-height: 100px;
+}
+
+.emoji{
+    max-height: 15px;
+    min-height: 15px;
+    max-width: 15px;
+    min-width: 15px;
+    border: black solid 1px;
+    border-radius: 50%;
+    padding: 2px;
+    font-size: 15px !important;
+}
+
+.max-w-193px{
+    min-width: 193px;
+    max-width: 193px;
+}
+
+.mt-1px{
+    margin-top: 1px;
+}
+
+.style-cus-1{
+    margin-top: 6px !important;
+    margin-right: 9px;
+    display: inline-table;
+}
+
+/* Box floating emojis */
+
+.active-emojis-box > .emojis-box-floating {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 0.3s, opacity 0.3s linear;
+}
+.active-emojis-box:hover > .emojis-box-floating {
+	visibility: visible;
+	opacity: 1;
+	position: absolute;
+	transition-delay: 0s;
+}
+
+.mode-edit{
+    position: absolute;
+    top: -15px;
+    font-size: 0.8rem;
+    left: 44px;
+    color: #9e9e9e;
+}
+
+.mode-edit-emoji {
+    position: absolute;
+    top: -9px;
+    font-size: 0.8rem;
+    left: 44px;
+    color: #9e9e9e;
+}

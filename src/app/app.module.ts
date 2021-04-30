@@ -10,7 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './components/home/home.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTableModule } from '@angular/material/table';
-import { CreateEventComponent } from './components/create-event/create-event.component';
+import { ManageEventComponent } from './components/events/manage-event/manage-event.component';
 import { AsideInfoComponent } from './components/aside-info/aside-info.component';
 
 // Client API Google
@@ -21,6 +21,9 @@ import {
 } from 'angularx-social-login';
 import { AsideInfoEventComponent } from './components/aside-info-event/aside-info-event.component';
 import { GetSizeScrollDirective } from './directives/get-size-scroll.directive';
+import { ChatComponent } from './components/chat/chat.component';
+import { UserConfigComponent } from './components/user-config/user-config.component';
+import { RootHomeComponent } from './components/root-home/root-home.component';
 
 @NgModule({
     declarations: [
@@ -29,10 +32,13 @@ import { GetSizeScrollDirective } from './directives/get-size-scroll.directive';
         NavComponent,
         FooterComponent,
         HomeComponent,
-        CreateEventComponent,
+        ManageEventComponent,
         AsideInfoComponent,
         AsideInfoEventComponent,
-        GetSizeScrollDirective
+        GetSizeScrollDirective,
+        ChatComponent,
+        UserConfigComponent,
+        RootHomeComponent,
     ],
     imports: [
         BrowserModule,
