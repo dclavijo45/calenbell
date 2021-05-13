@@ -19,8 +19,12 @@
                     <div class="calendar__day calendar__item style-cus-1">Sa</div>
                     <div class="calendar__day calendar__item style-cus-1">Do</div>
                 </div>
+                <div class="progress" *ngIf="loading">
+                    <div class="indeterminate"></div>
+                </div>
                 <div class="calendar__dates" id="dates">
                     <ng-container *ngFor="let item of daysMonth.data">
+
                         <div *ngIf="item.isLast && (!item.today && !item.event)"
                             class="calendar__date calendar__item calendar__last-days style-cus-2"
                             (click)="createEventSelectDate(item.day, this.daysMonth.month, this.daysMonth.year)">
@@ -68,11 +72,45 @@
         <div class="mt-4 grey lighten-5 border-radius-10px box-shadow-1">
             <h5 class="pt-2 center">Eventos de hoy</h5>
             <div class="min-max-h-125px px-4 overflow-auto scroll-1">
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatem commodi dolores aperiam dolorem!
-                Ratione voluptatem laudantium quia ut animi aut et at Lorem ipsum dolor sit amet consectetur adipisicing
-                elit. Odio, cum! Numquam, vero ad perspiciatis placeat dicta aliquid est, laborum non quasi dolor
-                obcaecati modi omnis cum mollitia sunt error et, ducimus <button (click)="alert()"
-                    class="btn">Log</button>
+                <div class="progress" *ngIf="loading">
+                    <div class="indeterminate"></div>
+                </div>
+                <table class="white border-radius-5px position-relative" *ngIf="!loading">
+                    <thead>
+                        <tr>
+                            <!--Not found events today-->
+                            <ng-container *ngIf="eventsRequest.length == 0">
+                                <th class="text-center">No hay eventos de hoy</th>
+                            </ng-container>
+
+                            <ng-container *ngIf="eventsRequest.length >= 1">
+                                <th class="text-center">Título</th>
+                                <th class="text-center">Hora</th>
+                                <th class="text-center">Fecha</th>
+                            </ng-container>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <ng-container *ngFor="let item of eventsRequest | slice:0:lazyLoadCharge">
+                            <!--Detect today date-->
+                            <ng-container>
+                                <tr>
+                                    <td *ngIf="item.title.length > 15" [title]="item.title" class="text-center">
+                                        {{item.title.slice(0,
+                                        15)+"..."}}</td>
+                                    <td *ngIf="item.title.length <= 15" [title]="item.title" class="text-center">
+                                        {{item.title}}</td>
+
+                                    <td class="text-center">{{item.hour}}</td>
+                                    <td class="text-center">{{item.day}}/{{
+                                        item.month}}/{{item.year}}</td>
+                                </tr>
+                            </ng-container>
+
+                        </ng-container>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
