@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { BehaviorSubject } from 'rxjs';
+import { Observable, Subject } from 'rxjs'
 import { Location } from '@angular/common';
 import { ClientService } from 'src/app/services/client.service';
 import * as M from 'src/app/services/materialize.js';
@@ -14,6 +13,9 @@ import { DateInfo } from 'src/app/interfaces/date-info';
 import { ListEmojisService } from 'src/app/services/list-emojis.service';
 import { InterfaceEmojis, InterfaceEmojisView } from 'src/app/interfaces/interface-emojis';
 import { ControlEventsService } from 'src/app/services/control-events.service';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+
+import emojiarea from 'jquery.emojiarea.js';
 
 @Component({
     selector: 'app-manage-event',
@@ -33,7 +35,7 @@ export class ManageEventComponent implements OnInit {
 
     public actionEvent: string = null;
     public formEvent: FormGroup;
-    private token: string = localStorage.getItem('token')
+    private token: string = localStorage.getItem('token');
     private _server: string = this._client._server;
     public loading: boolean = false;
     public dataEntry = {
@@ -42,7 +44,8 @@ export class ManageEventComponent implements OnInit {
         date: '',
         description: '',
         hour: '',
-        icon: ''
+        icon: '',
+        id: null
     }
     private intervalHour: any;
     private intervalDate: any;
@@ -51,7 +54,11 @@ export class ManageEventComponent implements OnInit {
         init: 0,
         end: 12
     }
-    public obsHour = new BehaviorSubject<string>("");
+
+
+
+    public obsHour = new Subject<string>();
+    public obsDate = new Subject<string>();
 
     ngOnInit(): void {
         M.AutoInit();
@@ -65,12 +72,32 @@ export class ManageEventComponent implements OnInit {
             fecha: ['', Validators.required],
             descripcion: ['', Validators.required],
             tipo_evento: ['', Validators.required],
-            icono: ['', Validators.required],
+            icono: [''],
         });
+
+        // set emojibox
+        // document.getElementById('emojibox');
 
         this.isChangedHour().subscribe(
             (value: string) => {
-                this.formEvent.value.hora = value;
+                if (value) {
+
+                    if (this.dataEntry.hour) {
+                        let dateSelected: string = this.convertTo24Hour(value);
+
+                        if (dateSelected.slice(0, 3).slice(2) != ":") dateSelected = dateSelected.slice(1);
+
+                        let dateNow: Date = new Date();
+
+                        parseInt(dateSelected.slice(0, 2)) <= dateNow.getHours() && parseInt(dateSelected.slice(3)) <= dateNow.getMinutes()
+                            ?
+                            console.log("HORA ES MENOR!")
+                            :
+                            console.log("HORA ES MAYOR");
+                    }
+
+                    this.formEvent.value.hora = value;
+                }
             }
         );
 
@@ -82,6 +109,9 @@ export class ManageEventComponent implements OnInit {
 
         this.createCalendarService.listenerDetectCurrentDateChange().subscribe(
             (data: DateInfo) => {
+
+                if (!data) return false;
+
                 if (data.day && data.month && data.year) {
                     let meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
@@ -98,18 +128,19 @@ export class ManageEventComponent implements OnInit {
             (action: string) => {
                 this.actionEvent = action;
                 if (this.actionEvent == 'edit') {
-                    this.dataEntry.date = `${this.controlEventsService.controlEventData.year}-${this.controlEventsService.controlEventData.month <= 9 ? '0' + this.controlEventsService.controlEventData.month : this.controlEventsService.controlEventData.month}-${this.controlEventsService.controlEventData.day <= 9 ? '0' + this.controlEventsService.controlEventData.day : this.controlEventsService.controlEventData.day}`
+                    this.dataEntry.id = this.controlEventsService.controlEventData.id;
+
+                    this.dataEntry.date = `${this.controlEventsService.controlEventData.year}-${this.controlEventsService.controlEventData.month}-${this.controlEventsService.controlEventData.day}`
 
                     this.dataEntry.description = this.controlEventsService.controlEventData.description;
 
-                    this.dataEntry.hour = this.controlEventsService.controlEventData.hour;
+                    this.dataEntry.hour = this.convertTo12Hour(this.controlEventsService.controlEventData.hour);
 
                     this.dataEntry.icon = this.controlEventsService.controlEventData.icon;
 
                     this.dataEntry.title = this.controlEventsService.controlEventData.title;
 
                     this.dataEntry.type_ev = this.controlEventsService.controlEventData.type_ev;
-                    console.log(this.dataEntry.type_ev);
 
                 }
             }
@@ -117,9 +148,8 @@ export class ManageEventComponent implements OnInit {
     }
 
     ngOnDestroy(): void {
-        this.controlEventsService.actionEvent = null;
         this.controlEventsService.resetControlEventData()
-        this.controlEventsService.actionChangedNow();
+        this.controlEventsService.actionChangedNow(null);
     }
 
     manageEvent() {
@@ -127,17 +157,19 @@ export class ManageEventComponent implements OnInit {
             this.editEvent();
             return true;
         }
+
+        let hour = this.convertTo24Hour(this.formEvent.value.hora.replace(" ", ""));
         const data = {
             title: this.formEvent.value.titulo,
-            hour: this.formEvent.value.hora,
+            hour: hour == '0:00' ? '00:00' : hour,
             date: this.formEvent.value.fecha,
             description: this.formEvent.value.descripcion,
             type_ev: this.formEvent.value.tipo_evento,
-            icon: this.formEvent.value.icono,
+            icon: this.formEvent.value.icono
         }
         console.log(data);
 
-        if (data.date && data.description && data.hour && data.icon && data.title && data.type_ev) {
+        if (data.date && data.description && data.hour && data.title && data.type_ev) {
             this.loading = true;
             this._client.postRequest(`${this._server}/user/manage/events`, data, this.token).subscribe(
                 (res: ManageEventRequest) => {
@@ -161,8 +193,8 @@ export class ManageEventComponent implements OnInit {
                         })
                         Notify.then((e) => {
                             console.log("EVENT ADD SUCCESS");
-                            this.createCalendarService.createNewEventChanged();
-                            this.Router.navigate(['/']);
+                            this.createCalendarService.EventsAPIUpdated();
+                            this.Router.navigate(['/home']);
                         });
                     } else {
                         let Notify = new Promise((resolve) => {
@@ -209,68 +241,98 @@ export class ManageEventComponent implements OnInit {
         }
     }
 
-    editEvent() {
+    editEvent(): void {
+        let hour = this.convertTo24Hour(this.formEvent.value.hora.replace(" ", ""));
         const data = {
             title: this.formEvent.value.titulo,
-            hour: this.convertTo24Hour(this.formEvent.value.hora.replace(" ", "")),
+            hour: hour == '0:00' ? '00:00' : hour,
             date: this.formEvent.value.fecha,
             description: this.formEvent.value.descripcion,
             type_ev: this.formEvent.value.tipo_evento,
             icon: this.formEvent.value.icono,
+            id_event: this.dataEntry.id
         }
         console.log(data);
 
-        if (data.date && data.description && data.hour && data.icon && data.title && data.type_ev) {
-            this.loading = true;
-            this._client.putRequest(`${this._server}/user/manage/events`, data, this.token).subscribe(
-                (res: ManageEventRequest) => {
-                    console.log(res);
-                    this.loading = false;
+        if (data.date && data.description && data.hour && data.title && data.type_ev) {
+            Swal.fire({
+                title: '¿Confirmar cambios?',
+                showDenyButton: true,
+                showCancelButton: false,
+                confirmButtonText: `Sí, continuar`,
+                denyButtonText: `Cancelar`,
+            }).then((result) => {
 
-                    if (!res.auth_token) this._auth.logout();
+                if (result.isConfirmed) {
+                    this.loading = true;
+                    this._client.putRequest(`${this._server}/user/manage/events`, data, this.token).subscribe(
+                        (res: ManageEventRequest) => {
+                            console.log(res);
+                            this.loading = false;
 
-                    if (res.saved) {
-                        let Notify = new Promise((resolve) => {
-                            notie.alert({
-                                type: 'success',
-                                text: "Evento editado",
-                                stay: false,
-                                time: 1,
-                                position: "top"
-                            });
-                            setTimeout(function () {
-                                resolve(true);
-                            }, 1000);
-                        })
-                        Notify.then((e) => {
-                            console.log("EVENT EDIT SUCCESS");
-                            this.createCalendarService.createNewEventChanged();
-                            this.Router.navigate(['/home']);
+                            if (!res.auth_token) this._auth.logout();
+
+                            if (res.saved) {
+                                let Notify = new Promise((resolve) => {
+                                    notie.alert({
+                                        type: 'success',
+                                        text: "Evento editado",
+                                        stay: false,
+                                        time: 1,
+                                        position: "top"
+                                    });
+                                    setTimeout(function () {
+                                        resolve(true);
+                                    }, 1000);
+                                })
+                                Notify.then((e) => {
+                                    console.log("EVENT EDIT SUCCESS");
+                                    // this.createCalendarService.createNewEventChanged();
+                                    this.Router.navigate(['/home']);
+                                });
+                            } else {
+                                let Notify = new Promise((resolve) => {
+                                    notie.alert({
+                                        type: 'error',
+                                        text: "Evento no editado",
+                                        stay: false,
+                                        time: 1,
+                                        position: "top"
+                                    });
+                                    setTimeout(function () {
+                                        resolve(true);
+                                    }, 1000);
+                                })
+                                Notify.then((e) => {
+                                    console.log("EVENT EDIT ERROR");
+                                });
+                            }
+
+                        },
+                        (err: any) => {
+                            console.log(err);
+                            this.loading = false;
+                        }
+                    )
+                } else {
+                    let Notify = new Promise((resolve) => {
+                        notie.alert({
+                            type: 'info',
+                            text: "Edición de evento cancelada",
+                            stay: false,
+                            time: 1,
+                            position: "top"
                         });
-                    } else {
-                        let Notify = new Promise((resolve) => {
-                            notie.alert({
-                                type: 'error',
-                                text: "Evento no editado",
-                                stay: false,
-                                time: 1,
-                                position: "top"
-                            });
-                            setTimeout(function () {
-                                resolve(true);
-                            }, 1000);
-                        })
-                        Notify.then((e) => {
-                            console.log("EVENT EDIT ERROR");
-                        });
-                    }
-
-                },
-                (err: any) => {
-                    console.log(err);
-                    this.loading = false;
+                        setTimeout(function () {
+                            resolve(true);
+                        }, 1000);
+                    })
+                    Notify.then((e) => {
+                        console.log("EVENT EDIT CANCEL");
+                    });
                 }
-            )
+            })
+
         } else {
             console.log(this.formEvent.status);
             console.log(data);
@@ -292,7 +354,7 @@ export class ManageEventComponent implements OnInit {
         }
     }
 
-    convertTo24Hour(time_ch) {
+    convertTo24Hour(time_ch): string {
         console.log(time_ch);
         let time = time_ch
 
@@ -308,7 +370,7 @@ export class ManageEventComponent implements OnInit {
         return time.replace(/(AM|PM)/, '');
     }
 
-    convertTo12Hour(time) {
+    convertTo12Hour(time): string {
         // Check correct time format and split into components
         time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
 
@@ -320,25 +382,24 @@ export class ManageEventComponent implements OnInit {
         return time.join(''); // return adjusted time or original string
     }
 
-    setHour(h) {
+    setHour(h): void {
         this.dataEntry.hour = h;
         this.changeHour(h)
     }
 
-    fixErrorFormEvent() {
+    fixErrorFormEvent(): void {
         this.formEvent.value.hora = this.dataEntry.hour;
         // this.formEvent.value.fecha = this.dataEntry.date;
     }
 
-    setDate(f) {
+    setDate(f): void {
         this.dataEntry.date = f;
-        this.changeDate(f)
+        this.changeDate(f);
     }
 
     alert() {
         alert("alert")
     }
-
 
     isChangedHour(): Observable<string> {
         return this.obsHour.asObservable();
@@ -347,8 +408,6 @@ export class ManageEventComponent implements OnInit {
     changeHour(value: string): void {
         this.obsHour.next(value);
     }
-
-    public obsDate = new BehaviorSubject<string>("");
 
     isChangedDate(): Observable<string> {
         return this.obsDate.asObservable();
