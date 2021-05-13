@@ -10,3 +10,8 @@ export interface EventsRequest {
     icon: string,
     check: boolean
 }
+
+export interface EventsDeleteResponse {
+    auth_token: boolean,
+    deleted: boolean
+}

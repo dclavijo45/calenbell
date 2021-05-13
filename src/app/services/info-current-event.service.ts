@@ -13,7 +13,6 @@ export class InfoCurrentEventService {
     public data: string = null;
     public description: string = null;
     public typeEvent: string = null;
-
     public lazyLoadCharge: number = 20;
 
     // Detect lazy load change

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { SocialAuthService } from "angularx-social-login";
 import { FacebookLoginProvider, GoogleLoginProvider } from
     "angularx-social-login";
@@ -32,6 +32,8 @@ export class GoogleClientService {
         this.authService.signOut();
     }
 
+    public _listener = new Subject<GoogleClient>();
+
     init(): void {
         this.authService.authState.subscribe((user) => {
             this.user = user;
@@ -40,8 +42,6 @@ export class GoogleClientService {
             this._listener.next(this.GoogleInfo);
         });
     }
-
-    _listener = new BehaviorSubject<GoogleClient>(this.GoogleInfo);
 
     listenInfo(): Observable<GoogleClient> {
         this.init();

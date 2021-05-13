@@ -2,14 +2,14 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatTableModule } from '@angular/material/table';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { NavComponent } from './components/nav/nav.component';
 import { FooterComponent } from './components/footer/footer.component';
-import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './components/home/home.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatTableModule } from '@angular/material/table';
 import { ManageEventComponent } from './components/events/manage-event/manage-event.component';
 import { AsideInfoComponent } from './components/aside-info/aside-info.component';
 
@@ -24,6 +24,9 @@ import { GetSizeScrollDirective } from './directives/get-size-scroll.directive';
 import { ChatComponent } from './components/chat/chat.component';
 import { UserConfigComponent } from './components/user-config/user-config.component';
 import { RootHomeComponent } from './components/root-home/root-home.component';
+import { DocumentationComponent } from './components/documentation/documentation.component';
+import { WhyUsComponent } from './components/why-us/why-us.component';
+import { ContactUsComponent } from './components/contact-us/contact-us.component';
 
 @NgModule({
     declarations: [
@@ -39,6 +42,9 @@ import { RootHomeComponent } from './components/root-home/root-home.component';
         ChatComponent,
         UserConfigComponent,
         RootHomeComponent,
+        DocumentationComponent,
+        WhyUsComponent,
+        ContactUsComponent,
     ],
     imports: [
         BrowserModule,

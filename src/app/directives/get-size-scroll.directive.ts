@@ -17,6 +17,7 @@ export class GetSizeScrollDirective {
     // not event = 53
     // size scroll =+ 301
     getScrollTop() {
+        const TIME_OUT = 2000;
         const HeigthScroll: number = this.elementRef.nativeElement.scrollHeight;
         const currentSizeScroll: number = this.elementRef.nativeElement.scrollTop + 301;
         const lazyLoadCharge: number = this.infoCurrentEventService.lazyLoadCharge;
@@ -59,7 +60,7 @@ export class GetSizeScrollDirective {
 
                     this.infoCurrentEventService.lazyLoadCharge = this.infoCurrentEventService.lazyLoadCharge + 20;
                     this.infoCurrentEventService.lazyLoadChanged();
-                }, 600);
+                }, TIME_OUT);
 
                 break;
             } else if (currentSizeScroll === HeigthScroll && lazyLoadCharge != 20 && (lazyLoadCharge + 20 <= (elementsTotalEQ60 + 1) * 20)) {
@@ -73,7 +74,7 @@ export class GetSizeScrollDirective {
 
                     this.infoCurrentEventService.lazyLoadCharge = this.infoCurrentEventService.lazyLoadCharge + 20;
                     this.infoCurrentEventService.lazyLoadChanged();
-                }, 600);
+                }, TIME_OUT);
 
                 break;
             }

@@ -1,5 +1,5 @@
 export interface DateEvents {
-    day: number[],
+    day: string[],
     month: number[],
     year: number[],
     type: number[],

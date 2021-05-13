@@ -1,15 +1,79 @@
-<nav class="blue darken-4">
+<!--Nav when is logged-->
+<nav class="blue darken-4" *ngIf="(_auth.isLoggedIn() | async) && !(_rootPageStatus
+.listenRootPageStatus() | async)">
     <div class="nav-wrapper">
-        <div class="brand-logo mx-2"><i class="material-icons">cloud</i>Calenbell</div>
-        <!-- <ul class="right hide-on-med-and-down">
-            <li><a href="#"><i class="material-icons">search</i></a></li>
-            <li><a href="#"><i class="material-icons">view_module</i></a></li>
-            <li><a href="#"><i class="material-icons">refresh</i></a></li>
-            <li><a href="#"><i class="material-icons">more_vert</i></a></li>
-        </ul> -->
-        <ul class="right hide-on-med-and-down mx-2 cursor-pointer">
-            <li (click)="logout()"><i class="material-icons">exit_to_app</i>
+
+        <ul class="">
+            <li [routerLink]="['/']">
+                <a class="padding-fixed space-nav-fixed-hover"><i class="material-icons">calendar_today</i>
+                </a>
+            </li>
+            <li [routerLink]="['/']">
+                <a class="font-size-title padding-fixed-2">Calenbell</a>
+            </li>
+
+            <li [routerLink]="['/documentation']" [ngClass]="{'active': tagActive == 1}">
+                <a class="font-tags-link">Documentación</a>
+            </li>
+
+            <li (mousedown)="false">
+                <a class="space-nav-fixed-2 space-nav-fixed-hover">&nbsp;</a>
+            </li>
+
+            <li [routerLink]="['/home']" [ngClass]="{'active': tagActive == 5}">
+                <a class="font-tags-link">Inicio</a>
+            </li>
+
+            <li [routerLink]="['/chat']" [ngClass]="{'active': tagActive == 6}">
+                <a class="font-tags-link">Chat</a>
+            </li>
+
+            <li [routerLink]="['/settings']" [ngClass]="{'active': tagActive == 7}">
+                <a class="font-tags-link">Configuración</a>
+            </li>
+
+            <li (click)="logout()">
+                <a class="font-tags-link">Cerrar sesión</a>
             </li>
         </ul>
+
+    </div>
+</nav>
+
+<!--Nav when is not logged-->
+<nav class="blue darken-4" *ngIf="!(_auth.isLoggedIn() | async) || (_rootPageStatus
+.listenRootPageStatus() | async)">
+    <div class="nav-wrapper">
+
+        <ul class="">
+            <li [routerLink]="['/']">
+                <a class="padding-fixed space-nav-fixed-hover"><i class="material-icons">calendar_today</i>
+                </a>
+            </li>
+            <li [routerLink]="['/']">
+                <a class="font-size-title padding-fixed-2">Calenbell</a>
+            </li>
+
+            <li [routerLink]="['/documentation']" [ngClass]="{'active': tagActive == 1}">
+                <a class="font-tags-link">Documentación</a>
+            </li>
+
+            <li [routerLink]="['/why']" [ngClass]="{'active': tagActive == 2}">
+                <a class="font-tags-link">¿Porqué elegirnos?</a>
+            </li>
+
+            <li (mousedown)="false">
+                <a class="space-nav-fixed space-nav-fixed-hover">&nbsp;</a>
+            </li>
+
+            <li [routerLink]="['/login']" [ngClass]="{'active': tagActive == 3}">
+                <a class="font-tags-link">Inicia sesión o regístrate</a>
+            </li>
+
+            <li [routerLink]="['/contact']" [ngClass]="{'active': tagActive == 4}">
+                <a class="font-tags-link">Contáctanos</a>
+            </li>
+        </ul>
+
     </div>
 </nav>

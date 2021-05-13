@@ -1,15 +1,20 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { EventsRequest } from '../interfaces/events-request';
+import { ClientService } from './client.service';
+import { CreateCalendarService } from './create-calendar.service';
+import { TokenAuthStateService } from './token-auth-state.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ControlEventsService {
 
-    constructor() { }
+    constructor(private createCalendarService: CreateCalendarService,
+        private _client: ClientService,
+        private _auth: TokenAuthStateService) { }
 
-    public actionEvent: string = null;
+
 
     public controlEventData: EventsRequest = {
         id: null,
@@ -41,13 +46,14 @@ export class ControlEventsService {
 
     // Detect action event change
 
-    detectActionEventChange = new BehaviorSubject<string>(this.actionEvent);
+    public detectActionEventChange = new BehaviorSubject<string>(null);
 
     listenerActionEventChange(): Observable<string> {
         return this.detectActionEventChange.asObservable();
     }
 
-    actionChangedNow(): void {
-        this.detectActionEventChange.next(this.actionEvent);
+    actionChangedNow(action: string): void {
+        this.detectActionEventChange.next(action);
     }
+
 }

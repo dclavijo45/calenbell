@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TokenAuthStateService } from 'src/app/services/token-auth-state.service';
 import notie from 'notie';
+// import * as M from 'src/app/services/materialize.js';
+import { RootPageStatusService } from 'src/app/services/root-page-status.service';
 
 @Component({
     selector: 'app-nav',
@@ -9,16 +11,26 @@ import notie from 'notie';
 })
 export class NavComponent implements OnInit {
 
-    constructor(private _auth: TokenAuthStateService) { }
+    constructor(public _auth: TokenAuthStateService,
+        public _rootPageStatus: RootPageStatusService) { }
 
     private loggedState: boolean = false;
+
+    public tagActive: number = null;
 
     ngOnInit(): void {
         this._auth.isLoggedIn().subscribe(
             (login: boolean) => {
                 this.loggedState = login;
             }
-        )
+        );
+
+        this._rootPageStatus.listenRootPageNumberStatus().subscribe(
+            (status: number) => {
+                this.tagActive = status;
+            }
+        );
+
     }
 
     logout(): void {

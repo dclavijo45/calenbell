@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DateEvents } from '../interfaces/date-events';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { DateInfo } from '../interfaces/date-info';
 import { EventsRequest } from '../interfaces/events-request';
 
@@ -37,7 +37,7 @@ export class CreateCalendarService {
     }
 
     // Detect date events change
-    obs = new BehaviorSubject<DateEvents>(this.dateEvents);
+    obs = new Subject<DateEvents>();
 
     isChanged(): Observable<DateEvents> {
         return this.obs.asObservable();
@@ -48,7 +48,7 @@ export class CreateCalendarService {
     }
 
     // Detect date change
-    detectCurrentDateChange = new BehaviorSubject<DateInfo>(this.currentDateSelected);
+    detectCurrentDateChange = new BehaviorSubject<DateInfo>(null);
 
     listenerDetectCurrentDateChange(): Observable<DateInfo> {
         return this.detectCurrentDateChange.asObservable();
@@ -59,7 +59,7 @@ export class CreateCalendarService {
     }
 
     // Detect loading change
-    detectLoadingChange = new BehaviorSubject<boolean>(this.loadingHome);
+    detectLoadingChange = new Subject<boolean>();
 
     listenerDetectLoadingChange(): Observable<boolean> {
         return this.detectLoadingChange.asObservable();
@@ -71,7 +71,7 @@ export class CreateCalendarService {
 
     // Detect events Request change
 
-    detectEventsRequestChange = new BehaviorSubject<EventsRequest[]>(this.eventsRequest);
+    detectEventsRequestChange = new Subject<EventsRequest[]>();
 
     listenerEventsRequestChange(): Observable<EventsRequest[]> {
         return this.detectEventsRequestChange.asObservable();
@@ -81,17 +81,17 @@ export class CreateCalendarService {
         this.detectEventsRequestChange.next(this.eventsRequest);
     }
 
-    // Detect create a new event
+    // Update events from API
 
-    detectCreateNewEvent = new BehaviorSubject<boolean>(false);
+    updateEventsAPI = new Subject<boolean>();
 
-    listenerdetectCreateNewEvent(): Observable<boolean> {
-        return this.detectCreateNewEvent.asObservable();
+    listenerUpdateEventsAPI(): Observable<boolean> {
+        return this.updateEventsAPI.asObservable();
     }
 
-    createNewEventChanged(): void {
+    EventsAPIUpdated(): void {
         this.loadingHome = true;
         this.LoadingChanged();
-        this.detectCreateNewEvent.next(true);
+        this.updateEventsAPI.next(true);
     }
 }
