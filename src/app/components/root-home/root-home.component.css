@@ -1,0 +1,39 @@
+.cap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    min-height: 480px;
+    height: 80vh;
+    max-height: 560px;
+    box-sizing: border-box;
+    padding: 48px 48px 32px;
+    overflow: hidden;
+    transform: skewY(9deg);
+    transform-origin: 100%;
+    background-color: #448aff;
+}
+
+.z-index---1 {
+    z-index: -1;
+}
+
+.padding-fixed-1 {
+    padding-top: 13%;
+    padding-bottom: 5%;
+}
+
+.padding-fixed-2 {
+    padding-bottom: 3.1%;
+}
+
+.padding-fixed-3 {
+    padding-top: 3.1%;
+}
+
+.font-size-1{
+    font-size: 2.3rem;
+    font-weight: 500;
+}
