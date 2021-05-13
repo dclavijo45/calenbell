@@ -1,5 +1,3 @@
-<app-nav></app-nav>
-
 <div class="section overflow-hidden">
     <div class="row">
         <div class="col l3">
@@ -15,23 +13,23 @@
                                 <i class="material-icons prefix">search</i>
                                 <input type="text" class="" [(ngModel)]="inputSearchValue"
                                     (ngModelChange)="searchEvents(inputSearchValue)" maxlength="250">
-                                <label for="icon_prefix">Search</label>
+                                <label for="icon_prefix">Buscar eventos</label>
 
                                 <a routerLink="/controlevento"
                                     class="btn-floating btn-small waves-effect waves-light left mt-2 cyan darken-4 mr-4"><i
                                         class="material-icons">add</i></a>
                                 <button class="waves-effect waves-light btn left mt-2 cyan lighten-1 mr-4"
-                                    [disabled]="eventsSelected.length != 1" (click)="editEvent()"><i
+                                    [disabled]="eventsSelected.length != 1 || loading" (click)="editEvent()"><i
                                         class="material-icons left">assignment</i>Editar</button>
                                 <button class="waves-effect waves-light btn left mt-2 red"
-                                    [disabled]="eventsSelected.length <= 0" (click)="alert()"><i
+                                    [disabled]="eventsSelected.length <= 0  || loading" (click)="deleteEvents()"><i
                                         class="material-icons left ">cancel</i>Borrar</button>
                             </div>
                         </div>
                     </div>
                     <div class="max-h-301px overflow-auto scroll-1 box-shadow-1" GetSizeScroll>
                         <table class="white border-radius-5px position-relative">
-                            <ng-container *ngIf="eventsRequest.length >= 1 && !loading && !notFoundDataFiltered">
+                            <ng-container *ngIf="eventsRequest.length >= 1 && !loading">
                                 <thead>
                                     <tr>
                                         <th class="pl-2 red-text darken-1 text-center p-cus-1"><span
@@ -44,16 +42,17 @@
                                                         (click)="checkBoxSelectAllClick()"
                                                         [(ngModel)]="checkBoxSelectAll "><span></span></label></span>
                                         </th>
-                                        <th>titulo</th>
-                                        <th>hora</th>
+                                        <th>Título</th>
+                                        <th>Hora</th>
                                         <th>Fecha</th>
-                                        <th>Descripcion</th>
-                                        <th class="text-center">ícono</th>
+                                        <th>Descripción</th>
+                                        <th class="text-center">Ícono</th>
                                     </tr>
                                 </thead>
                             </ng-container>
 
-                            <ng-container *ngIf="eventsRequest.length == 0 && !loading && !notFoundDataFiltered">
+                            <!--Not found events request-->
+                            <ng-container *ngIf="eventsRequest.length == 0 && !loading && eventsBackup.length == 0">
                                 <thead>
                                     <tr>
                                         <th class="text-center">No hay eventos que mostrar</th>
@@ -62,7 +61,8 @@
                             </ng-container>
 
                             <!--Not found events filtered header-->
-                            <ng-container *ngIf="eventsFiltered.length == 0 && notFoundDataFiltered">
+                            <ng-container
+                                *ngIf="inputSearchValue.length > 0 && !loading && eventsBackup.length > 0 && eventsRequest.length == 0">
                                 <thead class="break-word">
                                     <tr>
                                         <th class="text-center">No se encontraron resultados para
@@ -73,62 +73,39 @@
                             </ng-container>
 
                             <tbody>
-                                <ng-container
-                                    *ngIf="eventsRequest.length >= 1 && eventsFiltered.length == 0 && !notFoundDataFiltered">
 
-                                    <ng-container
-                                        *ngFor="let item of eventsRequest.slice().reverse() | slice:0:lazyLoadCharge">
+                                <ng-container *ngIf="eventsRequest.length > 0 && !loading">
+
+                                    <ng-container *ngFor="let item of eventsRequest | slice:0:lazyLoadCharge">
                                         <tr class="nth-child-cus-1 hover-cus-1 cursor-pointer">
                                             <td class="center"><label>
                                                     <input type="checkbox" (click)="checkBoxClick(item.id)"
                                                         [(ngModel)]="item.check">
                                                     <span> </span>
                                                 </label></td>
+
                                             <td *ngIf="item.title.length > 15" [title]="item.title">
                                                 {{item.title.slice(0,
                                                 15)+"..."}}</td>
                                             <td *ngIf="item.title.length <= 15" [title]="item.title">
                                                 {{item.title}}</td>
+
                                             <td>{{item.hour}}</td>
-                                            <td>{{item.day <= 9 ? "0" +item.day.toString() : item.day}}/{{item.month <=9
-                                                    ? "0" +item.month : item.month}}/{{item.year}}</td>
+
+                                            <td>{{item.day}}/{{item.month}}/{{item.year}}</td>
+
                                             <td *ngIf="item.description.length >= 22" [title]="item.description">
                                                 {{item.description.slice(0,
                                                 22)+"..."}}</td>
                                             <td *ngIf="item.description.length <= 21" [title]="item.description">
                                                 {{item.description}}</td>
-                                            <td class="text-center">{{item.icon}}</td>
+
+                                            <td class="text-center">{{item.icon.length > 0
+                                                ? item.icon : 'Sin ícono'}}
+                                            </td>
                                         </tr>
                                     </ng-container>
 
-                                </ng-container>
-
-                                <!--Events filtered-->
-                                <ng-container *ngIf="eventsFiltered.length >= 1 && !notFoundDataFiltered">
-                                    <ng-container
-                                        *ngFor="let item of eventsFiltered.slice().reverse() | slice:0:lazyLoadCharge">
-                                        <tr class="nth-child-cus-1 hover-cus-1 cursor-pointer">
-                                            <td class="center"><label>
-                                                    <input type="checkbox" (click)="checkBoxClick(item.id)"
-                                                        [(ngModel)]="item.check">
-                                                    <span> </span>
-                                                </label></td>
-                                            <td *ngIf="item.title.length > 15" [title]="item.title">
-                                                {{item.title.slice(0,
-                                                15)+"..."}}</td>
-                                            <td *ngIf="item.title.length <= 15" [title]="item.title">
-                                                {{item.title}}</td>
-                                            <td>{{item.hour}}</td>
-                                            <td>{{item.day <= 9 ? "0" +item.day.toString() : item.day}}/{{item.month <=9
-                                                    ? "0" +item.month : item.month}}/{{item.year}}</td>
-                                            <td *ngIf="item.description.length >= 22" [title]="item.description">
-                                                {{item.description.slice(0,
-                                                22)+"..."}}</td>
-                                            <td *ngIf="item.description.length <= 21" [title]="item.description">
-                                                {{item.description}}</td>
-                                            <td class="text-center">{{item.icon}}</td>
-                                        </tr>
-                                    </ng-container>
                                 </ng-container>
 
                             </tbody>
@@ -137,7 +114,8 @@
                             <div class="indeterminate"></div>
                         </div>
                     </div>
-                    <div class="progress" *ngIf="eventsRequest.length >= 1&& loading">
+
+                    <div class="progress" *ngIf="eventsRequest.length > 0 && loading">
                         <div class="indeterminate"></div>
                     </div>
                 </div>
@@ -149,5 +127,3 @@
         </div>
     </div>
 </div>
-
-<app-footer></app-footer>
