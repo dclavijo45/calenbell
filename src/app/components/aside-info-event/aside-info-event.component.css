@@ -1,3 +1,4 @@
-.max-h-460px{
+.max-min-h-460px{
     max-height: 460px;
+    min-height: 460px;
 }
