@@ -1,6 +1,4 @@
-<app-nav></app-nav>
-
-<div class="section overflow-hidden mt-3-mobile">
+<div class="section overflow-hidden mt-3-mobile" [ngStyle]="{'opacity': opacityView}">
     <div class="row">
         <div class="col s12 center">
             <div [ngClass]="{'log-in': login, 'active': loading}" class="container-cus-1 mx-auto mt-6">
@@ -69,18 +67,23 @@
                                         *ngIf="!recoveryPwd && !recoveryPwdCode && !recoveryPwdSetPwd">
                                         <h5 class="center-align" [ngClass]="{'d-none': loading}" (mousedown)="false">
                                             Iniciar sesión</h5>
-                                        <input formControlName="user" (keydown.enter)="loginUser()"
-                                            placeholder="Usuario" type="text" autofocus>
-                                        <input formControlName="password" placeholder="Contraseña"
-                                            (keydown.enter)="loginUser()" type="password">
+
+                                        <input #user type="text" formControlName="user" (keydown.enter)="loginUser()"
+                                            placeholder="Usuario" maxlength="40" autofocus>
+
+                                        <input type="password" formControlName="password" placeholder="Contraseña"
+                                            (keydown.enter)="loginUser()" maxlength="255">
+
                                         <p class="grey-text text-darken-4 hover-cus-1" [ngClass]="{'d-none': loading}"
                                             (mousedown)="false" (click)="recoveryPwd = !recoveryPwd">
                                             Olvidaste tu
                                             contraseña?</p>
-                                        <div [ngClass]="{'d-none': loading}" (click)="GoogleAttemp=false;loginUser()"
-                                            class="btn waves-effect waves-light pink accent-1 mt-2" (mousedown)="false">
+
+                                        <button [ngClass]="{'d-none': loading}" (click)="GoogleAttemp=false;loginUser()"
+                                            class="btn waves-effect waves-light pink accent-1 mt-2" (mousedown)="false"
+                                            [disabled]="!formLogin.valid">
                                             Iniciar sesión
-                                        </div>
+                                        </button>
 
                                         <div class="btn waves-effect waves-light pink accent-1 mt-2 ml-2 mobile"
                                             [ngClass]="{'d-none': loading}" (click)="login=!login" (mousedown)="false">
@@ -92,46 +95,62 @@
                                     <span [formGroup]="formRecoveryPwd" *ngIf="recoveryPwd && !loading">
                                         <h5 class="center-align" [ngClass]="{'d-none': loading}" (mousedown)="false">
                                             Recupera tu cuenta</h5>
+
                                         <input type="text" formControlName="account" (keydown.enter)="recoveryAccount()"
-                                            placeholder="Ingrese número o correo" class="text-center">
+                                            placeholder="Ingrese número o correo" class="text-center" maxlength="255">
+
                                         <p class="red-text" *ngIf="recoveryAttemptCode == 1">Código no validado!</p>
+
                                         <button class="btn waves-effect waves-light pink accent-1"
                                             (click)="cancelRecoveryPwd()">Volver</button>
+
                                         <button class="btn waves-effect waves-light blue accent-3 ml-3"
-                                            (click)="recoveryAccount()">Recuperar</button>
+                                            (click)="recoveryAccount()"
+                                            [disabled]="!formRecoveryPwd.valid">Recuperar</button>
                                     </span>
 
                                     <span [formGroup]="formRecoveryPwdCode" *ngIf="recoveryPwdCode && !loading">
                                         <h5 class="center-align" [ngClass]="{'d-none': loading}" (mousedown)="false">
                                             Recupera tu cuenta</h5>
-                                        <input type="text" formControlName="code"
+
+                                        <input type="number" formControlName="code"
                                             (keydown.enter)="validateRecoveryAccCode()"
                                             placeholder="Ingrese el código enviado" class="text-center" maxlength="6">
+
                                         <p *ngIf="timeClock.active">Expirará en
                                             {{timeClock.minute}}:{{timeClock.second <=9 ? "0" +timeClock.second :
                                                 timeClock.second}}</p>
+
                                                 <button class="btn waves-effect waves-light pink accent-1"
                                                     (click)="cancelRecoveryPwd()">Volver</button>
+
                                                 <button class="btn waves-effect waves-light blue accent-3 ml-3"
-                                                    (click)="validateRecoveryAccCode()">Validar</button>
+                                                    (click)="validateRecoveryAccCode()"
+                                                    [disabled]="!formRecoveryPwdCode.valid">Validar</button>
                                     </span>
 
                                     <span [formGroup]="formRecoverySetPwd" *ngIf="recoveryPwdSetPwd && !loading">
                                         <h5 class="center-align" [ngClass]="{'d-none': loading}" (mousedown)="false">
                                             Recupera tu cuenta</h5>
-                                        <input type="text" formControlName="password" maxlength="30"
+
+                                        <input type="password" formControlName="password"
                                             placeholder="Crea una nueva contraseña" class="text-center"
-                                            (keydown.enter)="validateChangePwd()">
-                                        <input type="text" formControlName="check_password" maxlength="30"
+                                            (keydown.enter)="validateChangePwd()" maxlength="255">
+
+                                        <input type="password" formControlName="check_password"
                                             placeholder="Confirmar contraseña" class="text-center"
-                                            (keydown.enter)="validateChangePwd()">
+                                            (keydown.enter)="validateChangePwd()" maxlength="255">
+
                                         <p *ngIf="timeClock.active">Recuperación expirará en
                                             {{timeClock.minute}}:{{timeClock.second <=9 ? "0" +timeClock.second :
                                                 timeClock.second}}</p>
+
                                                 <button class="btn waves-effect waves-light pink accent-1"
                                                     (click)="cancelRecoveryPwd()">Cancelar</button>
+
                                                 <button class="btn waves-effect waves-light blue accent-3 ml-3"
-                                                    (click)="validateChangePwd()">Cambiar contraseña</button>
+                                                    (click)="validateChangePwd()"
+                                                    [disabled]="!formRecoverySetPwd.valid">Cambiar contraseña</button>
                                     </span>
                                 </div>
                             </div>
@@ -150,23 +169,29 @@
                                     </div>
                                     <h5 class="center-align" [ngClass]="{'d-none': loading}" (mousedown)="false">Crea tu
                                         cuenta</h5>
-                                    <input formControlName="name" (keydown.enter)="registerUser()" placeholder="Nombres"
-                                        type="text">
-                                    <input formControlName="email" (keydown.enter)="registerUser()" placeholder="Correo"
-                                        type="email">
-                                    <input formControlName="user" (keydown.enter)="GoogleAttempt=false;registerUser()"
-                                        placeholder="Usuario" type="text">
-                                    <input formControlName="password" (keydown.enter)="registerUser()"
-                                        placeholder="Contraseña" type="password">
+                                    <input type="text" formControlName="name" (keydown.enter)="registerUser()"
+                                        placeholder="Nombres" maxlength="30">
+
+                                    <input type="email" formControlName="email" (keydown.enter)="registerUser()"
+                                        placeholder="Correo" maxlength="255">
+
+                                    <input type="text" formControlName="user"
+                                        (keydown.enter)="GoogleAttempt=false;registerUser()" placeholder="Usuario"
+                                        maxlength="40">
+
+                                    <input type="password" formControlName="password" (keydown.enter)="registerUser()"
+                                        placeholder="Contraseña" maxlength="255">
 
                                     <div class="btn waves-effect waves-light pink accent-1 mt-2 mobile"
                                         [ngClass]="{'d-none': loading}" (click)="login=!login" (mousedown)="false">
                                         Volver
                                     </div>
-                                    <div class="btn waves-effect waves-light pink accent-1 mt-2 ml-2"
-                                        [ngClass]="{'d-none': loading}" (click)="registerUser()" (mousedown)="false">
+
+                                    <button class="btn waves-effect waves-light pink accent-1 mt-2 ml-2"
+                                        [ngClass]="{'d-none': loading}" (click)="registerUser()" (mousedown)="false"
+                                        [disabled]="!formRegister.valid">
                                         Crear cuenta
-                                    </div>
+                                    </button>
 
                                 </div>
                             </div>
@@ -177,4 +202,3 @@
         </div>
     </div>
 </div>
-<app-footer></app-footer>

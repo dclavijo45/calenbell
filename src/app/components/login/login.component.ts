@@ -10,6 +10,7 @@ import { GoogleClient } from 'src/app/interfaces/google-client';
 import { RecoveredStatus, RecoveryAccount, RecoveryAttempt } from 'src/app/interfaces/recovery-account';
 import { TokenAuthStateService } from 'src/app/services/token-auth-state.service';
 import { Router } from '@angular/router';
+import { RootPageStatusService } from 'src/app/services/root-page-status.service';
 
 
 @Component({
@@ -24,7 +25,8 @@ export class LoginComponent implements OnInit {
         private _client: ClientService,
         private Google: GoogleClientService,
         private _auth: TokenAuthStateService,
-        private Router: Router) { }
+        private Router: Router,
+        private _rootStatusPage: RootPageStatusService) { }
 
     public login: boolean = false;
     private _server: string = this._client._server;
@@ -50,34 +52,60 @@ export class LoginComponent implements OnInit {
     private token_recovery: string = null;
     public GoogleAttempt: boolean = false;
 
+    // styles
+    private counterEffectStyleOpacityView: number = 0;
+    public opacityView: number = 0;
+
     ngOnInit(): void {
+        // style effect
+        let intervalOpacity: any = setInterval(() => {
+            this.opacityView += 0.1;
+
+            this.counterEffectStyleOpacityView++;
+
+            this.counterEffectStyleOpacityView == 10 ? clearInterval(intervalOpacity) : true;
+        }, 30);
+
+        // change tag as active
+        this._rootStatusPage.changeRootPageNumberStatus(3);
+
+        // init materialize instance
         M.AutoInit();
         M.updateTextFields();
+
+        // init reactive forms
         this.formLogin = this.formB.group({
-            user: ['', Validators.required],
-            password: ['', Validators.required]
+            user: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
+            password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]]
         });
+
         this.formRegister = this.formB.group({
-            name: ['', Validators.required],
-            email: ['', Validators.required],
-            user: ['', Validators.required],
-            password: ['', Validators.required]
+            name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
+            email: ['', [Validators.required, Validators.email, Validators.minLength(5), Validators.maxLength(255)]],
+            user: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
+            password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]]
         });
+
         this.formRecoveryPwd = this.formB.group({
-            account: ['', Validators.required]
+            account: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(255)]]
         });
+
         this.formRecoveryPwdCode = this.formB.group({
-            code: ['', Validators.required]
+            code: ['', [Validators.required, Validators.minLength(6)]]
         });
 
         this.formRecoverySetPwd = this.formB.group({
-            password: ['', Validators.required],
-            check_password: ['', Validators.required],
+            password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]],
+            check_password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]],
         });
 
+        // init observer Google service
         this.Google.listenInfo().subscribe(
             (info: GoogleClient) => {
-                console.log(`ACTION: ${this.action}`);
+
+                console.log(info);
+
+                if (this.action == null) return false;
 
                 if (this.action == "register") {
                     try {
@@ -85,7 +113,8 @@ export class LoginComponent implements OnInit {
                     } catch (err) {
                         this.action = null;
                         this.loading = false;
-                        console.error(err);
+                        this.GoogleAttempt = false;
+                        // console.error(err);
                         let registerNotify = new Promise((resolve) => {
                             notie.alert({
                                 type: 'error',
@@ -108,8 +137,9 @@ export class LoginComponent implements OnInit {
                         this.loginUser(info.GUserInfo.idToken);
                     } catch (err) {
                         this.action = null;
+                        this.GoogleAttempt = false;
                         this.loading = false;
-                        console.error(err);
+                        // console.error(err);
                         let registerNotify = new Promise((resolve) => {
                             notie.alert({
                                 type: 'error',
@@ -128,10 +158,12 @@ export class LoginComponent implements OnInit {
                     }
                 }
 
-                this.loading = false;
-                console.log(info);
             }
         );
+    }
+
+    ngOnDestroy(): void {
+        this._rootStatusPage.changeRootPageNumberStatus(null);
     }
 
     loginUser(id_token?: string): void {
@@ -149,9 +181,8 @@ export class LoginComponent implements OnInit {
             this._client.postRequest(`${this._server}/user/login`, data).subscribe(
                 ((response: LoginResponse) => {
                     this.loading = false;
-                    console.log(`RESPONSE: ${this.action}`);
-                    console.log(response);
 
+                    console.log(response);
 
                     if (response.logged) {
                         this.action = null;
@@ -182,6 +213,9 @@ export class LoginComponent implements OnInit {
                                 time: 3,
                                 position: "top"
                             });
+
+                            this.GoogleAttempt = false;
+
                         } else {
                             notie.alert({
                                 type: 'error',
@@ -200,7 +234,7 @@ export class LoginComponent implements OnInit {
                     this.loading = false;
                     notie.alert({
                         type: 'error',
-                        text: "<div>No hay internet</div>",
+                        text: "No hay internet",
                         stay: false,
                         time: 3,
                         position: "top"
@@ -229,15 +263,16 @@ export class LoginComponent implements OnInit {
             id_token: id_token || null
         }
 
-        if (this.formRegister.valid || this.action) {
+        if (this.formRegister.valid || this.GoogleAttempt) {
 
             this.loading = true;
 
             this._client.postRequest(`${this._server}/user/register`, data).subscribe(
                 ((response: RegisterResponse) => {
+                    this.loading = false;
+                    this.action = null;
+                    this.GoogleAttempt = false;
                     if (response.registered) {
-                        this.loading = false;
-                        this.action = null;
                         let registerNotify = new Promise((resolve) => {
                             notie.alert({
                                 type: 'info',
@@ -255,7 +290,6 @@ export class LoginComponent implements OnInit {
                             console.log("REGISTERED");
                         });
                     } else {
-                        this.loading = false;
                         let registerNotify = new Promise((resolve) => {
                             notie.alert({
                                 type: 'error',
@@ -279,6 +313,7 @@ export class LoginComponent implements OnInit {
                     console.error(error);
                     this.loading = false;
                     this.action = null;
+                    this.GoogleAttempt = false;
                     notie.alert({
                         type: 'error',
                         text: "No hay internet",
@@ -378,13 +413,14 @@ export class LoginComponent implements OnInit {
     }
 
     validateRecoveryAccCode(): void {
-        if (this.formRecoveryPwdCode.valid) {
-            let code = this.formRecoveryPwdCode.value.code;
+        if (this.formRecoveryPwdCode.value.code) {
+            let code: string = this.formRecoveryPwdCode.value.code.toString();
             if (code.length == 6) {
                 const data = {
                     token: this.token_recovery,
                     code: code
                 }
+
                 this.loading = true;
 
                 this._client.postRequest(`${this._server}/user/validate/recoverycode`, data).subscribe(
@@ -482,8 +518,6 @@ export class LoginComponent implements OnInit {
             const check_pwd = this.formRecoverySetPwd.value.check_password;
 
             if (pwd == check_pwd) {
-                console.log(pwd.length);
-
                 if (pwd.length >= 8) {
                     this.loading = true;
                     const data = {
