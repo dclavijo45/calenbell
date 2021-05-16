@@ -56,4 +56,16 @@ export class ControlEventsService {
         this.detectActionEventChange.next(action);
     }
 
+    // Update Action  (no data)
+
+    public detectUpdateSignal = new BehaviorSubject<string>(null);
+
+    listenerUpdateSignal(): Observable<string> {
+        return this.detectUpdateSignal.asObservable();
+    }
+
+    actionUpdateChanged(): void {
+        this.detectUpdateSignal.next(null);
+    }
+
 }

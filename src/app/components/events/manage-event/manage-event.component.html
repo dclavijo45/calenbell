@@ -3,6 +3,7 @@
         <div class="col l3">
             <app-aside-info></app-aside-info>
         </div>
+
         <div class="col l9">
             <div class="container">
                 <div class="row" [formGroup]="formEvent">
@@ -25,20 +26,22 @@
                                 del
                                 evento</span>
                         </div>
+
                         <div class="input-field">
                             <i class="material-icons prefix">alarm</i>
                             <input formControlName="hora" type="text" class="timepicker line-select-input-hide"
                                 #horaEvento
-                                [ngClass]="{'valid': dataEntry.hour && formEvent.touched, 'invalid': !formEvent.value.hora && formEvent.touched}"
+                                [ngClass]="{'valid': dataEntry.hour && formEvent.touched && dataEntry.dateIsValid === true && dataEntry.hourIsValid === true, 'invalid': (!dataEntry.hour || dataEntry.hourIsValid === false || dataEntry.dateIsValid === false) && formEvent.touched}"
                                 placeholder="Hora del evento" (change)="setHour(horaEvento.value)"
                                 [(ngModel)]="dataEntry.hour" (keydown)="false" (paste)="false" (mouseover)="false"
                                 (mousedown)="false">
                         </div>
+
                         <div class="input-field">
                             <i class="material-icons prefix">event</i>
                             <input formControlName="fecha" type="text" class="datepicker line-select-input-hide"
                                 placeholder="Fecha del evento" #fechaEvento
-                                [ngClass]="{'valid': dataEntry.date && formEvent.touched, 'invalid': !dataEntry.date && formEvent.touched}"
+                                [ngClass]="{'valid': dataEntry.date && formEvent.touched && dataEntry.dateIsValid === true, 'invalid': (!dataEntry.date || dataEntry.dateIsValid === false) && formEvent.touched}"
                                 (change)="setDate(fechaEvento.value)" [(ngModel)]="dataEntry.date" (keydown)="false"
                                 (paste)="false" (mouseover)="false" (mousedown)="false">
                         </div>
@@ -58,6 +61,7 @@
                                 del
                                 evento</span>
                         </div>
+
                         <div class="input-field">
                             <i class="material-icons prefix " *ngIf="!formEvent.touched">drag_handle</i>
 
@@ -128,20 +132,25 @@
                         </div>
 
                     </div>
+
                     <div class="row">
                         <div class="col l12 center">
                             <button (click)="onBack()" [disabled]="loading"
                                 class="waves-effect waves-light red lighten-2 btn mr-2"><i
                                     class="material-icons left">cancel</i>Cancelar</button>
-                            <button (click)="manageEvent()" [disabled]="loading || !formEvent.valid"
+
+                            <button (click)="manageEvent()"
+                                [disabled]="loading || !formEvent.valid || !dataEntry.hourIsValid || !dataEntry.dateIsValid"
                                 class="waves-effect waves-light btn"><i class="material-icons left">{{actionEvent ==
                                     'edit' ? 'create' : 'content_paste'}}</i>{{actionEvent == 'edit' ? 'Editar evento' :
                                 'Crear evento'}}</button>
+
                             <div class="progress w-50 mx-auto mt-4" *ngIf="loading">
                                 <div class="indeterminate"></div>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
