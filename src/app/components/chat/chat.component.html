@@ -1,1 +1,235 @@
-<p>chat works!</p>
+<div class="section overflow-hidden">
+    <div class="row">
+        <div class="col l3">
+            <app-aside-info></app-aside-info>
+        </div>
+
+        <div class="col l9 ">
+            <div class="row mb-0 pr-1">
+                <div class="col l5 grey lighten-5">
+                    <!-- init chat list with messages and contacts -->
+
+                    <!-- Info profile -->
+                    <div class="row p-1 grey lighten-5 mb-0 box-shadow-1">
+
+                        <div class="col l6">
+                            <!-- profile img -->
+                            <img src="https://image.shutterstock.com/image-vector/male-avatar-profile-picture-use-260nw-193292033.jpg"
+                                alt="img profile" class="img-thumbnail border-radius-50" width="45" height="45">
+                        </div>
+
+                        <div class="col l6">
+                            <!-- options -->
+                            <i class="material-icons font-size-30px line-heigth-1--7 cursor-pointer right">more_vert</i>
+                        </div>
+                    </div>
+
+                    <!-- Search contacts -->
+                    <div class="row p-1 mb-0 grey lighten-5  box-shadow-1">
+                        <!-- Input field for search-->
+                        <div class="col l1 mx-0 p-0">
+                            <i class="material-icons font-size-34px line-heigth-2 left">search</i>
+                        </div>
+                        <div class="input-field col l11 mb-0">
+
+                            <input id="search_friends_input" type="text">
+                            <label for="search_friends_input">Buscar amigos</label>
+                        </div>
+                    </div>
+
+                    <!-- Contact list -->
+                    <div class="row max-min-h-371px mb-0 overflow-y-auto scroll-2 box-shadow-1 grey lighten-5">
+
+                        <!-- User example -->
+                        <ng-container *ngFor="let i of [0,1,2,3,4,5,6,7,8]">
+                            <div class="col l12 box-shadow-contact hover-contact cursor-pointer" (click)="initChat()">
+                                <div class="row mb-0">
+
+                                    <!-- Profile img contact -->
+                                    <div class="col l2 center py-4 position-relative">
+                                        <!-- Img profile contact -->
+                                        <img src="https://image.shutterstock.com/image-vector/male-avatar-profile-picture-use-260nw-193292033.jpg"
+                                            alt="img profile" class="img-thumbnail border-radius-50" width="45"
+                                            height="45">
+                                        <span class="box-number-message red">8</span>
+                                    </div>
+
+                                    <!-- Name and latest message -->
+                                    <div class="col l7 py-4">
+                                        <!-- Name -->
+                                        <div class="row mb-0">
+                                            <div class="col l12 font-size-18px pl-0" [ngClass]="{'line-heigth': false}">
+                                                User contact 1
+                                            </div>
+                                        </div>
+
+                                        <!-- Latest message -->
+                                        <div class="row mb-0">
+                                            <div class="col l12 font-size-13px pl-0">
+                                                Hii i'm in the house
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Date latest message-->
+                                    <div class="col l3 py-7 center">
+                                        <div class="row mb-0">
+                                            <div class="col l12 font-weight-100">
+                                                11:51 PM
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+
+
+                    </div>
+                </div>
+
+                <!-- Inicialización información del chat -->
+                <div class="col l7 max-min-h-510px bg-img-1 grey lighten-5 box-shadow-1">
+
+                    <!-- Bg fix color opacity (img) -->
+                    <div class="row mb-0" [ngStyle]="{'opacity': opacityView}">
+                        <div class="col l12 max-min-h-510px box-shadow-1">
+
+                            <!-- View init box (not message) -->
+                            <ng-container *ngIf="!isChatting">
+                                <div class="row mb-0">
+                                    <div class="col l12">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam nesciunt quae et
+                                        officiis aliquid voluptatem in tempora animi! Eum aperiam temporibus numquam
+                                        iusto illo quaerat. Ducimus dolorum optio ullam aut reiciendis fugiat sed quidem
+                                        ad nihil! Pariatur laborum possimus alias!
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                            <!-- chat -->
+                            <ng-container *ngIf="isChatting">
+
+                                <!-- profile info message -->
+                                <div class="row p-1 grey lighten-5 mb-0">
+
+                                    <div class="col l11">
+
+                                        <!-- profile img message -->
+                                        <div class="row mb-0">
+                                            <!-- Profile img -->
+                                            <div class="col l2 center">
+                                                <img src="https://image.shutterstock.com/image-vector/male-avatar-profile-picture-use-260nw-193292033.jpg"
+                                                    alt="img profile" class="img-thumbnail border-radius-50" width="45"
+                                                    height="45">
+                                            </div>
+
+                                            <div class="col l10 py-3 pl-0 font-weight-500">
+                                                User contact 1
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col l1">
+                                        <!-- options message -->
+                                        <i
+                                            class="material-icons font-size-30px line-heigth-1--7 cursor-pointer right">more_vert</i>
+                                    </div>
+                                </div>
+
+                                <!-- Box messages -->
+                                <div class="row mb-0">
+                                    <div class="col l12 max-min-h-385px overflow-y-auto scroll-1">
+
+                                        <ng-container *ngFor="let i of [0,0,0,0,0]">
+                                            <!-- Chat receptor -->
+                                            <div class="row mb-0 py-2">
+
+                                                <!-- Img profile receptor -->
+                                                <div class="col l2 center">
+                                                    <img src="https://image.shutterstock.com/image-vector/male-avatar-profile-picture-use-260nw-193292033.jpg"
+                                                        alt="img profile" class="img-thumbnail border-radius-50"
+                                                        width="45" height="45">
+                                                </div>
+
+                                                <!-- chat message receptor -->
+                                                <div class="col l8 pl-0">
+                                                    <div class="talk-bubble tri-right left-top mt-4 left">
+                                                        <div class="talktext">
+                                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                                                Possimus minima consequatur quaerat, quod dolorum
+                                                                placeat
+                                                                dignissimos neque fugiat nihil officia.</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col l2">
+                                                    <!-- Empty for space -->
+                                                </div>
+                                            </div>
+                                        </ng-container>
+
+                                        <ng-container *ngFor="let i of [0,0,0,0,0]">
+                                            <!-- Chat emisor -->
+                                            <div class="row mb-0 py-2">
+
+                                                <div class="col l2">
+                                                    <!-- Empty for space -->
+                                                </div>
+
+                                                <!-- chat message receptor -->
+                                                <div class="col l8 pr-0">
+                                                    <div class="talk-bubble tri-right right-top  mt-4 right">
+                                                        <div class="talktext">
+                                                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                                                Aut
+                                                                ullam suscipit sint veniam, sit rem iusto accusamus
+                                                                tempora
+                                                                praesentium provident.</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Img profile receptor -->
+                                                <div class="col l2 center">
+                                                    <img src="https://image.shutterstock.com/image-vector/male-avatar-profile-picture-use-260nw-193292033.jpg"
+                                                        alt="img profile" class="img-thumbnail border-radius-50"
+                                                        width="45" height="45">
+                                                </div>
+
+                                            </div>
+                                        </ng-container>
+
+                                    </div>
+                                </div>
+
+                                <!-- Input field message -->
+                                <div class="row mb-0">
+                                    <div class="col l12 max-min-h-60px grey lighten-5">
+                                        <div class="row mb-0">
+
+                                            <!-- Input -->
+                                            <div class="col l10">
+                                                <input type="text" placeholder="Escribe un mensaje">
+                                            </div>
+
+                                            <!-- Button message -->
+                                            <div class="col l2 py-2 center-align">
+                                                <button class="btn blue waves-effect waves-light">
+                                                    <i class="material-icons">send</i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
