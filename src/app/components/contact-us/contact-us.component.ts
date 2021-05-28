@@ -12,10 +12,12 @@ export class ContactUsComponent implements OnInit {
 
     ngOnInit(): void {
         this._rootStatusPage.changeRootPageNumberStatus(4);
+        this._rootStatusPage.changeRootPageStatus(true);
     }
 
     ngOnDestroy(): void {
         this._rootStatusPage.changeRootPageNumberStatus(null);
+        this._rootStatusPage.changeRootPageStatus(false);
     }
 
 }
