@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader&display=swap');
+
+.font-family-1 {
+    font-family: 'Newsreader', serif;
+}
+
 .font-size-30px {
     font-size: 30px;
 }
@@ -14,9 +20,9 @@
     line-height: 2;
 }
 
-.max-min-h-371px {
-    min-height: 371px;
-    max-height: 371px;
+.max-min-h-374px {
+    min-height: 374px;
+    max-height: 374px;
 }
 
 .max-min-h-385px {
@@ -296,7 +302,64 @@
 	line-height: 1.5em;
 }
 .talktext p{
-  /* remove webkit p margins */
 	-webkit-margin-before: 0em;
 	-webkit-margin-after: 0em;
+}
+
+.w-h-45px {
+    width: 45px;
+    height: 45px;
+}
+
+.line-heigth-2--7 {
+    line-height: 2.7;
+}
+
+.py-cus-1 {
+    padding-top: 3%;
+    padding-bottom: 2.4%;
+}
+
+.max-min-h-365px {
+    min-height: 365px;
+    max-height: 365px;
+}
+
+.font-size-25px {
+    font-size: 25px;
+}
+
+.ml--6 {
+    margin-left: -6% !important;
+}
+
+.mt--2--4 {
+    margin-top: -2.4% !important;
+}
+
+.hover-more-options:hover {
+    background-color: #bdbdbd;
+}
+
+.mr-13 {
+    margin-right: 13%;
+}
+
+.font-cus-1 {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.hover-cus-1:hover {
+    background-color: #c5cae9 !important;
+}
+
+.margin-cus-1 {
+    margin-left: 3.4% !important;
+    margin-top: 0.3% !important;
+}
+
+.margin-cus-2 {
+    margin-left: -1.5% !important;
+    margin-top: 0.5% !important;
 }

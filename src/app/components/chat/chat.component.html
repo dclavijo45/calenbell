@@ -12,193 +12,604 @@
                     <!-- Info profile -->
                     <div class="row p-1 grey lighten-5 mb-0 box-shadow-1">
 
+                        <!-- profile img and status-->
                         <div class="col l6">
-                            <!-- profile img -->
-                            <img src="https://image.shutterstock.com/image-vector/male-avatar-profile-picture-use-260nw-193292033.jpg"
-                                alt="img profile" class="img-thumbnail border-radius-50" width="45" height="45">
+                            <img [src]="infoProfile.photo" alt="img profile"
+                                class="img-thumbnail border-radius-50 w-h-45px" width="45" height="45">
+
+                            <span class="position-absolute ml-1 mt-1 green-text text-accent-5"
+                                *ngIf="socketWebSvc.statusConnection">En linea</span>
+                            <span class="position-absolute ml-1 mt-1 red-text text-accent-5"
+                                *ngIf="!socketWebSvc.statusConnection">{{socketWebSvc.reasonDisconnection == 1 ?
+                                'Sesión iniciada desde otro dispositivo': 'Sin conexión'}}</span>
                         </div>
 
-                        <div class="col l6">
-                            <!-- options -->
-                            <i class="material-icons font-size-30px line-heigth-1--7 cursor-pointer right">more_vert</i>
+                        <!-- profile options -->
+                        <div class="col l6 mt-2">
+                            <i class="material-icons font-size-30px cursor-pointer p-1 hover-more-options border-radius-50 hide-selected right"
+                                (click)="hideOrShowOptions(SubMenu2)" (blur)="blurHideOptions(SubMenu2)"
+                                tabindex="0">more_vert</i>
+
+                            <!-- Submenu options -->
+                            <div class="col l1 hide-selected mb-0 position-absolute not-visible box-shadow-1 hover-cus-1 cursor-pointer margin-cus-1 indigo lighten-5"
+                                #SubMenu2 (click)="reconectServer()">
+
+                                <!-- Delete contact-->
+                                <div class="row mb-0">
+                                    <div class="col l12 mb-0 py-1 center">
+                                        <span class="position-relative mr-13 font-cus-1">Reconectar
+                                            <i class="material-icons position-absolute green-text">sync</i></span>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
 
                     <!-- Search contacts -->
                     <div class="row p-1 mb-0 grey lighten-5  box-shadow-1">
-                        <!-- Input field for search-->
-                        <div class="col l1 mx-0 p-0">
-                            <i class="material-icons font-size-34px line-heigth-2 left">search</i>
-                        </div>
-                        <div class="input-field col l11 mb-0">
 
-                            <input id="search_friends_input" type="text">
-                            <label for="search_friends_input">Buscar amigos</label>
+                        <!-- Input field for search-->
+                        <div class="input-field col l9 mb-0">
+                            <i class="material-icons prefix">search</i>
+                            <input id="search_input3" type="text" (ngModelChange)="filterContacts($event)"
+                                [(ngModel)]="inputFilterContacts" maxlength="70">
+                            <label for="search_input3">Buscar contactos</label>
+                        </div>
+
+                        <!-- Button add contacts -->
+                        <div class="col l3 mb-0 mt-2">
+                            <div class="row mb-0">
+                                <div class="col l12 mb-0 center">
+                                    <button class="btn waves-effect waves-light blue lighten-2"><i
+                                            class="material-icons" (click)="AddContacts()">add</i></button>
+                                </div>
+
+                                <div class="col l12 font-family-1 mt-2 center">
+                                    Contactos
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Contact list -->
-                    <div class="row max-min-h-371px mb-0 overflow-y-auto scroll-2 box-shadow-1 grey lighten-5">
+                    <!-- ContactsG list -->
+                    <div class="row max-min-h-374px mb-0 overflow-y-auto scroll-2 box-shadow-1 grey lighten-5">
+                        <!-- Verify and revise contacts -->
+                        <ng-container *ngIf="CONTACTS.length >= 1 && !loadingGettingContacts">
+                            <ng-container *ngFor="let contactG of CONTACTS ">
 
-                        <!-- User example -->
-                        <ng-container *ngFor="let i of [0,1,2,3,4,5,6,7,8]">
-                            <div class="col l12 box-shadow-contact hover-contact cursor-pointer" (click)="initChat()">
-                                <div class="row mb-0">
-
-                                    <!-- Profile img contact -->
-                                    <div class="col l2 center py-4 position-relative">
-                                        <!-- Img profile contact -->
-                                        <img src="https://image.shutterstock.com/image-vector/male-avatar-profile-picture-use-260nw-193292033.jpg"
-                                            alt="img profile" class="img-thumbnail border-radius-50" width="45"
-                                            height="45">
-                                        <span class="box-number-message red">8</span>
-                                    </div>
-
-                                    <!-- Name and latest message -->
-                                    <div class="col l7 py-4">
-                                        <!-- Name -->
+                                <!-- Verify if is a normal contact -->
+                                <ng-container *ngIf="contactG.type == 1">
+                                    <div class="col l12 box-shadow-contact hover-contact cursor-pointer">
                                         <div class="row mb-0">
-                                            <div class="col l12 font-size-18px pl-0" [ngClass]="{'line-heigth': false}">
-                                                User contact 1
+
+                                            <!-- Profile img contact -->
+                                            <div class="col l2 center py-4 position-relative"
+                                                (click)="initChat(contactG.id_contact_g, contactG.type)">
+
+                                                <!-- Img profile contact -->
+                                                <img [src]="contactG.photo" alt="img profile"
+                                                    class="img-thumbnail border-radius-50 w-h-45px" width="45"
+                                                    height="45">
+
+                                                <!-- Alert number messages without read -->
+                                                <span class="box-number-message red"
+                                                    *ngIf="checkMsgWithoutRead(contactG.id_contact_g, contactG.type) != 0">{{checkMsgWithoutRead(contactG.id_contact_g,
+                                                    contactG.type)}}</span>
+                                            </div>
+
+                                            <!-- Name and latest message -->
+                                            <div class="col l7 py-4"
+                                                (click)="initChat(contactG.id_contact_g, contactG.type)">
+
+                                                <!-- Name -->
+                                                <div class="row mb-0">
+                                                    <div class="col l12 font-size-18px pl-0"
+                                                        [ngClass]="{'line-heigth-2--7': getLatestMessage(contactG.id_contact_g, contactG.type) == null}">
+                                                        {{contactG.name.length >= 14 ?
+                                                        contactG.name.slice(0, 14) + '...' :
+                                                        contactG.name}}
+                                                    </div>
+                                                </div>
+
+                                                <!-- Latest message -->
+                                                <div class="row mb-0" *ngIf="true">
+                                                    <div class="col l12 font-size-13px pl-0">
+                                                        {{getLatestMessage(contactG.id_contact_g, contactG.type)}}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Options contact -->
+                                            <div class="col l3 pt-6 center cursor-normal">
+                                                <div class="row mb-0">
+                                                    <div class="col l12 font-weight-100">
+                                                        <i class="material-icons font-size-30px cursor-pointer p-3 hover-more-options border-radius-50 hide-selected center"
+                                                            (click)="hideOrShowOptions(SubMenu)"
+                                                            (blur)="blurHideOptions(SubMenu)" tabindex="0">
+                                                            more_vert
+                                                        </i>
+
+                                                        <!-- Submenu options -->
+                                                        <div class="col l1 mb-0 position-absolute ml--6 mt--2--4 not-visible box-shadow-1 hover-cus-1 cursor-pointer indigo lighten-5"
+                                                            #SubMenu
+                                                            (click)="deleteContact(contactG.id_contact_g, contactG.type)">
+
+                                                            <!-- Delete contact-->
+                                                            <div class="row mb-0">
+                                                                <div class="col l12 mb-0 py-1">
+                                                                    <span
+                                                                        class="position-relative mr-13 font-cus-1">Borrar
+                                                                        <i
+                                                                            class="material-icons position-absolute right red-text">delete_forever</i></span>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+                                    </div>
+                                </ng-container>
 
-                                        <!-- Latest message -->
+                                <!-- Verify if is a group -->
+                                <ng-container *ngIf="contactG.type == 2">
+                                    <div class="col l12 box-shadow-contact hover-contact cursor-pointer"
+                                        (click)="initChat(contactG.id_contact_g, contactG.type)">
                                         <div class="row mb-0">
-                                            <div class="col l12 font-size-13px pl-0">
-                                                Hii i'm in the house
+
+                                            <!-- Profile img contact -->
+                                            <div class="col l2 center py-4 mt-3 position-relative">
+                                                <!-- Img profile contact -->
+                                                <span
+                                                    class="img-thumbnail border-radius-50 w-h-45px">{{contactG.photo}}</span>
+
+                                                <!-- Alert number messages without read -->
+                                                <span class="box-number-message red"
+                                                    *ngIf="checkMsgWithoutRead(contactG.id_contact_g, contactG.type) != 0">{{checkMsgWithoutRead(contactG.id_contact_g,
+                                                    contactG.type)}}</span>
                                             </div>
+
+                                            <!-- Name and latest message -->
+                                            <div class="col l10 py-4">
+                                                <!-- Name -->
+                                                <div class="row mb-0">
+                                                    <div class="col l12 font-size-18px pl-0"
+                                                        [ngClass]="{'line-heigth-2--7': getLatestMessage(contactG.id_contact_g, contactG.type) == null}">
+                                                        <span class="font-weight-600 font-family-1">Grupo
+                                                        </span>{{contactG.name.length
+                                                        >= 14 ?
+                                                        contactG.name.slice(0, 14) + '...' :
+                                                        contactG.name
+                                                        }}
+                                                    </div>
+                                                </div>
+
+                                                <!-- Latest message -->
+                                                <div class="row mb-0" *ngIf="true">
+                                                    <div class="col l12 font-size-13px pl-0">
+                                                        {{getLatestMessage(contactG.id_contact_g, contactG.type)}}
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
 
-                                    <!-- Date latest message-->
-                                    <div class="col l3 py-7 center">
-                                        <div class="row mb-0">
-                                            <div class="col l12 font-weight-100">
-                                                11:51 PM
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                        <!-- Verify if not contacts -->
+                        <ng-container
+                            *ngIf="CONTACTS.length == 0 && !loadingGettingContacts && inputFilterContacts.length == 0">
+                            <div class="col l12 center mt-4">
+                                No tienes contactos y no estas en grupos
                             </div>
                         </ng-container>
 
+                        <!-- Verify if not results in filter -->
+                        <ng-container *ngIf="inputFilterContacts.length >= 1 && CONTACTS.length == 0">
+                            <div class="col l12 center mt-4 break-word">
+                                No tienes contactos con nombres <b>{{inputFilterContacts}}</b>.
+                            </div>
+                        </ng-container>
 
+                        <!-- Loading -->
+                        <ng-container *ngIf="loadingGettingContacts">
+                            <div class="col l12 center mt-4">
+                                <div class="loading-1 black-text">
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>
+                        </ng-container>
                     </div>
                 </div>
 
-                <!-- Inicialización información del chat -->
+                <!-- Init. information -->
                 <div class="col l7 max-min-h-510px bg-img-1 grey lighten-5 box-shadow-1">
 
-                    <!-- Bg fix color opacity (img) -->
+                    <!-- Bg fix color opacity -->
                     <div class="row mb-0" [ngStyle]="{'opacity': opacityView}">
                         <div class="col l12 max-min-h-510px box-shadow-1">
 
-                            <!-- View init box (not message) -->
-                            <ng-container *ngIf="!isChatting">
+                            <!-- View init box -->
+                            <ng-container *ngIf="!isChatting && !isAddingContacts">
                                 <div class="row mb-0">
                                     <div class="col l12">
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam nesciunt quae et
-                                        officiis aliquid voluptatem in tempora animi! Eum aperiam temporibus numquam
-                                        iusto illo quaerat. Ducimus dolorum optio ullam aut reiciendis fugiat sed quidem
-                                        ad nihil! Pariatur laborum possimus alias!
+
                                     </div>
                                 </div>
                             </ng-container>
 
-                            <!-- chat -->
-                            <ng-container *ngIf="isChatting">
+                            <!-- Adding contacts -->
+                            <ng-container *ngIf="!isChatting && isAddingContacts">
+                                <div class="row mb-0">
+                                    <div class="col l12 max-min-h-510px grey lighten-5">
 
-                                <!-- profile info message -->
-                                <div class="row p-1 grey lighten-5 mb-0">
-
-                                    <div class="col l11">
-
-                                        <!-- profile img message -->
+                                        <!-- Title add contacts -->
                                         <div class="row mb-0">
-                                            <!-- Profile img -->
-                                            <div class="col l2 center">
-                                                <img src="https://image.shutterstock.com/image-vector/male-avatar-profile-picture-use-260nw-193292033.jpg"
-                                                    alt="img profile" class="img-thumbnail border-radius-50" width="45"
-                                                    height="45">
+                                            <div class="col l12 center">
+                                                <h5 class="font-family-1">Agregar contactos</h5>
                                             </div>
+                                        </div>
 
-                                            <div class="col l10 py-3 pl-0 font-weight-500">
-                                                User contact 1
+                                        <!-- Search input -->
+                                        <div class="row mb-0">
+                                            <div class="col l12">
+                                                <div class="input-field">
+                                                    <i class="material-icons prefix">search</i>
+                                                    <input #input2 id="search_input2" type="text" maxlength="30"
+                                                        (ngModelChange)="searchingContacts($event)"
+                                                        [(ngModel)]="inputSearchContacts">
+                                                    <label for="search_input2">Buscar usuarios</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- List users -->
+                                        <div class="row mb-0">
+                                            <div
+                                                class="col l12 px-10 break-word overflow-y-auto max-min-h-365px scroll-1">
+                                                <!-- Verify if result search contacts exist-->
+                                                <ng-container
+                                                    *ngIf="resultSearchContacts != null && !loadingSearchingContacts">
+                                                    <ng-container
+                                                        *ngIf="resultSearchContacts.users.length >= 1 && !loadingSearchingContacts && inputSearchContacts.length >= 1">
+
+                                                        <!-- Revise result search contacts -->
+                                                        <ng-container *ngFor="let user of resultSearchContacts.users">
+                                                            <div class="row">
+                                                                <div class="col l12 mb-0 box-shadow-contact">
+
+                                                                    <!-- Img profile user -->
+                                                                    <div class="col l2 center py-cus-1">
+                                                                        <img [src]="user.photo"
+                                                                            class="img-thumbnail border-radius-50 w-h-45px"
+                                                                            [alt]="user.name">
+                                                                    </div>
+
+                                                                    <!-- Name profile user -->
+                                                                    <div
+                                                                        class="col l8 font-size-18px pl-0 py-4 line-heigth-2">
+                                                                        {{user.name}}
+                                                                    </div>
+
+                                                                    <!-- Options profile user -->
+                                                                    <div class="col l2 py-4 center">
+                                                                        <button
+                                                                            class="btn waves-effect waves-light blue center"
+                                                                            *ngIf="!areFriendsDraw(user.id)">
+                                                                            <i class="material-icons font-size-25px"
+                                                                                (click)="AddActionContacts(user.id)">add</i>
+                                                                        </button>
+
+                                                                        <button class="btn cursor-normal green center"
+                                                                            *ngIf="areFriendsDraw(user.id)">
+                                                                            <i
+                                                                                class="material-icons font-size-25px">people</i>
+                                                                        </button>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ng-container>
+
+                                                    </ng-container>
+                                                </ng-container>
+
+                                                <!-- Verify if result search contacts is not empty -->
+                                                <ng-container
+                                                    *ngIf="resultSearchContacts != null && inputSearchContacts.trim().length >= 1 && !loadingSearchingContacts">
+                                                    <ng-container *ngIf="resultSearchContacts.users.length == 0">
+                                                        <div class="row">
+                                                            <div class="col l12 center">
+                                                                No se ha encontrado usuarios con nombres
+                                                                <b>{{inputSearchContacts}}</b>.
+                                                            </div>
+                                                        </div>
+                                                    </ng-container>
+                                                </ng-container>
+
+                                                <!-- Loading  -->
+                                                <div class="row mb-0" *ngIf="loadingSearchingContacts">
+                                                    <div class="col l12 center">
+                                                        <div class="loading-1 black-text">
+                                                            <div></div>
+                                                            <div></div>
+                                                            <div></div>
+                                                            <div></div>
+                                                            <div></div>
+                                                            <div></div>
+                                                            <div></div>
+                                                            <div></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
                                     </div>
-
-                                    <div class="col l1">
-                                        <!-- options message -->
-                                        <i
-                                            class="material-icons font-size-30px line-heigth-1--7 cursor-pointer right">more_vert</i>
-                                    </div>
                                 </div>
+                            </ng-container>
+
+                            <!-- Chats View -->
+                            <ng-container *ngIf="isChatting && !isAddingContacts">
+
+                                <!-- profile info message -->
+
+                                <!-- Verify if type contact is one-one -->
+                                <ng-container *ngIf="infoSentMessage.typeMessage == 1">
+                                    <div class="row p-1 grey lighten-5 mb-0">
+
+                                        <!-- profile img message and name -->
+                                        <div class="col l9">
+
+                                            <div class="row mb-0">
+                                                <!-- Profile img -->
+                                                <div class="col l2 center">
+                                                    <img [src]="infoSentMessage.subject.photo" alt="img profile"
+                                                        class="img-thumbnail border-radius-50 w-h-45px" width="45"
+                                                        height="45">
+                                                </div>
+
+                                                <!-- Profile name -->
+                                                <div class="col l10 py-3 pl-0 font-weight-500">
+                                                    {{infoSentMessage.subject.name}}
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <!-- options message -->
+                                        <div class="col l3 mt-1">
+                                            <i class="material-icons font-size-30px cursor-pointer p-3 hover-more-options border-radius-50 hide-selected right"
+                                                (click)="hideOrShowOptions(SubMenu3)" (blur)="blurHideOptions(SubMenu3)"
+                                                tabindex="0">more_vert</i>
+
+                                            <!-- Submenu options -->
+                                            <div class="col l1 mb-0 position-absolute not-visible box-shadow-1 hover-cus-1 cursor-pointer margin-cus-2 indigo lighten-5"
+                                                #SubMenu3
+                                                (click)="cleanChat(infoSentMessage.subject.id_subject, infoSentMessage.typeMessage)">
+
+                                                <!-- Delete contact-->
+                                                <div class="row mb-0">
+                                                    <div class="col l12 mb-0 py-1 center">
+                                                        <span class="position-relative mr-13 font-cus-1">Limpiar chat
+                                                            <i
+                                                                class="material-icons position-absolute red-text">delete_forever</i></span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </ng-container>
+
+                                <!-- Verify if type contact is a group -->
+                                <ng-container *ngIf="infoSentMessage.typeMessage == 2">
+                                    <div class="row p-1 grey lighten-5 mb-0">
+
+                                        <!-- profile img message -->
+                                        <div class="col l9">
+                                            <div class="row mb-0">
+                                                <!-- Profile img -->
+                                                <div class="col l2 mt-3 center">
+                                                    <span
+                                                        class="img-thumbnail border-radius-50 w-h-45px">{{infoSentMessage.subject.photo}}</span>
+                                                </div>
+
+                                                <div class="col l10 py-3 pl-0 font-weight-500">
+                                                    {{infoSentMessage.subject.name}}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- options message -->
+                                        <div class="col l3 mt-1">
+                                            <i class="material-icons font-size-30px cursor-pointer p-3 hover-more-options border-radius-50 hide-selected right"
+                                                (click)="hideOrShowOptions(SubMenu4)" (blur)="blurHideOptions(SubMenu4)"
+                                                tabindex="0">more_vert</i>
+
+                                            <!-- Submenu options -->
+                                            <div class="col l1 mb-0 position-absolute not-visible box-shadow-1 hover-cus-1 cursor-pointer margin-cus-2 indigo lighten-5"
+                                                #SubMenu4
+                                                (click)="cleanChat(infoSentMessage.subject.id_subject, infoSentMessage.typeMessage)">
+
+                                                <!-- Delete contact-->
+                                                <div class="row mb-0">
+                                                    <div class="col l12 mb-0 py-1 center">
+                                                        <span class="position-relative mr-13 font-cus-1">Limpiar chat
+                                                            <i
+                                                                class="material-icons position-absolute red-text">delete_forever</i></span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </ng-container>
 
                                 <!-- Box messages -->
                                 <div class="row mb-0">
-                                    <div class="col l12 max-min-h-385px overflow-y-auto scroll-1">
+                                    <div class="col l12 max-min-h-385px overflow-y-auto scroll-1" SetLocationScroll>
+                                        <!-- Verify if chat view and find chats -->
+                                        <ng-container
+                                            *ngIf="infoSentMessage.subject.id_subject >= 0 && getMessages().length >= 1">
+                                            <!-- Verify if group or one-one -->
 
-                                        <ng-container *ngFor="let i of [0,0,0,0,0]">
-                                            <!-- Chat receptor -->
-                                            <div class="row mb-0 py-2">
+                                            <!-- One-One -->
+                                            <ng-container *ngIf="infoSentMessage.typeMessage == 1">
+                                                <!-- Revise chats -->
+                                                <ng-container *ngFor="let chat of getMessages()">
 
-                                                <!-- Img profile receptor -->
-                                                <div class="col l2 center">
-                                                    <img src="https://image.shutterstock.com/image-vector/male-avatar-profile-picture-use-260nw-193292033.jpg"
-                                                        alt="img profile" class="img-thumbnail border-radius-50"
-                                                        width="45" height="45">
-                                                </div>
+                                                    <!-- Chat receptor -->
+                                                    <ng-container *ngIf="chat.by_me == false">
+                                                        <div class="row mb-0 py-2">
 
-                                                <!-- chat message receptor -->
-                                                <div class="col l8 pl-0">
-                                                    <div class="talk-bubble tri-right left-top mt-4 left">
-                                                        <div class="talktext">
-                                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                                                Possimus minima consequatur quaerat, quod dolorum
-                                                                placeat
-                                                                dignissimos neque fugiat nihil officia.</p>
+                                                            <!-- Img profile receptor -->
+                                                            <div class="col l2 center">
+                                                                <img [src]="chat.subject.photo" alt="img profile"
+                                                                    class="img-thumbnail border-radius-50 w-h-45px"
+                                                                    width="45" height="45">
+                                                            </div>
+
+                                                            <!-- chat message receptor -->
+                                                            <div class="col l8 pl-0">
+                                                                <div class="talk-bubble tri-right left-top mt-4 left">
+                                                                    <div class="talktext">
+                                                                        <p class="break-word">
+                                                                            {{chat.text}}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col l2">
+                                                                <!-- Empty for space -->
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
+                                                    </ng-container>
 
-                                                <div class="col l2">
-                                                    <!-- Empty for space -->
-                                                </div>
-                                            </div>
-                                        </ng-container>
+                                                    <!-- Chat emisor -->
+                                                    <ng-container *ngIf="chat.by_me == true">
+                                                        <div class="row mb-0 py-2">
 
-                                        <ng-container *ngFor="let i of [0,0,0,0,0]">
-                                            <!-- Chat emisor -->
-                                            <div class="row mb-0 py-2">
+                                                            <div class="col l2">
+                                                                <!-- Empty for space -->
+                                                            </div>
 
-                                                <div class="col l2">
-                                                    <!-- Empty for space -->
-                                                </div>
+                                                            <!-- chat message emisor -->
+                                                            <div class="col l8 pr-0">
+                                                                <div
+                                                                    class="talk-bubble tri-right right-top  mt-4 right">
+                                                                    <div class="talktext">
+                                                                        <p class="break-word">
+                                                                            {{chat.text}}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 
-                                                <!-- chat message receptor -->
-                                                <div class="col l8 pr-0">
-                                                    <div class="talk-bubble tri-right right-top  mt-4 right">
-                                                        <div class="talktext">
-                                                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                                                                Aut
-                                                                ullam suscipit sint veniam, sit rem iusto accusamus
-                                                                tempora
-                                                                praesentium provident.</p>
+                                                            <!-- Img profile emisor -->
+                                                            <div class="col l2 center">
+                                                                <img [src]="infoProfile.photo" alt="img profile"
+                                                                    class="img-thumbnail border-radius-50 w-h-45px"
+                                                                    width="45" height="45">
+                                                            </div>
+
                                                         </div>
-                                                    </div>
-                                                </div>
+                                                    </ng-container>
 
-                                                <!-- Img profile receptor -->
-                                                <div class="col l2 center">
-                                                    <img src="https://image.shutterstock.com/image-vector/male-avatar-profile-picture-use-260nw-193292033.jpg"
-                                                        alt="img profile" class="img-thumbnail border-radius-50"
-                                                        width="45" height="45">
-                                                </div>
+                                                </ng-container>
+                                            </ng-container>
 
-                                            </div>
+                                            <!-- Group -->
+                                            <ng-container *ngIf="infoSentMessage.typeMessage == 2">
+                                                <!-- Revise chats -->
+                                                <ng-container *ngFor="let chat of getMessages()">
+
+                                                    <!-- Chat receptor -->
+                                                    <ng-container *ngIf="chat.by_me == false">
+                                                        <div class="row mb-0 py-2">
+                                                            <!-- Image and name of profile receptor -->
+                                                            <div class="col l2 center">
+                                                                <!-- Image -->
+                                                                <div class="row mb-0">
+                                                                    <div class="col l12">
+                                                                        <img [src]="chat.subject.photo"
+                                                                            alt="img profile"
+                                                                            class="img-thumbnail border-radius-50 w-h-45px"
+                                                                            width="45" height="45">
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Name -->
+                                                                <div class="row mb-00">
+                                                                    <div class="col l12 font-family-1 font-weight-600"
+                                                                        [title]="chat.subject.name">
+                                                                        {{chat.subject.name.length >= 10
+                                                                        ?
+                                                                        chat.subject.name.slice(0, 6) + '...' :
+                                                                        chat.subject.name}}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- chat message receptor -->
+                                                            <div class="col l8 pl-0">
+                                                                <div class="talk-bubble tri-right left-top mt-4 left">
+                                                                    <div class="talktext">
+                                                                        <p class="break-word">
+                                                                            {{chat.text}}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col l2">
+                                                                <!-- Empty for space -->
+                                                            </div>
+                                                        </div>
+                                                    </ng-container>
+
+                                                    <!-- Chat emisor -->
+                                                    <ng-container *ngIf="chat.by_me == true">
+                                                        <div class="row mb-0 py-2">
+
+                                                            <div class="col l2">
+                                                                <!-- Empty for space -->
+                                                            </div>
+
+                                                            <!-- chat message emisor -->
+                                                            <div class="col l8 pr-0">
+                                                                <div
+                                                                    class="talk-bubble tri-right right-top  mt-4 right">
+                                                                    <div class="talktext">
+                                                                        <p class="break-word">
+                                                                            {{chat.text}}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Img profile emisor -->
+                                                            <div class="col l2 center">
+                                                                <img [src]="infoProfile.photo" alt="img profile"
+                                                                    class="img-thumbnail border-radius-50 w-h-45px"
+                                                                    width="45" height="45">
+                                                            </div>
+
+                                                        </div>
+                                                    </ng-container>
+
+                                                </ng-container>
+                                            </ng-container>
                                         </ng-container>
 
                                     </div>
@@ -211,12 +622,17 @@
 
                                             <!-- Input -->
                                             <div class="col l10">
-                                                <input type="text" placeholder="Escribe un mensaje">
+                                                <input type="text" placeholder="Escribe un mensaje"
+                                                    [(ngModel)]="inputFieldMessage"
+                                                    (keypress)="$event.keyCode == 13 ? sendMessage() : null" #input1
+                                                    maxlength="249">
                                             </div>
 
                                             <!-- Button message -->
                                             <div class="col l2 py-2 center-align">
-                                                <button class="btn blue waves-effect waves-light">
+                                                <button class="btn blue waves-effect waves-light"
+                                                    (click)="sendMessage()"
+                                                    [disabled]="!(inputFieldMessage.trim().length >=1)">
                                                     <i class="material-icons">send</i>
                                                 </button>
                                             </div>
