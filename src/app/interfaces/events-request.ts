@@ -6,12 +6,17 @@ export interface EventsRequest {
     year: number,
     hour: string,
     description: string,
-    type_ev: string,
+    type_ev: number,
     icon: string,
-    check: boolean
+    check: boolean,
+    owner: boolean
 }
 
+/**
+ * @description `reason` 1=Have users in event
+ */
 export interface EventsDeleteResponse {
     auth_token: boolean,
-    deleted: boolean
+    deleted: boolean,
+    reason: number
 }
