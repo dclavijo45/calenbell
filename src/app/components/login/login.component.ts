@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as M from 'src/app/services/materialize.js';
 import notie from 'notie';
@@ -11,6 +11,8 @@ import { RecoveredStatus, RecoveryAccount, RecoveryAttempt } from 'src/app/inter
 import { TokenAuthStateService } from 'src/app/services/token-auth-state.service';
 import { Router } from '@angular/router';
 import { RootPageStatusService } from 'src/app/services/root-page-status.service';
+import { Subscription } from 'rxjs';
+import { ThemeColorService } from 'src/app/services/theme-color.service';
 
 
 @Component({
@@ -26,18 +28,66 @@ export class LoginComponent implements OnInit {
         private Google: GoogleClientService,
         private _auth: TokenAuthStateService,
         private Router: Router,
-        private _rootStatusPage: RootPageStatusService) { }
+        private _rootStatusPage: RootPageStatusService,
+        public TC: ThemeColorService) {
+        // init observer Google service
+        this.Google.listenInfo().subscribe(
+            (info: GoogleClient) => {
+
+                console.log(info);
+
+                if (this.action == null) return false;
+
+                if (this.action == "register") {
+                    try {
+                        this.registerUser(info.GUserInfo.idToken);
+                    } catch (err) {
+                        this.action = null;
+                        this.loading = false;
+                        this.GoogleAttempt = false;
+                        // console.error(err);
+                        notie.alert({
+                            type: 'error',
+                            text: "Registro cancelado",
+                            stay: false,
+                            time: 3,
+                            position: "top"
+                        });
+
+                    };
+
+                } else if (this.action == "login") {
+                    try {
+                        this.loginUser(info.GUserInfo.idToken);
+                    } catch (err) {
+                        this.action = null;
+                        this.GoogleAttempt = false;
+                        this.loading = false;
+                        // console.error(err);
+                        notie.alert({
+                            type: 'error',
+                            text: "Inicio de sesión cancelado",
+                            stay: false,
+                            time: 3,
+                            position: "top"
+                        });
+                    }
+                };
+
+            }
+        );
+
+    }
 
     public login: boolean = false;
     private _server: string = this._client._server;
+    private subLogin$: Subscription;
+    private subRegister$: Subscription;
+    private subRecoverPwd$: Subscription;
+    private subValidateRecoverPwd$: Subscription;
     public success: boolean = false;
     public loading: boolean = false;
     public error: boolean = false;
-    public formLogin: FormGroup;
-    public formRegister: FormGroup;
-    public formRecoveryPwd: FormGroup;
-    public formRecoveryPwdCode: FormGroup;
-    public formRecoverySetPwd: FormGroup;
     public recoveryPwd: boolean = false;
     public recoveryPwdCode: boolean = false;
     public recoveryPwdSetPwd: boolean = false;
@@ -52,9 +102,29 @@ export class LoginComponent implements OnInit {
     private token_recovery: string = null;
     public GoogleAttempt: boolean = false;
 
+    @ViewChild('user') userField: ElementRef;
+    @ViewChild('nameRegister') nameRegisterField: ElementRef;
+
     // styles
     private counterEffectStyleOpacityView: number = 0;
     public opacityView: number = 0;
+
+    // Reactive forms
+    public formLogin: FormGroup;
+    public formRegister: FormGroup;
+    public formRecoveryPwd: FormGroup;
+    public formRecoveryPwdCode: FormGroup;
+    public formRecoverySetPwd: FormGroup;
+
+    // rf register
+    get rf_nameRegister() { return this.formRegister.get('name') };
+    get rf_emailRegister() { return this.formRegister.get('email') };
+    get rf_userRegister() { return this.formRegister.get('user') };
+    get rf_passwordRegister() { return this.formRegister.get('password') };
+
+    // rf login
+    get rf_userLogin() { return this.formLogin.get('user') };
+    get rf_passwordLogin() { return this.formLogin.get('password') };
 
     ngOnInit(): void {
         // style effect
@@ -75,14 +145,21 @@ export class LoginComponent implements OnInit {
 
         // init reactive forms
         this.formLogin = this.formB.group({
-            user: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
+            user: ['', [
+                Validators.required,
+                Validators.minLength(4),
+                Validators.maxLength(30)
+            ]],
             password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]]
         });
 
         this.formRegister = this.formB.group({
-            name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
-            email: ['', [Validators.required, Validators.email, Validators.minLength(5), Validators.maxLength(255)]],
+            name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30), Validators.compose([Validators.pattern('^[A-Za-z-ñÑáéíóúÁÉÍÓÚ ]+$')]),]],
+
+            email: ['', [Validators.required, Validators.email, Validators.maxLength(255)]],
+
             user: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
+
             password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]]
         });
 
@@ -98,94 +175,37 @@ export class LoginComponent implements OnInit {
             password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]],
             check_password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]],
         });
-
-        // init observer Google service
-        this.Google.listenInfo().subscribe(
-            (info: GoogleClient) => {
-
-                console.log(info);
-
-                if (this.action == null) return false;
-
-                if (this.action == "register") {
-                    try {
-                        this.registerUser(info.GUserInfo.idToken);
-                    } catch (err) {
-                        this.action = null;
-                        this.loading = false;
-                        this.GoogleAttempt = false;
-                        // console.error(err);
-                        let registerNotify = new Promise((resolve) => {
-                            notie.alert({
-                                type: 'error',
-                                text: "Registro cancelado",
-                                stay: false,
-                                time: 3,
-                                position: "top"
-                            });
-                            setTimeout(function () {
-                                resolve(true);
-                            }, 3000);
-                        })
-                        registerNotify.then((e) => {
-                            console.log("REGISTER CANCEL");
-                        });
-                    }
-
-                } else if (this.action == "login") {
-                    try {
-                        this.loginUser(info.GUserInfo.idToken);
-                    } catch (err) {
-                        this.action = null;
-                        this.GoogleAttempt = false;
-                        this.loading = false;
-                        // console.error(err);
-                        let registerNotify = new Promise((resolve) => {
-                            notie.alert({
-                                type: 'error',
-                                text: "Inicio de sesión cancelado",
-                                stay: false,
-                                time: 3,
-                                position: "top"
-                            });
-                            setTimeout(function () {
-                                resolve(true);
-                            }, 3000);
-                        })
-                        registerNotify.then((e) => {
-                            console.log("LOGIN CANCEL");
-                        });
-                    }
-                }
-
-            }
-        );
     }
 
     ngOnDestroy(): void {
         this._rootStatusPage.changeRootPageNumberStatus(null);
     }
 
+    ngAfterViewInit(): void {
+        this.setFocused(1);
+    }
+
     loginUser(id_token?: string): void {
         let data = {
-            user: this.formLogin.value.user,
-            password: this.formLogin.value.password,
+            user: this.formLogin.value.user.trim(),
+            password: this.formLogin.value.password.trim(),
             type: this.GoogleAttempt ? 'Google' : 'normal',
             id_token: id_token || null
-        }
+        };
 
         if (this.formLogin.valid || this.GoogleAttempt) {
 
             this.loading = true;
 
-            this._client.postRequest(`${this._server}/user/login`, data).subscribe(
+            this.subLogin$ ? this.subLogin$.unsubscribe() : true;
+
+            this.subLogin$ = this._client.postRequest(`${this._server}/user/login`, data).subscribe(
                 ((response: LoginResponse) => {
                     this.loading = false;
 
-                    console.log(response);
-
                     if (response.logged) {
                         this.action = null;
+
                         let loggedNotify = new Promise((resolve) => {
                             notie.alert({
                                 type: 'success',
@@ -199,13 +219,17 @@ export class LoginComponent implements OnInit {
                             }, 1000);
                         });
                         loggedNotify.then((e) => {
-                            console.log("LOGGED");
-                            this._auth.login(response.token);
+                            this._auth.login(response);
                             this.Router.navigate(['/home'])
                         });
+
                     } else {
                         this.loading = false;
+
                         if (this.GoogleAttempt) {
+
+                            this.GoogleAttempt = false;
+
                             notie.alert({
                                 type: 'info',
                                 text: "Registrate para poder iniciar con Google!",
@@ -213,8 +237,6 @@ export class LoginComponent implements OnInit {
                                 time: 3,
                                 position: "top"
                             });
-
-                            this.GoogleAttempt = false;
 
                         } else {
                             notie.alert({
@@ -226,12 +248,15 @@ export class LoginComponent implements OnInit {
                             });
                         }
 
-                    }
+                    };
+
                 }),
 
                 (error => {
                     console.error(error);
+
                     this.loading = false;
+
                     notie.alert({
                         type: 'error',
                         text: "No hay internet",
@@ -240,25 +265,17 @@ export class LoginComponent implements OnInit {
                         position: "top"
                     });
                 })
-            )
-        } else {
-            notie.alert({
-                type: 'info',
-                text: "Rellena todos los campos",
-                stay: false,
-                time: 3,
-                position: "top"
-            });
-        }
+            );
+        };
 
     }
 
     registerUser(id_token?: string): void {
         let data = {
-            name: this.formRegister.value.name,
-            email: this.formRegister.value.email,
-            user: this.formRegister.value.user,
-            password: this.formRegister.value.password,
+            name: this.formRegister.value.name.trim(),
+            email: this.formRegister.value.email.trim(),
+            user: this.formRegister.value.user.trim(),
+            password: this.formRegister.value.password.trim(),
             type: this.action ? 'Google' : 'normal',
             id_token: id_token || null
         }
@@ -267,11 +284,14 @@ export class LoginComponent implements OnInit {
 
             this.loading = true;
 
-            this._client.postRequest(`${this._server}/user/register`, data).subscribe(
+            this.subRegister$ ? this.subRegister$.unsubscribe() : true;
+
+            this.subRegister$ = this._client.postRequest(`${this._server}/user/register`, data).subscribe(
                 ((response: RegisterResponse) => {
                     this.loading = false;
                     this.action = null;
                     this.GoogleAttempt = false;
+
                     if (response.registered) {
                         let registerNotify = new Promise((resolve) => {
                             notie.alert({
@@ -287,7 +307,6 @@ export class LoginComponent implements OnInit {
                         });
                         registerNotify.then((e) => {
                             this.login = false;
-                            console.log("REGISTERED");
                         });
                     } else {
                         let registerNotify = new Promise((resolve) => {
@@ -304,13 +323,13 @@ export class LoginComponent implements OnInit {
                         })
                         registerNotify.then((e) => {
                             this.login = false;
-                            console.error("NOT REGISTERED");
                         });
-                    }
+                    };
                 }),
 
                 (error => {
                     console.error(error);
+
                     this.loading = false;
                     this.action = null;
                     this.GoogleAttempt = false;
@@ -322,16 +341,8 @@ export class LoginComponent implements OnInit {
                         position: "top"
                     });
                 })
-            )
-        } else {
-            notie.alert({
-                type: 'info',
-                text: "Rellena todos los campos",
-                stay: false,
-                time: 3,
-                position: "top"
-            });
-        }
+            );
+        };
 
     }
 
@@ -345,8 +356,10 @@ export class LoginComponent implements OnInit {
     recoveryAccount(): void {
         if (this.formRecoveryPwd.valid) {
             this.loading = true;
-            let account = this.formRecoveryPwd.value.account.toString();
-            let typeAccount = '';
+
+            let account: string = this.formRecoveryPwd.value.account.toString();
+
+            let typeAccount: string = '';
 
             if (account.length == 10 && !account.includes('@') && !account.includes('.')) {
                 typeAccount = 'number';
@@ -359,10 +372,12 @@ export class LoginComponent implements OnInit {
                 type: typeAccount
             };
 
-            this._client.postRequest(`${this._server}/user/recovery`, data).subscribe(
+            this.subRecoverPwd$ ? this.subRecoverPwd$.unsubscribe() : true;
+
+            this.subRecoverPwd$ = this._client.postRequest(`${this._server}/user/recovery`, data).subscribe(
                 (res: RecoveryAttempt) => {
                     this.loading = false;
-                    console.log(res);
+
                     if (res.recovering) {
                         this.recoveryPwd = false;
                         this.recoveryPwdCode = true;
@@ -370,156 +385,102 @@ export class LoginComponent implements OnInit {
                         this.token_recovery = res.token;
                         this.clockInit();
                     } else {
-                        let registerNotify = new Promise((resolve) => {
-                            notie.alert({
-                                type: 'error',
-                                text: "No existe la cuenta que intenta recuperar",
-                                stay: false,
-                                time: 2,
-                                position: "top"
-                            });
-                            setTimeout(function () {
-                                resolve(true);
-                            }, 2000);
-                        })
-                        registerNotify.then((e) => {
-                            console.log("RECOVERY FAILED");
+                        notie.alert({
+                            type: 'error',
+                            text: "No existe la cuenta que intenta recuperar",
+                            stay: false,
+                            time: 2,
+                            position: "top"
                         });
                     };
                 },
                 (error: any) => {
                     this.loading = false;
-                    console.error(error)
-                    alert("Recovering error")
+
+                    console.error(error);
                 }
             );
         } else {
-            let registerNotify = new Promise((resolve) => {
-                notie.alert({
-                    type: 'info',
-                    text: "Rellena el campo",
-                    stay: false,
-                    time: 2,
-                    position: "top"
-                });
-                setTimeout(function () {
-                    resolve(true);
-                }, 2000);
-            })
-            registerNotify.then((e) => {
-                console.log("RECOVERY CANCEL");
+            notie.alert({
+                type: 'info',
+                text: "Rellena el campo",
+                stay: false,
+                time: 2,
+                position: "top"
             });
-        }
+        };
     }
 
     validateRecoveryAccCode(): void {
         if (this.formRecoveryPwdCode.value.code) {
             let code: string = this.formRecoveryPwdCode.value.code.toString();
-            if (code.length == 6) {
-                const data = {
-                    token: this.token_recovery,
-                    code: code
-                }
-
-                this.loading = true;
-
-                this._client.postRequest(`${this._server}/user/validate/recoverycode`, data).subscribe(
-                    (res: RecoveryAccount) => {
-                        this.loading = false;
-                        if (res.recovered) {
-                            this.token_recovery = res.token;
-                            this.recoveryPwdSetPwd = true;
-                            this.recoveryPwd = false;
-                            this.recoveryPwdCode = false;
-                            if (this.intervalTimeClock) {
-                                clearInterval(this.intervalTimeClock);
-                            };
-                            this.clockInit();
-
-                            let registerNotify = new Promise((resolve) => {
-                                notie.alert({
-                                    type: 'info',
-                                    text: "Codigo validado correctamente",
-                                    stay: false,
-                                    time: 2,
-                                    position: "top"
-                                });
-                                setTimeout(function () {
-                                    resolve(true);
-                                }, 2000);
-                            })
-                            registerNotify.then((e) => {
-                                console.log("RECOVERY SUCCESS");
-                            });
-                        } else {
-                            let registerNotify = new Promise((resolve) => {
-                                notie.alert({
-                                    type: 'error',
-                                    text: "Codigo incorrecto",
-                                    stay: false,
-                                    time: 2,
-                                    position: "top"
-                                });
-                                setTimeout(function () {
-                                    resolve(true);
-                                }, 2000);
-                            })
-                            registerNotify.then((e) => {
-                                console.log("RECOVERY SUCCESS");
-                            });
-                        }
-                    },
-                    (error: any) => {
-                        this.loading = false;
-                        console.log("ERROR");
-                        console.error(error);
-                    }
-                );
-
-            } else {
-                let registerNotify = new Promise((resolve) => {
-                    notie.alert({
-                        type: 'error',
-                        text: "Ingresa un código válido",
-                        stay: false,
-                        time: 2,
-                        position: "top"
-                    });
-                    setTimeout(function () {
-                        resolve(true);
-                    }, 2000);
-                })
-                registerNotify.then((e) => {
-                    console.log("RECOVERY CANCEL");
-                });
+            const data = {
+                token: this.token_recovery,
+                code: code
             }
+
+            this.loading = true;
+
+            this.subValidateRecoverPwd$ ? this.subValidateRecoverPwd$.unsubscribe() : true;
+
+            this.subValidateRecoverPwd$ = this._client.postRequest(`${this._server}/user/validate/recoverycode`, data).subscribe(
+                (res: RecoveryAccount) => {
+                    this.loading = false;
+
+                    if (res.recovered) {
+                        this.token_recovery = res.token;
+                        this.recoveryPwdSetPwd = true;
+                        this.recoveryPwd = false;
+                        this.recoveryPwdCode = false;
+
+                        this.intervalTimeClock ? clearInterval(this.intervalTimeClock) : true;
+
+                        this.clockInit();
+
+                        notie.alert({
+                            type: 'info',
+                            text: "Codigo validado correctamente",
+                            stay: false,
+                            time: 2,
+                            position: "top"
+                        });
+                    } else {
+                        notie.alert({
+                            type: 'error',
+                            text: "Codigo incorrecto",
+                            stay: false,
+                            time: 2,
+                            position: "top"
+                        });
+                    };
+                },
+                (error: any) => {
+                    this.loading = false;
+
+                    console.error(error);
+                }
+            );
+
         } else {
-            let registerNotify = new Promise((resolve) => {
-                notie.alert({
-                    type: 'info',
-                    text: "Rellena el campo",
-                    stay: false,
-                    time: 2,
-                    position: "top"
-                });
-                setTimeout(function () {
-                    resolve(true);
-                }, 2000);
-            })
-            registerNotify.then((e) => {
-                console.log("RECOVERY CANCEL");
+            notie.alert({
+                type: 'info',
+                text: "Rellena el campo",
+                stay: false,
+                time: 2,
+                position: "top"
             });
-        }
+        };
     }
 
     validateChangePwd(): void {
         if (this.formRecoverySetPwd.valid) {
-            const pwd = this.formRecoverySetPwd.value.password;
-            const check_pwd = this.formRecoverySetPwd.value.check_password;
+            const pwd: string = this.formRecoverySetPwd.value.password;
+            const check_pwd: string = this.formRecoverySetPwd.value.check_password;
 
             if (pwd == check_pwd) {
                 if (pwd.length >= 8) {
                     this.loading = true;
+
                     const data = {
                         token: this.token_recovery,
                         pwd: pwd
@@ -663,5 +624,9 @@ export class LoginComponent implements OnInit {
         this.recoveryPwd = false;
         this.recoveryPwdSetPwd = false;
         this.token_recovery = null;
+    }
+
+    setFocused(action: number): void {
+        action == 1 ? this.userField.nativeElement.focus() : this.nameRegisterField.nativeElement.focus();
     }
 }
