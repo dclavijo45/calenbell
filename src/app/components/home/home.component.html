@@ -1,4 +1,4 @@
-<div class="section overflow-hidden">
+<div [ngClass]="TC.MODE.bg_general[TC.THEME_ACTIVE]" class="section overflow-hidden">
     <div class="row">
         <div class="col l3">
             <app-aside-info></app-aside-info>
@@ -18,15 +18,17 @@
                                 <a routerLink="/controlevento"
                                     class="btn-floating btn-small waves-effect waves-light left mt-2 cyan darken-4 mr-4"><i
                                         class="material-icons">add</i></a>
-                                <button class="waves-effect waves-light btn left mt-2 cyan lighten-1 mr-4"
+
+                                <button type="button" class="waves-effect waves-light btn left mt-2 cyan lighten-1 mr-4"
                                     [disabled]="eventsSelected.length != 1 || loading" (click)="editEvent()"><i
                                         class="material-icons left">assignment</i>Editar</button>
-                                <button class="waves-effect waves-light btn left mt-2 red"
+                                <button type="button" class="waves-effect waves-light btn left mt-2 red"
                                     [disabled]="eventsSelected.length <= 0  || loading" (click)="deleteEvents()"><i
                                         class="material-icons left ">cancel</i>Borrar</button>
                             </div>
                         </div>
                     </div>
+
                     <div class="max-h-301px overflow-auto scroll-1 box-shadow-1" GetSizeScroll>
                         <table class="white border-radius-5px position-relative">
                             <ng-container *ngIf="eventsRequest.length >= 1 && !loading">
@@ -37,7 +39,7 @@
                                                 (click)="selectAllCheckboxes()"
                                                 class="cursor-pointer">{{eventsSelected.length}}</span>
                                             <span
-                                                *ngIf="eventsSelected.length == eventsRequest.length || this.eventsSelected.length == 0"><label><input
+                                                *ngIf="eventsSelected.length == getEventsOwner().length || this.eventsSelected.length == 0"><label><input
                                                         type="checkbox" class="checkbox-cus-1"
                                                         (click)="checkBoxSelectAllClick()"
                                                         [(ngModel)]="checkBoxSelectAll "><span></span></label></span>
@@ -77,27 +79,32 @@
                                 <ng-container *ngIf="eventsRequest.length > 0 && !loading">
 
                                     <ng-container *ngFor="let item of eventsRequest | slice:0:lazyLoadCharge">
-                                        <tr class="nth-child-cus-1 hover-cus-1 cursor-pointer">
+                                        <tr class="nth-child-cus-1 hover-cus-1 cursor-pointer"
+                                            (click)="viewInfoProduct(item.id)">
                                             <td class="center"><label>
-                                                    <input type="checkbox" (click)="checkBoxClick(item.id)"
-                                                        [(ngModel)]="item.check">
+                                                    <input type="checkbox" *ngIf="item.owner"
+                                                        (click)="checkBoxClick(item.id)" [(ngModel)]="item.check">
+
+                                                    <span *ngIf="!item.owner" class="left ml-5 cursor-pointer"><i
+                                                            class="material-icons red-text"
+                                                            (click)="leftToEvent(item.id)">logout</i></span>
                                                     <span> </span>
                                                 </label></td>
 
-                                            <td *ngIf="item.title.length > 15" [title]="item.title">
+                                            <td *ngIf="item.title.length > 13" [title]="item.title">
                                                 {{item.title.slice(0,
-                                                15)+"..."}}</td>
-                                            <td *ngIf="item.title.length <= 15" [title]="item.title">
+                                                13)+"..."}}</td>
+                                            <td *ngIf="item.title.length <= 13" [title]="item.title">
                                                 {{item.title}}</td>
 
                                             <td>{{item.hour}}</td>
 
                                             <td>{{item.day}}/{{item.month}}/{{item.year}}</td>
 
-                                            <td *ngIf="item.description.length >= 22" [title]="item.description">
+                                            <td *ngIf="item.description.length >= 19" [title]="item.description">
                                                 {{item.description.slice(0,
-                                                22)+"..."}}</td>
-                                            <td *ngIf="item.description.length <= 21" [title]="item.description">
+                                                19)+"..."}}</td>
+                                            <td *ngIf="item.description.length <= 19" [title]="item.description">
                                                 {{item.description}}</td>
 
                                             <td class="text-center">{{item.icon.length > 0
