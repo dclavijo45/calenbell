@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subject } from 'rxjs'
 import { Location } from '@angular/common';
 import { ClientService } from 'src/app/services/client.service';
-import * as M from 'src/app/services/materialize.js';
 import notie from 'notie';
 import { Router } from '@angular/router';
 import { TokenAuthStateService } from 'src/app/services/token-auth-state.service';
@@ -16,6 +15,8 @@ import { ControlEventsService } from 'src/app/services/control-events.service';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { IHour } from 'src/app/interfaces/i-hour';
 import { IDate } from 'src/app/interfaces/i-date';
+import * as M from 'src/app/services/materialize.js';
+import { ThemeColorService } from 'src/app/services/theme-color.service';
 
 @Component({
     selector: 'app-manage-event',
@@ -31,7 +32,8 @@ export class ManageEventComponent implements OnInit {
         private createCalendarService: CreateCalendarService,
         private listEmojiService: ListEmojisService,
         private location: Location,
-        private controlEventsService: ControlEventsService) { }
+        private controlEventsService: ControlEventsService,
+        public TC: ThemeColorService) { }
 
     public actionEvent: string = null;
     public formEvent: FormGroup;
@@ -40,7 +42,7 @@ export class ManageEventComponent implements OnInit {
     public loading: boolean = false;
     public dataEntry = {
         title: null,
-        type_ev: '',
+        type_ev: 0,
         date: '',
         description: '',
         hour: '',
@@ -57,17 +59,10 @@ export class ManageEventComponent implements OnInit {
         end: 12
     }
 
-
-
     public obsHour = new Subject<string>();
     public obsDate = new Subject<string>();
 
     ngOnInit(): void {
-        M.AutoInit();
-        let elems = document.querySelectorAll('.datepicker');
-        M.Datepicker.init(elems, {
-            format: 'yyyy-mm-dd'
-        });
 
         this.formEvent = this.formB.group({
             titulo: ['', Validators.required],
@@ -101,7 +96,7 @@ export class ManageEventComponent implements OnInit {
                             }, 2000);
                         })
                         Notify.then((e) => {
-                            console.log("SET DATE ERROR");
+                            console.error("SET DATE ERROR");
                         });
                     } else {
 
@@ -129,7 +124,7 @@ export class ManageEventComponent implements OnInit {
                                     }, 2000);
                                 })
                                 Notify.then((e) => {
-                                    console.log("HOUR IS INVALID");
+                                    console.error("HOUR IS INVALID");
                                 });
 
                             } else {
@@ -235,6 +230,69 @@ export class ManageEventComponent implements OnInit {
         );
     }
 
+    ngAfterViewInit(): void {
+        M.AutoInit();
+        const elems = document.querySelectorAll('.datepicker');
+
+        const options = {
+            format: 'yyyy-mm-dd',
+            i18n: {
+                months: [
+                    'Enero',
+                    'Febrero',
+                    'Marzo',
+                    'Abril',
+                    'Mayo',
+                    'Junio',
+                    'Julio',
+                    'Agosto',
+                    'Septiembre',
+                    'Octubre',
+                    'Noviembre',
+                    'Diciembre'
+                ],
+                monthsShort: [
+                    'Enero',
+                    'Feb',
+                    'Marzo',
+                    'Abri',
+                    'Mayo',
+                    'Junio',
+                    'Julio',
+                    'Agost',
+                    'Sept',
+                    'Octub',
+                    'Noviem',
+                    'Diciem'
+                ],
+                weeksdays: [
+                    'Domingo',
+                    'Lunes',
+                    'Martes',
+                    'Miercoles',
+                    'Jueves',
+                    'Viernes',
+                    'Sabado'
+                ],
+                weekdaysShort: [
+                    'Dom',
+                    'Lun',
+                    'Mar',
+                    'Mie',
+                    'Jue',
+                    'Vie',
+                    'Sab'
+                ],
+                weekdaysAbbrev: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+                cancel: 'Cancelar',
+                clear: 'Limpiar'
+            }
+        };
+
+        const t = M.Datepicker.init(elems, options);
+
+    }
+
     ngOnDestroy(): void {
         this.controlEventsService.resetControlEventData()
         this.controlEventsService.actionChangedNow(null);
@@ -249,13 +307,13 @@ export class ManageEventComponent implements OnInit {
             year: dateNowD.getFullYear(),
             month: ((dateNowD.getMonth() + 1) <= 9 ? '0' + (dateNowD.getMonth() + 1) : (dateNowD.getMonth() + 1)).toString(),
             day: (dateNowD.getDate() <= 9 ? '0' + dateNowD.getDate() : dateNowD.getDate()).toString()
-        }
+        };
 
         let SelectedDateNow: IDate = {
             year: parseInt(this.dataEntry.date.slice(0, 4)),
             month: this.dataEntry.date.slice(5, 7),
             day: this.dataEntry.date.slice(8, 10)
-        }
+        };
 
         if (SelectedDateNow.year == todayDate.year
             &&
@@ -263,7 +321,8 @@ export class ManageEventComponent implements OnInit {
             &&
             SelectedDateNow.day == todayDate.day
         ) {
-            // alert("HOY");
+            // Fecha de hoy
+
             let dateNow: string = `${dateNowD.getHours() <= 9 ? '0' + dateNowD.getHours() : dateNowD.getHours()}:${dateNowD.getMinutes()}`;
 
             let dateSelected: string = this.convertTo24Hour(this.dataEntry.hour);
@@ -271,14 +330,14 @@ export class ManageEventComponent implements OnInit {
             let dateNowEnd: IHour = {
                 hour: null,
                 minute: null
-            }
+            };
 
             let dateSelectedEnd: IHour = {
                 hour: null,
                 minute: null
-            }
+            };
 
-            console.log(`Compare: ${dateSelected} with ${dateNow}`);
+            // console.log(`Compare: ${dateSelected} with ${dateNow}`);
 
             if (dateNow.slice(0, 2) == "0:") {
                 dateNowEnd.hour = 0;
@@ -296,24 +355,28 @@ export class ManageEventComponent implements OnInit {
                 dateSelectedEnd.minute = parseInt(dateSelected.slice(3));
             }
 
-            console.log(dateSelectedEnd);
-            console.log(dateNowEnd);
+            if (dateSelectedEnd.hour < dateNowEnd.hour) {
+                return false;
 
+            } else if (dateSelectedEnd.hour > dateNowEnd.hour) {
+                return true;
 
-            if (dateSelectedEnd.hour <= dateNowEnd.hour
+            } else if (dateSelectedEnd.hour == dateNowEnd.hour
                 &&
                 dateSelectedEnd.minute <= dateNowEnd.minute
             ) {
-
-                console.log("HORA ES MENOR!");
-
                 return false;
-            } else {
-                console.log("HORA ES MAYOR!");
+
+            } else if (dateSelectedEnd.hour == dateNowEnd.hour
+                &&
+                dateSelectedEnd.minute > dateNowEnd.minute
+            ) {
                 return true;
             }
+
         } else {
-            // alert("NO ES HOY");
+            // No es fecha de hoy
+
             return true;
         }
 
@@ -321,7 +384,6 @@ export class ManageEventComponent implements OnInit {
 
     filterDate(): boolean {
         // Reading date
-
         let dateSelectedD: string = this.dataEntry.date;
 
         let dateNowD: Date = new Date();
@@ -330,30 +392,97 @@ export class ManageEventComponent implements OnInit {
             year: dateNowD.getFullYear(),
             month: ((dateNowD.getMonth() + 1) <= 9 ? '0' + (dateNowD.getMonth() + 1) : (dateNowD.getMonth() + 1)).toString(),
             day: (dateNowD.getDate() <= 9 ? '0' + dateNowD.getDate() : dateNowD.getDate()).toString()
-        }
+        };
 
         let dateSelectedEnd: IDate = {
             year: parseInt(dateSelectedD.slice(0, 4)),
             month: dateSelectedD.slice(5, 7),
             day: dateSelectedD.slice(8, 10)
-        }
+        };
 
-        console.log(dateSelectedEnd);
-        console.log(dateNowEnd);
+        // validate today
 
-
-
-        if (dateSelectedEnd.year < dateNowEnd.year
-            ||
-            parseInt(dateSelectedEnd.month) < parseInt(dateNowEnd.month)
-            ||
-            parseInt(dateSelectedEnd.day) < parseInt(dateNowEnd.day)
-        ) {
-
+        if (dateSelectedEnd.year < dateNowEnd.year) {
             return false;
 
-        } else {
+        } else if ((dateSelectedEnd.year == dateNowEnd.year
+            &&
+            parseInt(dateSelectedEnd.month) == parseInt(dateNowEnd.month)
+            &&
+            parseInt(dateSelectedEnd.day) == parseInt(dateNowEnd.day))) {
+
             return true;
+
+        } else if ((dateSelectedEnd.year < dateNowEnd.year
+            &&
+            parseInt(dateSelectedEnd.month) == parseInt(dateNowEnd.month)
+            &&
+            parseInt(dateSelectedEnd.day) == parseInt(dateNowEnd.day)
+        )) {
+            return false;
+
+        } else if ((dateSelectedEnd.year == dateNowEnd.year
+            &&
+            parseInt(dateSelectedEnd.month) < parseInt(dateNowEnd.month)
+            &&
+            parseInt(dateSelectedEnd.day) == parseInt(dateNowEnd.day)
+        )) {
+            return false;
+
+        } else if ((dateSelectedEnd.year == dateNowEnd.year
+            &&
+            parseInt(dateSelectedEnd.month) == parseInt(dateNowEnd.month)
+            &&
+            parseInt(dateSelectedEnd.day) > parseInt(dateNowEnd.day)
+        )) {
+            return true;
+
+        } else if ((dateSelectedEnd.year == dateNowEnd.year
+            &&
+            parseInt(dateSelectedEnd.month) > parseInt(dateNowEnd.month)
+            &&
+            parseInt(dateSelectedEnd.day) == parseInt(dateNowEnd.day)
+        )) {
+            return true;
+
+        } else if ((dateSelectedEnd.year == dateNowEnd.year
+            &&
+            parseInt(dateSelectedEnd.month) > parseInt(dateNowEnd.month)
+            &&
+            parseInt(dateSelectedEnd.day) > parseInt(dateNowEnd.day)
+        )) {
+            return true;
+
+        } else if ((dateSelectedEnd.year == dateNowEnd.year
+            &&
+            parseInt(dateSelectedEnd.month) > parseInt(dateNowEnd.month)
+            &&
+            parseInt(dateSelectedEnd.day) < parseInt(dateNowEnd.day)
+        )) {
+            return true;
+
+        } else if ((dateSelectedEnd.year == dateNowEnd.year
+            &&
+            parseInt(dateSelectedEnd.month) == parseInt(dateNowEnd.month)
+            &&
+            parseInt(dateSelectedEnd.day) < parseInt(dateNowEnd.day)
+        )) {
+            return false;
+
+        } else if ((dateSelectedEnd.year == dateNowEnd.year
+            &&
+            parseInt(dateSelectedEnd.month) < parseInt(dateNowEnd.month)
+            &&
+            parseInt(dateSelectedEnd.day) < parseInt(dateNowEnd.day)
+        )) {
+            return false;
+        } else if ((dateSelectedEnd.year == dateNowEnd.year
+            &&
+            parseInt(dateSelectedEnd.month) < parseInt(dateNowEnd.month)
+            &&
+            parseInt(dateSelectedEnd.day) > parseInt(dateNowEnd.day)
+        )) {
+            return false;
         }
 
     }
@@ -371,9 +500,8 @@ export class ManageEventComponent implements OnInit {
             date: this.formEvent.value.fecha,
             description: this.formEvent.value.descripcion,
             type_ev: this.formEvent.value.tipo_evento,
-            icon: this.formEvent.value.icono
+            icon: this.formEvent.value.icono,
         }
-        console.log(data);
 
         if (data.date && data.description && data.hour && data.title && data.type_ev) {
             this.loading = true;
@@ -382,7 +510,10 @@ export class ManageEventComponent implements OnInit {
                     console.log(res);
                     this.loading = false;
 
-                    if (!res.auth_token) this._auth.logout();
+                    if (!res.auth_token) {
+                        this._auth.logout();
+                        return;
+                    };
 
                     if (res.saved) {
                         let Notify = new Promise((resolve) => {
@@ -448,7 +579,7 @@ export class ManageEventComponent implements OnInit {
     }
 
     editEvent(): void {
-        let hour = this.convertTo24Hour(this.formEvent.value.hora.replace(" ", ""));
+        const hour = this.convertTo24Hour(this.formEvent.value.hora.replace(" ", ""));
 
         const data = {
             title: this.formEvent.value.titulo,
@@ -458,10 +589,9 @@ export class ManageEventComponent implements OnInit {
             type_ev: this.formEvent.value.tipo_evento,
             icon: this.formEvent.value.icono,
             id_event: this.dataEntry.id
-        }
-        console.log(data);
+        };
 
-        if (data.date && data.description && data.hour && data.title && data.type_ev) {
+        if (this.formEvent.valid) {
             Swal.fire({
                 title: '¿Confirmar cambios?',
                 showDenyButton: true,
@@ -477,7 +607,10 @@ export class ManageEventComponent implements OnInit {
                             console.log(res);
                             this.loading = false;
 
-                            if (!res.auth_token) this._auth.logout();
+                            if (!res.auth_token) {
+                                this._auth.logout();
+                                return;
+                            };
 
                             if (res.saved) {
                                 let Notify = new Promise((resolve) => {
@@ -493,26 +626,38 @@ export class ManageEventComponent implements OnInit {
                                     }, 1000);
                                 })
                                 Notify.then((e) => {
-                                    console.log("EVENT EDIT SUCCESS");
-                                    // this.createCalendarService.createNewEventChanged();
                                     this.Router.navigate(['/home']);
                                 });
-                            } else {
-                                let Notify = new Promise((resolve) => {
+
+                            };
+
+                            if (!res.saved) {
+
+                                const reasons = {
+                                    1: () => {
+                                        notie.alert({
+                                            type: 'error',
+                                            text: "Tienes participantes en el evento, primero quítalos!",
+                                            stay: false,
+                                            time: 3,
+                                            position: "top"
+                                        });
+                                    }
+
+                                };
+
+                                const showNotificationError = reasons[res.reason] ? reasons[res.reason] : () => {
                                     notie.alert({
                                         type: 'error',
-                                        text: "Evento no editado",
+                                        text: "Ha ocurrido un problema, contacta soporte",
                                         stay: false,
-                                        time: 1,
+                                        time: 2,
                                         position: "top"
                                     });
-                                    setTimeout(function () {
-                                        resolve(true);
-                                    }, 1000);
-                                })
-                                Notify.then((e) => {
-                                    console.log("EVENT EDIT ERROR");
-                                });
+                                };
+
+                                showNotificationError();
+
                             }
 
                         },
@@ -520,45 +665,31 @@ export class ManageEventComponent implements OnInit {
                             console.log(err);
                             this.loading = false;
                         }
-                    )
-                } else {
-                    let Notify = new Promise((resolve) => {
-                        notie.alert({
-                            type: 'info',
-                            text: "Edición de evento cancelada",
-                            stay: false,
-                            time: 1,
-                            position: "top"
-                        });
-                        setTimeout(function () {
-                            resolve(true);
-                        }, 1000);
-                    })
-                    Notify.then((e) => {
-                        console.log("EVENT EDIT CANCEL");
-                    });
+                    );
+
                 }
-            })
+
+                if (!result.isConfirmed) {
+                    notie.alert({
+                        type: 'info',
+                        text: "Edición de evento cancelada",
+                        stay: false,
+                        time: 1,
+                        position: "top"
+                    });
+                };
+
+            });
 
         } else {
-            console.log(this.formEvent.status);
-            console.log(data);
-            let Notify = new Promise((resolve) => {
-                notie.alert({
-                    type: 'info',
-                    text: "Rellene los campos",
-                    stay: false,
-                    time: 1,
-                    position: "top"
-                });
-                setTimeout(function () {
-                    resolve(true);
-                }, 1000);
-            })
-            Notify.then((e) => {
-                console.log("EVENT EDIT ERROR");
+            notie.alert({
+                type: 'info',
+                text: "Rellene los campos",
+                stay: false,
+                time: 2,
+                position: "top"
             });
-        }
+        };
     }
 
     convertTo24Hour(time_ch): string {
@@ -599,16 +730,11 @@ export class ManageEventComponent implements OnInit {
 
     fixErrorFormEvent(): void {
         this.formEvent.value.hora = this.dataEntry.hour;
-        // this.formEvent.value.fecha = this.dataEntry.date;
     }
 
     setDate(f): void {
         this.dataEntry.date = f;
         this.changeDate(f);
-    }
-
-    alert() {
-        alert("alert");
     }
 
     isChangedHour(): Observable<string> {
@@ -648,4 +774,6 @@ export class ManageEventComponent implements OnInit {
     onBack() {
         this.location.back();
     }
+
+
 }
