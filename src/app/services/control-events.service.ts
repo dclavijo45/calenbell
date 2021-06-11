@@ -10,11 +10,7 @@ import { TokenAuthStateService } from './token-auth-state.service';
 })
 export class ControlEventsService {
 
-    constructor(private createCalendarService: CreateCalendarService,
-        private _client: ClientService,
-        private _auth: TokenAuthStateService) { }
-
-
+    constructor() { }
 
     public controlEventData: EventsRequest = {
         id: null,
@@ -26,7 +22,8 @@ export class ControlEventsService {
         description: null,
         type_ev: null,
         icon: null,
-        check: null
+        check: null,
+        owner: null
     }
 
     resetControlEventData(): void {
@@ -40,7 +37,8 @@ export class ControlEventsService {
             description: null,
             type_ev: null,
             icon: null,
-            check: null
+            check: null,
+            owner: null
         }
     }
 
