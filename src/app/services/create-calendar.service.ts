@@ -17,7 +17,8 @@ export class CreateCalendarService {
         status: [],
         description: [],
         title: [],
-        time: []
+        time: [],
+        owner: [],
     }
 
     public eventsRequest: EventsRequest[] = [];
