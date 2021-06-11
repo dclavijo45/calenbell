@@ -87,81 +87,80 @@
   color: white;
 }
 
-.style-cus-1{
-    color:#4a414c;
-    font-weight: 800;
-    opacity: 0.6;
+.style-cus-1 {
+  color: #4a414c;
+  font-weight: 800;
+  opacity: 0.6;
 }
 
 .style-cus-2 {
-    border-radius: 39%;
-    padding: 10%;
-    cursor: pointer;
-    width: 90%;
+  border-radius: 39%;
+  padding: 10%;
+  width: 90%;
 }
 
-.min-max-h-125px{
-    min-height: 125px;
-    max-height: 125px;
+.min-max-h-125px {
+  min-height: 125px;
+  max-height: 125px;
 }
 
 /* Colores de eventos */
 
-.b-color-1{
-    border: 2px solid #e53935 !important;
+.b-color-1 {
+  border: 2px solid #e53935 !important;
 }
 
-.b-color-2{
-    border: 2px solid #d81b60 !important;
+.b-color-2 {
+  border: 2px solid #d81b60 !important;
 }
 
-.b-color-3{
-    border: 2px solid #8e24aa !important;
+.b-color-3 {
+  border: 2px solid #8e24aa !important;
 }
 
-.b-color-4{
-    border: 2px solid #5e35b1 !important;
+.b-color-4 {
+  border: 2px solid #5e35b1 !important;
 }
-.b-color-5{
-    border: 2px solid #3949ab !important;
-}
-
-.b-color-6{
-    border: 2px solid #1e88e5 !important;
-}
-.b-color-7{
-    border: 2px solid #039be5 !important;
+.b-color-5 {
+  border: 2px solid #3949ab !important;
 }
 
-.b-color-8{
-    border: 2px solid #00acc1 !important;
+.b-color-6 {
+  border: 2px solid #1e88e5 !important;
 }
-.b-color-9{
-    border: 2px solid #00897b !important;
+.b-color-7 {
+  border: 2px solid #039be5 !important;
+}
+
+.b-color-8 {
+  border: 2px solid #00acc1 !important;
+}
+.b-color-9 {
+  border: 2px solid #00897b !important;
 }
 
 .floating-ball {
-    position: absolute;
-    margin-top: -10px;
-    margin-left: 0.4%;
-    min-height: 1.15rem !important; 
-    min-width: 1.15rem !important; 
-    font-size: 0.8rem;
-    color: white;
-    background-color: red;
-    border-radius: 50%;
+  position: absolute;
+  margin-top: -10px;
+  margin-left: 0.4%;
+  min-height: 1.15rem !important;
+  min-width: 1.15rem !important;
+  font-size: 0.8rem;
+  color: white;
+  background-color: red;
+  border-radius: 50%;
 }
 
 .floating-ball-fix-l2 {
-    position: absolute;
-    margin-top: -10px;
-    margin-left: 0.2%;
-    min-height: 1.15rem !important; 
-    min-width: 1.15rem !important; 
-    font-size: 0.8rem;
-    color: white;
-    background-color: red;
-    border-radius: 50%;
+  position: absolute;
+  margin-top: -10px;
+  margin-left: 0.2%;
+  min-height: 1.15rem !important;
+  min-width: 1.15rem !important;
+  font-size: 0.8rem;
+  color: white;
+  background-color: red;
+  border-radius: 50%;
 }
 
 /* Box floating info calendar */
@@ -172,23 +171,35 @@
   transition: visibility 0s linear 0.3s, opacity 0.3s linear;
 }
 .rex:hover > .box-info-float {
-	visibility: visible;
-	opacity: 1;
-	position: absolute;
-	transition-delay: 0s;
+  visibility: visible;
+  opacity: 1;
+  position: absolute;
+  transition-delay: 0s;
 }
 
 .box-info-float {
-	position: absolute;
-	margin-top: -10.3%;
-    max-height: 150px;
-    min-height: 150px;
-    max-width: 200px;
-    min-width: 200px;
-    margin-left: 0%;
-    z-index: 1000;
+  position: absolute;
+  margin-top: -10.3%;
+  max-height: 150px;
+  min-height: 150px;
+  max-width: 200px;
+  min-width: 200px;
+  margin-left: 0%;
+  z-index: 1000;
 }
 
-.font-size-17px{
-    font-size: 17px;
+.font-size-17px {
+  font-size: 17px;
+}
+
+.hover-cus-1:hover {
+  background-color: #e0e0e0 !important;
+}
+
+.hover-cus-2:hover {
+  background-color: #00897b !important;
+}
+
+.border-radius-5px {
+  border-radius: 5px;
 }

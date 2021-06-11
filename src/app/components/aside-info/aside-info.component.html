@@ -1,13 +1,16 @@
-<div class="row" (mousedown)="false">
-    <div class="col l12">
+<div class="row">
+    <div class="col s12">
+        <!-- Calendario -->
         <div class="calendario grey lighten-5 border-radius-10px">
             <div class="calendar box-shadow-1">
                 <div class="calendar__info">
-                    <div class="calendar__prev material-icons black-text" id="prev-month" (click)="prevMonth()">
+                    <div class="calendar__prev material-icons black-text hover-cus-1 border-radius-5px" id="prev-month"
+                        (click)="prevMonth()">
                         chevron_left</div>
                     <div class="calendar__month" id="month">{{daysMonth.month}}</div>
                     <div class="calendar__year" id="year">{{daysMonth.year}}</div>
-                    <div class="calendar__next material-icons black-text" id="next-month" (click)="nextMonthClick()">
+                    <div class="calendar__next material-icons black-text hover-cus-1 border-radius-5px" id="next-month"
+                        (click)="nextMonthClick()">
                         chevron_right</div>
                 </div>
                 <div class="calendar__week">
@@ -19,48 +22,52 @@
                     <div class="calendar__day calendar__item style-cus-1">Sa</div>
                     <div class="calendar__day calendar__item style-cus-1">Do</div>
                 </div>
-                <div class="progress" *ngIf="loading">
+                <!-- <div class="progress" *ngIf="loading">
                     <div class="indeterminate"></div>
-                </div>
+                </div> -->
                 <div class="calendar__dates" id="dates">
                     <ng-container *ngFor="let item of daysMonth.data">
 
+                        <!--Dias de mes pasado-->
                         <div *ngIf="item.isLast && (!item.today && !item.event)"
-                            class="calendar__date calendar__item calendar__last-days style-cus-2"
-                            (click)="createEventSelectDate(item.day, this.daysMonth.month, this.daysMonth.year)">
+                            class="calendar__date calendar__item calendar__last-days style-cus-2 cursor-normal">
                             {{item.day}}
                         </div>
-                        <!--Dias de mes pasado-->
 
-                        <div *ngIf="item.today && (!item.event && !item.isLast)"
-                            class="calendar__date calendar__item style-cus-2 teal lighten-1 white-text"
-                            (click)="createEventSelectDate(item.day, this.daysMonth.month, this.daysMonth.year)">
-                            {{item.day}}</div>
                         <!--Dia de hoy-->
+                        <div *ngIf="item.today && (!item.event && !item.isLast)"
+                            class="calendar__date calendar__item style-cus-2 teal lighten-1 white-text hover-cus-2 cursor-pointer"
+                            (click)="createEventSelectDate(item.day, this.daysMonth.month, this.daysMonth.year)">
+                            {{item.day}}
+                            <ng-container *ngIf="eventsRequest.length >= 1">
+                                <span class="floating-ball-fix-l2">{{eventsRequest.length}}</span>
+                            </ng-container>
+                        </div>
 
+                        <!--Dias con eventos-->
                         <div *ngIf="item.event && (!item.isLast && !item.today)"
-                            class="calendar__date calendar__item style-cus-2 rex" [ngClass]="randomClasses()"
+                            class="calendar__date calendar__item style-cus-2 hover-cus-1 rex cursor-pointer"
+                            [ngClass]="randomClasses()"
                             (click)="createEventSelectDate(item.day, this.daysMonth.month, this.daysMonth.year)">
                             {{item.day}}
                             <span class=""
                                 [ngClass]="{'floating-ball': item.day <= 9, 'floating-ball-fix-l2': item.day >= 10}">{{item.numEv}}</span>
-                            <span
+                            <!-- <span
                                 class="box-info-float overflow-auto scroll-1 text-black border-radius-10px grey lighten-4 row box-shadow-1">
                                 <span class="col l12 p-1">
                                     <span class="font-size-17px">
                                         hii
                                     </span>
                                 </span>
-                            </span>
+                            </span> -->
                         </div>
-                        <!--Dias con eventos-->
 
+                        <!--Dias normales-->
                         <div *ngIf="!item.event && (!item.isLast && !item.today)"
-                            class="calendar__date calendar__item style-cus-2"
+                            class="calendar__date calendar__item style-cus-2 hover-cus-1 cursor-pointer"
                             (click)="createEventSelectDate(item.day, this.daysMonth.month, this.daysMonth.year)">
                             {{item.day}}
                         </div>
-                        <!--Dias normales-->
 
                     </ng-container>
                 </div>
@@ -69,13 +76,14 @@
 
         </div>
 
+        <!-- Eventos de hoy -->
         <div class="mt-4 grey lighten-5 border-radius-10px box-shadow-1">
             <h5 class="pt-2 center">Eventos de hoy</h5>
             <div class="min-max-h-125px px-4 overflow-auto scroll-1">
-                <div class="progress" *ngIf="loading">
+                <!-- <div class="progress" *ngIf="loading">
                     <div class="indeterminate"></div>
-                </div>
-                <table class="white border-radius-5px position-relative" *ngIf="!loading">
+                </div> -->
+                <table class="white border-radius-5px position-relative">
                     <thead>
                         <tr>
                             <!--Not found events today-->

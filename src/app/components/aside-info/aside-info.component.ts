@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { DateEvents } from 'src/app/interfaces/date-events';
 import { EventsRequest } from 'src/app/interfaces/events-request';
@@ -7,12 +7,14 @@ import { CreateCalendarService } from 'src/app/services/create-calendar.service'
 import { InfoCurrentEventService } from 'src/app/services/info-current-event.service';
 import { TokenAuthStateService } from 'src/app/services/token-auth-state.service';
 import notie from 'notie';
-import { ControlEventsService } from 'src/app/services/control-events.service';
+import { GetEventsRequest } from 'src/app/interfaces/get-events-request';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-aside-info',
     templateUrl: './aside-info.component.html',
-    styleUrls: ['./aside-info.component.css']
+    styleUrls: ['./aside-info.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AsideInfoComponent implements OnInit {
 
@@ -20,7 +22,7 @@ export class AsideInfoComponent implements OnInit {
         private Router: Router,
         private _client: ClientService,
         private _auth: TokenAuthStateService,
-        private infoCurrentEventService: InfoCurrentEventService) { }
+        private infoCurrentEventService: InfoCurrentEventService, private cdr: ChangeDetectorRef) { }
 
     private _server: string = this._client._server;
     private _token: string = localStorage.getItem('token');
@@ -74,7 +76,6 @@ export class AsideInfoComponent implements OnInit {
                 }
                 this.dateEvents = null;
                 this.dateEvents = data;
-                console.log("ASIDE INFO SUB 1");
 
                 this.writeMonth(this.numeroDeMes);
 
@@ -83,38 +84,34 @@ export class AsideInfoComponent implements OnInit {
 
         this.createCalendarService.listenerEventsRequestChange().subscribe(
             (request: EventsRequest[]) => {
-                console.log("ASIDE INFO SUB 2");
 
                 this.eventsRequest = [];
 
                 if (request.length != 0) {
                     for (let i = 0; i < request.length; i++) {
                         if (request[i].day == this._DIAHOY && request[i].month == this._MESHOY + 1 && request[i].year == this._ANIOHOY) {
-                            this.eventsRequest.push(request[i])
-                        }
-                    }
-                }
+                            this.eventsRequest.push(request[i]);
+                        };
+                    };
+                };
 
             }
         );
 
         this.infoCurrentEventService.listenerLazyLoadChange().subscribe(
             (lazyLoadCharge: number) => {
-                console.log("ASIDE INFO SUB 3");
                 this.lazyLoadCharge = lazyLoadCharge;
             }
         );
 
         this.createCalendarService.listenerDetectLoadingChange().subscribe(
             (loading: boolean) => {
-                console.log("ASIDE INFO SUB 5");
                 this.loading = loading;
             }
         );
 
         this.createCalendarService.listenerUpdateEventsAPI().subscribe(
             (res: boolean) => {
-                console.log("ASIDE INFO SUB 4");
                 res ? this.getEvents() : false;
             }
         );
@@ -188,7 +185,7 @@ export class AsideInfoComponent implements OnInit {
 
         }
 
-    };
+    }
 
     nextMonthClick() {
         this.nextMonth()
@@ -216,18 +213,18 @@ export class AsideInfoComponent implements OnInit {
         } else {
             return this.isLeap() ? 29 : 28;
         }
-    };
+    }
 
     isLeap() {
         return (
             (this.añoActual % 100 !== 0 && this.añoActual % 4 === 0) || this.añoActual % 400 === 0
         );
-    };
+    }
 
     diaInicial() {
         let start = new Date(this.añoActual, this.numeroDeMes, 1);
         return start.getDay() - 1 === -1 ? 6 : start.getDay() - 1;
-    };
+    }
 
     lastMonth() {
         if (this.numeroDeMes !== 0) {
@@ -238,7 +235,7 @@ export class AsideInfoComponent implements OnInit {
         }
 
         this.configurarFecha();
-    };
+    }
 
     nextMonth() {
         if (this.numeroDeMes !== 11) {
@@ -246,21 +243,20 @@ export class AsideInfoComponent implements OnInit {
         } else {
             this.numeroDeMes = 0;
             this.añoActual++;
-        }
+        };
 
         this.configurarFecha();
-    };
+    }
 
     configurarFecha() {
         this.currentDate.setFullYear(this.añoActual, this.numeroDeMes, this.diaActual);
-        // month.textContent = this.meses[this.numeroDeMes];
-        // year.textContent = this.añoActual.toString();
-        // dates.textContent = "";
+
         this.writeMonth(this.numeroDeMes);
-    };
+    }
 
     randomClasses() {
-        let classes = [{ 'b-color-1': true }, { 'b-color-2': true }, { 'b-color-3': true }, { 'b-color-4': true }, { 'b-color-5': true }, { 'b-color-6': true }, { 'b-color-7': true }, { 'b-color-8': true }, { 'b-color-9': true }]
+        let classes = [{ 'b-color-1': true }, { 'b-color-2': true }, { 'b-color-3': true }, { 'b-color-4': true }, { 'b-color-5': true }, { 'b-color-6': true }, { 'b-color-7': true }, { 'b-color-8': true }, { 'b-color-9': true }];
+
         return classes[Math.floor(Math.random() * classes.length)];
     }
 
@@ -280,11 +276,10 @@ export class AsideInfoComponent implements OnInit {
             time = time.slice(1);  // Remove full string match value
             time[5] = +time[0] < 12 ? ' AM' : ' PM'; // Set AM/PM
             time[0] = +time[0] % 12 || 12; // Adjust hours
-        }
+        };
+
         return time.join(''); // return adjusted time or original string
     }
-
-    // get events
 
     getEvents(): void {
         this.createCalendarService.loadingHome = true;
@@ -292,7 +287,8 @@ export class AsideInfoComponent implements OnInit {
         this.createCalendarService.LoadingChanged();
 
         this._client.getRequest(`${this._server}/user/manage/events`, this._token).subscribe(
-            (res: any) => {
+            (res: GetEventsRequest) => {
+
                 this.createCalendarService.loadingHome = false;
                 this.createCalendarService.LoadingChanged();
 
@@ -303,7 +299,8 @@ export class AsideInfoComponent implements OnInit {
                     this.createCalendarService.eventsRequest = [];
                     this.createCalendarService.EventsRequestChanged();
                     this._auth.logout();
-                }
+                    return;
+                };
 
                 this.createCalendarService.dateEvents = {
                     day: [],
@@ -313,21 +310,33 @@ export class AsideInfoComponent implements OnInit {
                     status: [],
                     description: [],
                     title: [],
-                    time: []
-                }
+                    time: [],
+                    owner: []
+                };
 
                 for (let i = 0; i < this.createCalendarService.eventsRequest.length; i++) {
-                    this.createCalendarService.dateEvents.day.push(this.createCalendarService.eventsRequest[i].day.toString())
-                    this.createCalendarService.dateEvents.month.push((this.createCalendarService.eventsRequest[i].month - 1) == 0 ? 12 : this.createCalendarService.eventsRequest[i].month - 1)
-                    this.createCalendarService.dateEvents.year.push(this.createCalendarService.eventsRequest[i].year)
-                    this.createCalendarService.dateEvents.description.push(this.createCalendarService.eventsRequest[i].description)
-                    this.createCalendarService.dateEvents.status.push(1)
-                    this.createCalendarService.dateEvents.type.push(parseInt(this.createCalendarService.eventsRequest[i].type_ev))
-                    this.createCalendarService.dateEvents.title.push(this.createCalendarService.eventsRequest[i].title)
-                    this.createCalendarService.dateEvents.time.push(this.createCalendarService.eventsRequest[i].hour)
+                    this.createCalendarService.dateEvents.day.push(this.createCalendarService.eventsRequest[i].day.toString());
 
-                }
+                    this.createCalendarService.dateEvents.month.push((this.createCalendarService.eventsRequest[i].month - 1) == 0 ? 12 : this.createCalendarService.eventsRequest[i].month - 1);
+
+                    this.createCalendarService.dateEvents.year.push(this.createCalendarService.eventsRequest[i].year);
+
+                    this.createCalendarService.dateEvents.description.push(this.createCalendarService.eventsRequest[i].description);
+
+                    this.createCalendarService.dateEvents.status.push(1);
+
+                    this.createCalendarService.dateEvents.type.push(this.createCalendarService.eventsRequest[i].type_ev);
+
+                    this.createCalendarService.dateEvents.title.push(this.createCalendarService.eventsRequest[i].title);
+
+                    this.createCalendarService.dateEvents.time.push(this.createCalendarService.eventsRequest[i].hour);
+
+                    this.createCalendarService.dateEvents.owner.push(this.createCalendarService.eventsRequest[i].owner);
+
+                };
+
                 this.createCalendarService.change();
+                this.cdr.detectChanges();
 
             },
             (err) => {
@@ -355,6 +364,7 @@ export class AsideInfoComponent implements OnInit {
                 });
 
             }
-        )
+        );
+
     }
 }
