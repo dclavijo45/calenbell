@@ -1,1 +1,921 @@
-<p>user-config works!</p>
+<div [ngClass]="TC.MODE.bg_general[TC.THEME_ACTIVE]" class="section overflow-hidden">
+    <div class="row">
+        <div class="col l3">
+            <app-aside-info></app-aside-info>
+        </div>
+
+        <div class="col l9">
+            <div class="row mb-0 pr-1">
+                <div class="col l12 z-depth-1 pl-0 grey lighten-5 pr-0">
+                    <div class="row-mb-0">
+                        <div class="col l12 px-0">
+                            <ul class="tabs" #tabInstance>
+                                <li class="tab col l3"><a href="#entryprofile">Perfil</a></li>
+                                <li class="tab col l3"><a href="#entrysecurity">Seguridad</a></li>
+                                <li class="tab col l3"><a href="#entrycustomizable">Personalización</a></li>
+                                <li class="tab col l3"><a href="#entrynotify">Notificaciones</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="row mb-0">
+                        <div class="col l12 pt-2 px-4">
+                            <div class="row mb-0">
+
+                                <div id="entryprofile"
+                                    class="col l12 grey lighten-5 max-h-300px overflow-y-auto scroll-1">
+
+                                    <div class="row mb-0">
+                                        <div class="col l12">
+
+                                            <!-- Img profile and name profile -->
+                                            <div class="row">
+                                                <div class="col l12">
+
+                                                    <div class="row mb-0">
+
+                                                        <!-- Img profile -->
+                                                        <div class="col l6 min-h-75px py-1 border-cus-1"
+                                                            *ngIf="!loading.img">
+                                                            <div class="row mb-0">
+                                                                <div class="col l12">
+
+                                                                    <div class="row mb-0">
+                                                                        <div class="col l2 center mt-1--5-6">
+
+                                                                            <div class="row mb-0">
+                                                                                <div class="col l12">
+                                                                                    <i
+                                                                                        class="material-icons">assignment_ind</i>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="row mb-0">
+                                                                                <div
+                                                                                    class="col l12 font-family-1 font-weight-600">
+                                                                                    Foto de perfil
+
+                                                                                    <input type="file" #NewImg
+                                                                                        class="not-visible w-5 position-fixed"
+                                                                                        (change)="setNewImg($event)"
+                                                                                        accept=".png,.jpeg,.jpg">
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <!-- Current img -->
+                                                                        <div class="col l2 mt-1--5-6">
+                                                                            <img [src]="infoProfileSvc.info_profile.photo"
+                                                                                class="img-responsive img-thumbnail border-radius-50 w-h-60px d-block mx-auto"
+                                                                                alt="Img profile">
+                                                                        </div>
+
+                                                                        <!-- Arrow indicator -->
+                                                                        <div class="col l2 center mt-1--5-6">
+                                                                            <i *ngIf="actions.isUpdatingImgProfile"
+                                                                                class="material-icons font-size-54px">east</i>
+                                                                        </div>
+
+                                                                        <!-- Img new -->
+                                                                        <div class="col l2 mt-1--5-6">
+                                                                            <img *ngIf="actions.isUpdatingImgProfile"
+                                                                                [src]="values.newImgSet"
+                                                                                class="img-responsive img-thumbnail border-radius-50 w-h-60px d-block mx-auto cursor-pointer"
+                                                                                alt="New img profile"
+                                                                                (click)="NewImg.click()"
+                                                                                title="Click aquí para elegir otra foto">
+                                                                        </div>
+
+                                                                        <!-- Options img -->
+                                                                        <div class="col l4 mt-3">
+                                                                            <div class="row mb-0">
+                                                                                <div class="col l6 center">
+
+                                                                                    <i *ngIf="!actions.isUpdatingImgProfile"
+                                                                                        class="material-icons font-size-40px cursor-pointer border-radius-50 hover-cus-1"
+                                                                                        (click)="NewImg.click()"
+                                                                                        title="Cambiar foto de perfil">mode_edit</i>
+
+                                                                                    <i *ngIf="actions.isUpdatingImgProfile"
+                                                                                        class="material-icons font-size-40px cursor-pointer green-text border-radius-50 hover-cus-1"
+                                                                                        title="Guardar nueva foto de perfil"
+                                                                                        (click)="sendImgChange()">done</i>
+                                                                                </div>
+
+                                                                                <div class="col l6 center">
+                                                                                    <i *ngIf="!actions.isUpdatingImgProfile"
+                                                                                        class="material-icons font-size-40px cursor-pointer red-text border-radius-50 hover-cus-1"
+                                                                                        (click)="setImgDefault()"
+                                                                                        title="Borrar foto de perfil">delete</i>
+
+                                                                                    <i *ngIf="actions.isUpdatingImgProfile"
+                                                                                        class="material-icons font-size-40px cursor-pointer red-text border-radius-50 hover-cus-1"
+                                                                                        (click)="cancelSetNewImg()"
+                                                                                        title="Cancelar cambio de foto de perfil">close</i>
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Loading img -->
+                                                        <div class="col l6 center" *ngIf="loading.img">
+                                                            <div class="loading-2"></div>
+                                                        </div>
+
+                                                        <!-- Name profile -->
+                                                        <div class="col l6 min-h-75px pt-1 pb-2--4-5 border-cus-1"
+                                                            *ngIf="!loading.name">
+
+                                                            <div class="row mb-0">
+                                                                <div class="col l12 pl-0">
+
+                                                                    <div class="row-mb-0">
+
+                                                                        <div class="col l10 mt-2">
+
+                                                                            <div class="row mb-0">
+                                                                                <div
+                                                                                    class="col l12 font-family-1 font-weight-600">
+                                                                                    <i class="material-icons">person</i>
+                                                                                    <span
+                                                                                        class="position-absolute ml-1">Nombre</span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="row mb-0 mt-1--5-6">
+                                                                                <div class="col l12 font-family-2 font-weight-500"
+                                                                                    [formGroup]="formName">
+                                                                                    <span
+                                                                                        *ngIf="!actions.isUpdatingName"
+                                                                                        class="ml-9">{{infoProfileSvc.info_profile.name}}</span>
+
+                                                                                    <input #InputName
+                                                                                        *ngIf="actions.isUpdatingName"
+                                                                                        type="text" class="ml-9 w-50"
+                                                                                        placeholder="Escriba su nuevo nombre"
+                                                                                        formControlName="name"
+                                                                                        maxlength="31"
+                                                                                        (keyup.enter)="sendNameChange()">
+                                                                                    <!-- Errors -->
+                                                                                    <span
+                                                                                        *ngIf="formName.touched && formName.invalid && rf_Name.dirty"
+                                                                                        class="color-invalid d-block w-100 font-weight-500 ml-9">
+
+                                                                                        <span
+                                                                                            *ngIf="rf_Name.errors.required">No
+                                                                                            dejes vacio el nuevo
+                                                                                            nombre</span>
+
+                                                                                        <span
+                                                                                            *ngIf="rf_Name.errors.minlength && !rf_Name.errors.pattern">El
+                                                                                            nombre debe tener mínimo 3
+                                                                                            letras</span>
+
+                                                                                        <span
+                                                                                            *ngIf="rf_Name.errors.maxlength && !rf_Name.errors.pattern">El
+                                                                                            nombre debe tener máximo 30
+                                                                                            letras</span>
+
+                                                                                        <span
+                                                                                            *ngIf="rf_Name.errors.pattern">El
+                                                                                            nombre solo debe tener
+                                                                                            letras</span>
+
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <div class="col l2 center mt-2--3-5">
+                                                                            <div class="row mb-0">
+                                                                                <div *ngIf="!actions.isUpdatingName"
+                                                                                    class="row mb-0">
+                                                                                    <div class="col l12">
+                                                                                        <i (click)="setNameChange()"
+                                                                                            class="material-icons font-size-40px cursor-pointer border-radius-50 hover-cus-1"
+                                                                                            title="Editar nombre">edit</i>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div *ngIf="actions.isUpdatingName"
+                                                                                    class="row mb-0">
+
+                                                                                    <div class="col l6 ml-0 pl-0">
+                                                                                        <i [ngClass]="{'hover-cus-1 cursor-pointer green-text': formName.valid}"
+                                                                                            class="material-icons font-size-40px border-radius-50 "
+                                                                                            title="Guardar nuevo nombre"
+                                                                                            (click)="sendNameChange()">done</i>
+                                                                                    </div>
+
+                                                                                    <div class="col l6 ml-0 pl-0">
+                                                                                        <i (click)="cancelChangeName()"
+                                                                                            class="material-icons font-size-40px cursor-pointer red-text border-radius-50 hover-cus-1"
+                                                                                            title="No guardar nuevo nombre">close</i>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <!-- Loading name -->
+                                                        <div class="col l6 center" *ngIf="loading.name">
+                                                            <div class="loading-2"></div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <!-- Email and username -->
+                                            <div class="row">
+                                                <div class="col l12">
+
+                                                    <div class="row mb-0">
+
+                                                        <!-- Username -->
+                                                        <div class="col l6 min-h-75px pt-1 pb-2--0-5 border-cus-1"
+                                                            *ngIf="!loading.username">
+                                                            <div class="row mb-0">
+                                                                <div class="col l12">
+
+                                                                    <div class="row mb-0">
+                                                                        <div class="col l10 mt-2">
+
+                                                                            <div class="row mb-0">
+                                                                                <div
+                                                                                    class="col l12 font-family-1 font-weight-600">
+                                                                                    <i
+                                                                                        class="material-icons">verified_user</i>
+                                                                                    <span
+                                                                                        class="position-absolute ml-1">Nombre
+                                                                                        de usuario</span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="row mb-0 mt-1--5-6">
+                                                                                <div class="col l12 font-family-2 font-weight-500"
+                                                                                    [formGroup]="formUserName">
+                                                                                    <span
+                                                                                        *ngIf="!actions.isUpdatingUserName"
+                                                                                        class="ml-9">{{infoProfileSvc.info_profile.user
+                                                                                        |
+                                                                                        validateUsernameConfig:
+                                                                                        infoProfileSvc.info_profile.user:'username'}}</span>
+
+                                                                                    <input #InputUserName
+                                                                                        *ngIf="actions.isUpdatingUserName"
+                                                                                        type="text" class="ml-9 w-70"
+                                                                                        placeholder="Escriba su nuevo nombre de usuario"
+                                                                                        formControlName="username"
+                                                                                        maxlength="41"
+                                                                                        (keyup.enter)="sendUserNameChange()">
+
+                                                                                    <!-- Errors -->
+                                                                                    <span
+                                                                                        *ngIf="formUserName.touched && formUserName.invalid && rf_UserName.dirty"
+                                                                                        class="color-invalid d-block w-100 font-weight-500 ml-9">
+
+                                                                                        <span
+                                                                                            *ngIf="rf_UserName.errors.required">No
+                                                                                            dejes vacio el nuevo
+                                                                                            nombre de usuario</span>
+
+                                                                                        <span
+                                                                                            *ngIf="rf_UserName.errors.minlength && !rf_UserName.errors.pattern">El
+                                                                                            nombre de usuario debe tener
+                                                                                            mínimo 4
+                                                                                            carácteres</span>
+
+                                                                                        <span
+                                                                                            *ngIf="rf_UserName.errors.maxlength && !rf_UserName.errors.pattern">El
+                                                                                            nombre de usuario debe tener
+                                                                                            máximo 40
+                                                                                            letras</span>
+
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <div class="col l2 center mt-2--3-5">
+                                                                            <div class="row mb-0">
+                                                                                <div *ngIf="!actions.isUpdatingUserName"
+                                                                                    class="row mb-0">
+                                                                                    <div class="col l12">
+                                                                                        <i (click)="setUserNameChange()"
+                                                                                            class="material-icons font-size-40px cursor-pointer border-radius-50 hover-cus-1"
+                                                                                            title="Editar nombre de usuario">edit</i>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div *ngIf="actions.isUpdatingUserName"
+                                                                                    class="row mb-0">
+
+                                                                                    <div class="col l6 ml-0 pl-0">
+                                                                                        <i [ngClass]="{'cursor-pointer green-text hover-cus-1': formUserName.valid}"
+                                                                                            class="material-icons font-size-40px border-radius-50"
+                                                                                            title="Guardar nuevo nombre de usuario"
+                                                                                            (click)="sendUserNameChange()">done</i>
+                                                                                    </div>
+
+                                                                                    <div class="col l6 ml-0 pl-0">
+                                                                                        <i (click)="cancelChangeUserName()"
+                                                                                            class="material-icons font-size-40px cursor-pointer red-text border-radius-50 hover-cus-1"
+                                                                                            title="No guardar nuevo nombre de usuario">close</i>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Loading name -->
+                                                        <div class="col l6 center" *ngIf="loading.username">
+                                                            <div class="loading-2"></div>
+                                                        </div>
+
+                                                        <!-- Email -->
+                                                        <div class="col l6 min-h-75px pt-1 pb-2--0-5 border-cus-1"
+                                                            *ngIf="!loading.email">
+                                                            <div class="row mb-0">
+                                                                <div class="col l12 pl-0">
+                                                                    <div class="row-mb-0">
+
+                                                                        <div class="col l10 mt-2">
+
+                                                                            <div class="row mb-0">
+                                                                                <div
+                                                                                    class="col l12 font-family-1 font-weight-600">
+                                                                                    <i class="material-icons">email</i>
+                                                                                    <span
+                                                                                        class="position-absolute ml-1">Correo</span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="row mb-0 mt-1--5-6">
+                                                                                <div class="col l12 font-family-2 font-weight-500"
+                                                                                    [formGroup]="formEmail">
+                                                                                    <span
+                                                                                        *ngIf="!actions.isUpdatingEmail"
+                                                                                        class="ml-9">{{infoProfileSvc.info_profile.user
+                                                                                        | validateUsernameConfig:
+                                                                                        infoProfileSvc.info_profile.email:'email'}}</span>
+
+                                                                                    <input #InputEmail
+                                                                                        *ngIf="actions.isUpdatingEmail"
+                                                                                        type="text" class="ml-9 w-50"
+                                                                                        placeholder="Escriba su nuevo correo"
+                                                                                        formControlName="email"
+                                                                                        maxlength="256"
+                                                                                        (keyup.enter)="sendEmailChange()">
+
+                                                                                    <!-- Errors -->
+                                                                                    <span
+                                                                                        *ngIf="formEmail.touched && formEmail.invalid && rf_Email.dirty"
+                                                                                        class="color-invalid d-block w-100 font-weight-500 ml-9">
+
+                                                                                        <span
+                                                                                            *ngIf="rf_Email.errors.required">No
+                                                                                            dejes vacio el nuevo
+                                                                                            correo</span>
+
+                                                                                        <span
+                                                                                            *ngIf="rf_Email.errors.maxlength">El
+                                                                                            correo debe tener
+                                                                                            máximo 255
+                                                                                            carácteres</span>
+
+                                                                                        <span
+                                                                                            *ngIf="rf_Email.errors.email && !rf_Email.errors.maxlength">Escribe
+                                                                                            de forma correcta tu nuevo
+                                                                                            correo</span>
+
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <div class="col l2 center mt-2--3-5">
+                                                                            <div class="row mb-0">
+                                                                                <div *ngIf="!actions.isUpdatingEmail"
+                                                                                    class="row mb-0">
+                                                                                    <div class="col l12">
+                                                                                        <i (click)="setEmailChange()"
+                                                                                            class="material-icons font-size-40px cursor-pointer border-radius-50 hover-cus-1"
+                                                                                            title="Editar correo">edit</i>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div *ngIf="actions.isUpdatingEmail"
+                                                                                    class="row mb-0">
+
+                                                                                    <div class="col l6 ml-0 pl-0">
+                                                                                        <i [ngClass]="{'cursor-pointer green-text cursor-pointer green-text hover-cus-1': formEmail.valid}"
+                                                                                            class="material-icons font-size-40px border-radius-50"
+                                                                                            title="Guardar nuevo correo"
+                                                                                            (click)="sendEmailChange()">done</i>
+                                                                                    </div>
+
+                                                                                    <div class="col l6 ml-0 pl-0">
+                                                                                        <i (click)="cancelChangeEmail()"
+                                                                                            class="material-icons font-size-40px cursor-pointer red-text border-radius-50 hover-cus-1"
+                                                                                            title="No guardar nuevo correo">close</i>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <!-- Loading email -->
+                                                        <div class="col l6 center" *ngIf="loading.email">
+                                                            <div class="loading-2"></div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <!-- Number telephone -->
+                                            <div class="row mb-0">
+                                                <div class="col l12">
+
+                                                    <div class="row mb-0">
+                                                        <div class="col l3">
+                                                            <!-- Offset -->
+                                                        </div>
+
+                                                        <div class="col l6 min-h-75px pt-1 pb-2 border-cus-1"
+                                                            *ngIf="!loading.tel">
+                                                            <div class="row mb-0">
+                                                                <div class="col l12 pl-0">
+
+                                                                    <div class="row-mb-0">
+
+                                                                        <div class="col l10 mt-2">
+
+                                                                            <div class="row mb-0">
+                                                                                <div
+                                                                                    class="col l12 font-family-1 font-weight-600">
+                                                                                    <i
+                                                                                        class="material-icons">smartphone</i>
+                                                                                    <span
+                                                                                        class="position-absolute ml-1">Número
+                                                                                        de teléfono</span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="row mb-0 mt-1--5-6">
+                                                                                <div class="col l12 font-family-2 font-weight-500"
+                                                                                    [formGroup]="formTel">
+                                                                                    <span
+                                                                                        *ngIf="!actions.isUpdatingNumberTel"
+                                                                                        class="ml-9">{{infoProfileSvc.info_profile.user
+                                                                                        | validateUsernameConfig:
+                                                                                        infoProfileSvc.info_profile.number_tel:
+                                                                                        'tel'}}</span>
+
+                                                                                    <input #InputTel
+                                                                                        *ngIf="actions.isUpdatingNumberTel"
+                                                                                        type="text" class="ml-9 w-70"
+                                                                                        placeholder="Escriba su nuevo número de teléfono"
+                                                                                        formControlName="tel"
+                                                                                        maxlength="10"
+                                                                                        (keyup.enter)="sendTelChange()">
+
+                                                                                    <!-- Errors -->
+                                                                                    <span
+                                                                                        *ngIf="formTel.touched && rf_Tel.dirty"
+                                                                                        class="color-invalid d-block w-100 font-weight-500 ml-9">
+
+                                                                                        <span
+                                                                                            *ngIf="rf_Tel.errors?.required">No
+                                                                                            dejes vacio el nuevo
+                                                                                            número de teléfono</span>
+
+                                                                                        <span
+                                                                                            *ngIf="(rf_Tel.errors?.maxlength || rf_Tel.errors?.minlength) && !rf_Tel.errors?.pattern">El
+                                                                                            número de teléfono debe
+                                                                                            tener 10
+                                                                                            números</span>
+
+                                                                                        <span
+                                                                                            *ngIf="rf_Tel.errors?.pattern">El
+                                                                                            número de teléfono debe
+                                                                                            tener solo
+                                                                                            números</span>
+
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <div class="col l2 center mt-2--3-5">
+                                                                            <div class="row mb-0">
+                                                                                <div *ngIf="!actions.isUpdatingNumberTel"
+                                                                                    class="row mb-0">
+                                                                                    <div class="col l12">
+                                                                                        <i (click)="setNumberTelChange()"
+                                                                                            class="material-icons font-size-40px cursor-pointer border-radius-50 hover-cus-1"
+                                                                                            title="Editar número telefónico">edit</i>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div *ngIf="actions.isUpdatingNumberTel"
+                                                                                    class="row mb-0">
+
+                                                                                    <div class="col l6 ml-0 pl-0">
+                                                                                        <i [ngClass]="{'cursor-pointer green-text hover-cus-1': formTel.valid}"
+                                                                                            class="material-icons font-size-40px border-radius-50"
+                                                                                            title="Guardar nuevo número telefónico"
+                                                                                            (click)="sendTelChange()">done</i>
+                                                                                    </div>
+
+                                                                                    <div class="col l6 ml-0 pl-0">
+                                                                                        <i (click)="cancelChangeTel()"
+                                                                                            class="material-icons font-size-40px cursor-pointer red-text border-radius-50 hover-cus-1"
+                                                                                            title="No guardar nuevo número telefónico">close</i>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <!-- Loading tel -->
+                                                        <div class="col l6 center" *ngIf="loading.tel">
+                                                            <div class="loading-2"></div>
+                                                        </div>
+
+                                                        <div class="col l3">
+                                                            <!-- Offset -->
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div id="entrysecurity" class="col l12 grey lighten-5">
+
+                                    <div class="row mb-0">
+                                        <div class="col l12">
+
+                                            <div class="row mb-0">
+                                                <div class="col l12">
+                                                    <div class="row mb-0">
+
+                                                        <div class="col l6 min-h-75px py-2 border-cus-1"
+                                                            *ngIf="!loading.password">
+                                                            <div class="row mb-0">
+                                                                <div class="col l12 pl-0">
+
+                                                                    <div class="row-mb-0">
+
+                                                                        <div class="col l10 mt-2">
+
+                                                                            <div class="row mb-0">
+                                                                                <div
+                                                                                    class="col l12 font-family-1 font-weight-600">
+                                                                                    <i
+                                                                                        class="material-icons">vpn_key</i>
+                                                                                    <span
+                                                                                        class="position-absolute ml-1">Contraseña</span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="row mb-0 mt-1--5-6">
+                                                                                <div class="col l12 font-family-2 font-weight-500"
+                                                                                    [formGroup]="formPassword">
+                                                                                    <span *ngIf="!actions.isUpdatingPwd"
+                                                                                        class="ml-9">{{infoProfileSvc.info_profile.user
+                                                                                        |
+                                                                                        validateUsernameConfig:null:'password'}}</span>
+
+                                                                                    <input #InputPassword
+                                                                                        *ngIf="actions.isUpdatingPwd"
+                                                                                        type="password"
+                                                                                        class="ml-9 w-70"
+                                                                                        placeholder="Escriba su nueva contraseña"
+                                                                                        formControlName="password"
+                                                                                        maxlength="256"
+                                                                                        (keyup.enter)="sendPwdChange()">
+
+                                                                                    <!-- Errors -->
+                                                                                    <span
+                                                                                        *ngIf="formPassword.touched && formPassword.invalid && rf_Password.dirty"
+                                                                                        class="color-invalid d-block w-100 font-weight-500 ml-9">
+
+                                                                                        <span
+                                                                                            *ngIf="rf_Password.errors.required">No
+                                                                                            dejes vacia la nueva
+                                                                                            contraseña</span>
+
+                                                                                        <span
+                                                                                            *ngIf="rf_Password.errors.minlength">La
+                                                                                            contraseña debe
+                                                                                            tener
+                                                                                            mínimo 6
+                                                                                            carácteres</span>
+
+                                                                                        <span
+                                                                                            *ngIf="rf_Password.errors.maxlength">La
+                                                                                            contraseña debe tener
+                                                                                            máximo 255
+                                                                                            carácteres</span>
+
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <div class="col l2 center mt-2--3-5">
+
+                                                                            <div *ngIf="!actions.isUpdatingPwd"
+                                                                                class="row mb-0">
+                                                                                <div class="col l12">
+                                                                                    <i (click)="setPasswordChange()"
+                                                                                        class="material-icons font-size-40px cursor-pointer border-radius-50 hover-cus-1"
+                                                                                        title="Cambiar contraseña">edit</i>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div *ngIf="actions.isUpdatingPwd"
+                                                                                class="row mb-0">
+                                                                                <div class="col l6 ml-0 pl-0">
+                                                                                    <i [ngClass]="{'cursor-pointer green-text hover-cus-1': formPassword.valid}"
+                                                                                        class="material-icons font-size-40px border-radius-50"
+                                                                                        title="Cambiar contraseña"
+                                                                                        (click)="sendPwdChange()">done</i>
+                                                                                </div>
+
+                                                                                <div class="col l6 ml-0 pl-0">
+                                                                                    <i (click)="cancelChangePassword()"
+                                                                                        class="material-icons font-size-40px cursor-pointer red-text border-radius-50 hover-cus-1"
+                                                                                        title="No cambiar contraseña">close</i>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <!-- Loading password -->
+                                                        <div class="col l6 center" *ngIf="loading.password">
+                                                            <div class="loading-2"></div>
+                                                        </div>
+
+                                                        <div class="col l6">
+                                                            <!-- Offset -->
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div id="entrycustomizable" class="col l12 grey lighten-5">
+
+                                    <div class="row mb-0">
+                                        <div class="col l12">
+
+                                            <div class="row mb-0">
+                                                <div class="col l12">
+                                                    <div class="row mb-0">
+
+                                                        <div class="col l6 min-h-75px py-2">
+                                                            <div class="row mb-0">
+                                                                <div class="col l12 pl-0">
+
+                                                                    <div class="row-mb-0">
+
+                                                                        <div class="col l12 mt-2">
+
+                                                                            <div class="row mb-0">
+                                                                                <div
+                                                                                    class="col l12 font-family-1 font-weight-600">
+                                                                                    <i
+                                                                                        class="material-icons">lightbulb</i>
+                                                                                    <span
+                                                                                        class="position-absolute ml-1">Tema
+                                                                                        Oscuro/Claro</span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="row mb-0 mt-1--5-6">
+                                                                                <div
+                                                                                    class="col l12 font-family-2 font-weight-500">
+                                                                                    <!-- Switch -->
+                                                                                    <div class="switch ml-9">
+                                                                                        <label>
+                                                                                            <i class="material-icons"
+                                                                                                (click)="setThemeColorChange()">light_mode</i>
+                                                                                            <input type="checkbox"
+                                                                                                [(ngModel)]="!modes.isThemeLight"
+                                                                                                (click)="fixSwitch($event)">
+                                                                                            <span class="lever"
+                                                                                                (click)="setThemeColorChange()"></span>
+                                                                                            <i class="material-icons"
+                                                                                                (click)="setThemeColorChange()">nightlight</i>
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="col l6">
+                                                            <!-- Offset -->
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div id="entrynotify" class="col l12 grey lighten-5">
+
+                                    <div class="row mb-0">
+                                        <div class="col l12">
+
+                                            <div class="row mb-0">
+                                                <div class="col l12">
+                                                    <div class="row mb-0">
+
+                                                        <!-- Notify one-one -->
+                                                        <div class="col l6 min-h-75px py-2 border-cus-1">
+                                                            <div class="row mb-0">
+                                                                <div class="col l12 pl-0">
+
+                                                                    <div class="row-mb-0">
+
+                                                                        <div class="col l12 mt-2">
+
+                                                                            <div class="row mb-0">
+                                                                                <div
+                                                                                    class="col l12 font-family-1 font-weight-600">
+                                                                                    <i
+                                                                                        class="material-icons">chat_bubble</i>
+                                                                                    <span
+                                                                                        class="position-absolute ml-1">Notificación
+                                                                                        de mensajes uno a uno
+                                                                                        (Mostrar/Ocultar)
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="row mb-0 mt-1--5-6">
+                                                                                <div
+                                                                                    class="col l12 font-family-2 font-weight-500">
+                                                                                    <!-- Switch -->
+                                                                                    <div class="switch ml-9">
+                                                                                        <label>
+                                                                                            <i class="material-icons"
+                                                                                                (click)="setNotifyModeOneOneChange()">notifications</i>
+                                                                                            <input type="checkbox"
+                                                                                                [(ngModel)]="!modes.isNotifyOneOneMsg"
+                                                                                                (click)="fixSwitch($event)">
+                                                                                            <span class="lever"
+                                                                                                (click)="setNotifyModeOneOneChange()"></span>
+                                                                                            <i class="material-icons"
+                                                                                                (click)="setNotifyModeOneOneChange()">notifications_off</i>
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Notify group -->
+                                                        <div class="col l6 min-h-75px py-2 border-cus-1">
+                                                            <div class="row mb-0">
+                                                                <div class="col l12 pl-0">
+
+                                                                    <div class="row-mb-0">
+
+                                                                        <div class="col l12 mt-2">
+
+                                                                            <div class="row mb-0">
+                                                                                <div
+                                                                                    class="col l12 font-family-1 font-weight-600">
+                                                                                    <i class="material-icons">forum</i>
+                                                                                    <span
+                                                                                        class="position-absolute ml-1">Notificación
+                                                                                        de mensajes en grupos
+                                                                                        (Mostrar/Ocultar)
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="row mb-0 mt-1--5-6">
+                                                                                <div
+                                                                                    class="col l12 font-family-2 font-weight-500">
+                                                                                    <!-- Switch -->
+                                                                                    <div class="switch ml-9">
+                                                                                        <label>
+                                                                                            <i class="material-icons"
+                                                                                                (click)="setNotifyModeGroupChange()">notifications</i>
+                                                                                            <input type="checkbox"
+                                                                                                [(ngModel)]="!modes.isNotifyGroupMsg"
+                                                                                                (click)="fixSwitch($event)">
+
+                                                                                            <span class="lever"
+                                                                                                (click)="setNotifyModeGroupChange()"></span>
+
+                                                                                            <i class="material-icons"
+                                                                                                (click)="setNotifyModeGroupChange()">notifications_off</i>
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

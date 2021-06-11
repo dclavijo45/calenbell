@@ -1,0 +1,115 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap");
+
+.tabs .tab a {
+  color: rgba(6, 7, 7, 0.7);
+  /*Custom Text Color*/
+}
+
+.tabs .tab a:hover {
+  color: rgba(0, 0, 0, 1);
+  /*Custom Color On Hover*/
+}
+
+.tabs .tab a:focus.active {
+  color: rgba(6, 7, 7, 0.7);
+  /*Custom Text Color While Active*/
+  background-color: rgba(21, 101, 192, 0.08);
+  /*Custom Background Color While Active*/
+}
+
+.carousel-slider {
+  min-height: 500px !important;
+}
+
+.min-h-75px {
+  min-height: 75px;
+}
+
+.w-h-60px {
+  width: 60px;
+  height: 60px;
+}
+
+.font-size-70px {
+  font-size: 70px;
+}
+
+.font-size-40px {
+  font-size: 40px;
+}
+
+.font-size-54px {
+  font-size: 54px;
+}
+
+.mt-1--5-6 {
+  margin-top: 1.56%;
+}
+
+.font-family-1 {
+  font-family: "Poppins", sans-serif;
+}
+
+.font-family-2 {
+  font-family: "Noto Sans", sans-serif;
+}
+
+.mt-2--3-5 {
+  margin-top: 2.35%;
+}
+
+.pb-2--4-5 {
+  padding-bottom: 2.45%;
+}
+
+.border-cus-1 {
+  border-left: 1px solid #b4b4b4;
+  border-right: 1px solid #b4b4b4;
+}
+
+.pb-2--0-5 {
+  padding-bottom: 2.05%;
+}
+
+.lever {
+  vertical-align: 4px !important;
+}
+
+.switch label input[type="checkbox"]:checked + .lever {
+  background-color: rgba(0, 0, 0, 0.38);
+}
+
+.switch label input[type="checkbox"]:checked + .lever:after {
+  background-color: rgb(224, 241, 239);
+}
+
+.font-size-20px {
+  font-size: 20px;
+}
+
+.hover-cus-1:hover {
+  background-color: #e7e3e3 !important;
+}
+
+.max-h-300px {
+  max-height: 300px;
+}
+
+.border-cus-2 {
+  border-right: 1px solid #b4b4b4;
+}
+
+.color-invalid {
+  color: #f44336 !important;
+  opacity: 0.8;
+}
+
+.mt--0--7 {
+    margin-top: -0.7% !important;
+}
+
+.ml-0-5 {
+    margin-left: 0.5% !important;
+}
