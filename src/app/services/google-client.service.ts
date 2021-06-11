@@ -21,7 +21,23 @@ export class GoogleClientService {
     }
 
     GoogleInit(): void {
-        this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
+        let interval;
+
+
+        this.authService.signIn(GoogleLoginProvider.PROVIDER_ID)
+            .then((value) => {
+
+            }).catch((err) => {
+                if (err == "Login providers not ready yet. Are there errors on your console?") {
+                    setTimeout(() => {
+                        this.GoogleInit();
+                    }, 2000);
+                } else {
+                    this._listener.next(null);
+                };
+
+            });
+
     }
 
     FacebookInit(): void {
