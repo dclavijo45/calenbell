@@ -3,5 +3,8 @@ export interface LoginResponse {
     logged: boolean,
     name: string,
     token: string,
-    user: string
+    user: string,
+    photo: string,
+    number_tel: number
+    id: number
 }
