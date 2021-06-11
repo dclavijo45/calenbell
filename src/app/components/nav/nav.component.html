@@ -1,23 +1,22 @@
 <!--Nav when is logged-->
-<nav class="blue darken-4" *ngIf="(_auth.isLoggedIn() | async) && !(_rootPageStatus
+<nav [ngClass]="TC.MODE.nav_footer[TC.THEME_ACTIVE]" *ngIf="(_auth.isLoggedIn() | async) && !(_rootPageStatus
 .listenRootPageStatus() | async)">
     <div class="nav-wrapper">
 
-        <ul class="">
-            <li [routerLink]="['/']">
-                <a class="padding-fixed space-nav-fixed-hover"><i class="material-icons">calendar_today</i>
-                </a>
-            </li>
-            <li [routerLink]="['/']">
-                <a class="font-size-title padding-fixed-2">Calenbell</a>
+        <a class="brand-logo ml-1"><img src="https://www.dropbox.com/s/uo5uwlxd9tvvfsq/logo.png?dl=1" width="200"
+                height="50" alt="logo" class="position-img-cus-1 cursor-pointer" [routerLink]="['/']"></a>
+
+        <ul class="right hide-on-med-and-down h-100">
+            <li>
+                <a class="font-family-1 font-tags-link space-nav-fixed-hover p-0">{{infoProfileSvc.info_profile.name.length
+                    >= 31 ?
+                    infoProfileSvc.info_profile.name.slice(0, 31) + '...' :
+                    infoProfileSvc.info_profile.name}}</a>
             </li>
 
-            <li [routerLink]="['/documentation']" [ngClass]="{'active': tagActive == 1}">
-                <a class="font-tags-link">Documentación</a>
-            </li>
-
-            <li (mousedown)="false">
-                <a class="space-nav-fixed-2 space-nav-fixed-hover">&nbsp;</a>
+            <li class="h-100">
+                <a class="h-100 space-nav-fixed-hover"><img [src]="infoProfileSvc.info_profile.photo"
+                        class="img-thumbnail border-radius-50 w-h-45px mt-20" height="45" width="45"></a>
             </li>
 
             <li [routerLink]="['/home']" [ngClass]="{'active': tagActive == 5}">
@@ -25,54 +24,46 @@
             </li>
 
             <li [routerLink]="['/chat']" [ngClass]="{'active': tagActive == 6}">
-                <a class="font-tags-link">Chat</a>
+                <a class="font-tags-link">Chat <span *ngIf="socketWebSvc.chatsWithoutRead != 0"
+                        class="box-number-message red">{{socketWebSvc.chatsWithoutRead >=
+                        100 ?
+                        '99+': socketWebSvc.chatsWithoutRead}}</span></a>
             </li>
 
-            <li [routerLink]="['/settings']" [ngClass]="{'active': tagActive == 7}">
-                <a class="font-tags-link">Configuración</a>
-            </li>
+            <li [routerLink]="['/settings']" [ngClass]="{'active': tagActive == 7}"><a
+                    class="font-tags-link">Configuración</a></li>
 
-            <li (click)="logout()">
-                <a class="font-tags-link">Cerrar sesión</a>
-            </li>
+            <li (click)="logout()"><a class="font-tags-link">Cerrar sesión</a></li>
         </ul>
 
     </div>
 </nav>
 
 <!--Nav when is not logged-->
-<nav class="blue darken-4" *ngIf="!(_auth.isLoggedIn() | async) || (_rootPageStatus
+<nav [ngClass]="TC.MODE.nav_footer[TC.THEME_ACTIVE]" *ngIf="!(_auth.isLoggedIn() | async) || (_rootPageStatus
 .listenRootPageStatus() | async)">
     <div class="nav-wrapper">
 
-        <ul class="">
-            <li [routerLink]="['/']">
-                <a class="padding-fixed space-nav-fixed-hover"><i class="material-icons">calendar_today</i>
-                </a>
-            </li>
-            <li [routerLink]="['/']">
-                <a class="font-size-title padding-fixed-2">Calenbell</a>
-            </li>
+        <a class="brand-logo ml-1"><img src="https://www.dropbox.com/s/uo5uwlxd9tvvfsq/logo.png?dl=1" width="200"
+                height="50" alt="logo" class="position-img-cus-1 cursor-pointer" [routerLink]="['/']"></a>
 
+        <ul class="right hide-on-med-and-down h-100">
             <li [routerLink]="['/documentation']" [ngClass]="{'active': tagActive == 1}">
                 <a class="font-tags-link">Documentación</a>
             </li>
 
-            <li [routerLink]="['/why']" [ngClass]="{'active': tagActive == 2}">
-                <a class="font-tags-link">¿Porqué elegirnos?</a>
-            </li>
-
-            <li (mousedown)="false">
-                <a class="space-nav-fixed space-nav-fixed-hover">&nbsp;</a>
-            </li>
-
-            <li [routerLink]="['/login']" [ngClass]="{'active': tagActive == 3}">
+            <li *ngIf="!(_auth.isLoggedIn() | async)" [routerLink]="['/login']" [ngClass]="{'active': tagActive == 3}">
                 <a class="font-tags-link">Inicia sesión o regístrate</a>
+            </li>
+
+            <li *ngIf="(_auth.isLoggedIn() | async)" [routerLink]="['/login']" [ngClass]="{'active': tagActive == 3}">
+                <a class="font-tags-link">Entrar a la agenda</a>
             </li>
 
             <li [routerLink]="['/contact']" [ngClass]="{'active': tagActive == 4}">
                 <a class="font-tags-link">Contáctanos</a>
             </li>
+
         </ul>
 
     </div>
