@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RootPageStatusService } from 'src/app/services/root-page-status.service';
+import { ThemeColorService } from 'src/app/services/theme-color.service';
 
 @Component({
     selector: 'app-root-home',
@@ -8,7 +9,8 @@ import { RootPageStatusService } from 'src/app/services/root-page-status.service
 })
 export class RootHomeComponent implements OnInit {
 
-    constructor(private _rootPageStatus: RootPageStatusService) { }
+    constructor(private _rootPageStatus: RootPageStatusService,
+        public TC: ThemeColorService) { }
 
     // styles
     private counterEffectStyleOpacityView: number = 0;
