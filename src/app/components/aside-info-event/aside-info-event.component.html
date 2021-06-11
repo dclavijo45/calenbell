@@ -1,10 +1,172 @@
 <div class="row">
-    <div class="col l12 grey lighten-5 border-radius-10px box-shadow-1">
+    <div class="col s12 grey lighten-5 border-radius-10px box-shadow-1">
         <div>
             <h5 class="text-center">Información del evento</h5>
         </div>
-        <div class="max-min-h-460px overflow-auto scroll-1">
+        <div class="max-min-h-460px overflow-hidden scroll-1">
+            <div class="row mt-13" *ngIf="infoCurrentSrv.infoEvent.id != null">
+                <div class="col s12">
 
+                    <!-- title event -->
+                    <div class="row">
+                        <div class="col s12 break-word">
+                            <fieldset
+                                class="border-radius-5px border-color-cus-1 max-h-62px scroll-2 overflow-y-auto pb-6">
+                                <legend class="indigo-text text-lighten-1">&nbsp; Título &nbsp;</legend>
+                                <span class="">
+                                    {{infoCurrentSrv.infoEvent.title}}
+                                </span>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <!-- datetime event -->
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="row mb-0">
+
+                                <!-- Time -->
+                                <div class="col s6">
+                                    <fieldset class="border-radius-5px border-color-cus-1">
+                                        <legend class="indigo-text text-lighten-1">&nbsp; Hora &nbsp;</legend>
+                                        <span class="">
+                                            {{infoCurrentSrv.infoEvent.hour}}
+                                        </span>
+                                    </fieldset>
+                                </div>
+
+                                <!-- Date -->
+                                <div class="col l6">
+                                    <fieldset class="border-radius-5px border-color-cus-1">
+                                        <legend class="indigo-text text-lighten-1">&nbsp; Fecha &nbsp;</legend>
+                                        <span class="">
+                                            {{infoCurrentSrv.infoEvent.date.day + '/' +
+                                            infoCurrentSrv.infoEvent.date.month + '/' +
+                                            infoCurrentSrv.infoEvent.date.year}}
+                                        </span>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- description event -->
+                    <div class="row">
+                        <div class="col s12 break-word">
+                            <fieldset
+                                class="border-radius-5px border-color-cus-1 overflow-y-auto scroll-2 max-min-h-100px pb-6">
+                                <legend class="indigo-text text-lighten-1">&nbsp; Descripción &nbsp;</legend>
+                                <span class="">
+                                    {{infoCurrentSrv.infoEvent.description}}
+                                </span>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <!-- Users joined event -->
+                    <div class="row mb-0">
+                        <div class="col s12">
+                            <fieldset class="border-radius-5px border-color-cus-1 max-min-h-150px pr-0">
+                                <legend class="indigo-text text-lighten-1">&nbsp; Participantes / Amigos &nbsp;</legend>
+
+                                <!-- Users -->
+                                <div class="row mb-0 mr-0">
+                                    <div class="col s12 mb-0 max-min-h-105px overflow-y-auto scroll-2">
+
+                                        <ng-container *ngFor="let user of infoCurrentSrv.infoEvent.participants">
+                                            <div class="row mb-1 pl-4">
+                                                <div class="col s12 box-shadow-contact">
+                                                    <div class="row mb-0">
+
+                                                        <!-- Img profile-->
+                                                        <div class="col s2 px-0">
+                                                            <img class="img-thumbnail border-radius-50 w-h-40px d-block mx-auto"
+                                                                [src]="user.photo" [alt]="user.name">
+                                                        </div>
+
+                                                        <!-- Name profile -->
+                                                        <div class="col s5 left pl-0 p-cus-1" [title]="user.name">
+                                                            {{user.name.length >= 10 ? user.name.slice(0, 10) +
+                                                            '...' :
+                                                            user.name}}
+                                                            <!-- 10 length max -->
+                                                        </div>
+
+                                                        <!-- options profile -->
+                                                        <div class="col s4 px-0 pt-1--6 pb-1">
+                                                            <button type="button"
+                                                                class="waves-effect waves-light btn-small btn-floating blue"
+                                                                title="Agregar al evento"
+                                                                [disabled]="infoCurrentSrv.infoEvent.owner == false || user.statusInvitation == 1 || user.statusInvitation == 3 || loading.addingParticipant"><i
+                                                                    class="material-icons"
+                                                                    (click)="addParticipant(user.id, infoCurrentSrv.infoEvent.id)">add</i></button>
+
+                                                            <!-- Status invitation -->
+                                                            <ng-container>
+                                                                <button
+                                                                    *ngIf="user.statusInvitation == 1 && user.id != infoProfileSvc.info_profile.id"
+                                                                    type="button"
+                                                                    class="btn-small btn-floating green cursor-normal"
+                                                                    title="Hace parte del evento"><i
+                                                                        class="material-icons">done</i></button>
+
+                                                                <button *ngIf="user.statusInvitation == 0" type="button"
+                                                                    class="btn-small btn-floating cursor-normal yellow"><i
+                                                                        class="material-icons black-text"
+                                                                        title="Esperando respuesta a la invitación">access_time</i></button>
+
+                                                                <button *ngIf="user.statusInvitation == null"
+                                                                    type="button"
+                                                                    class="btn-small btn-floating cursor-normal red darken-5"><i
+                                                                        class="material-icons"
+                                                                        title="No hace parte del evento">close</i></button>
+
+                                                                <button *ngIf="user.statusInvitation == 2" type="button"
+                                                                    class="btn-small btn-floating cursor-normal red darken-5"><i
+                                                                        class="material-icons"
+                                                                        title="Invitación rechazada">block</i></button>
+
+                                                                <button *ngIf="user.statusInvitation == 3" type="button"
+                                                                    class="btn-small btn-floating cursor-normal blue-grey"><i
+                                                                        class="material-icons"
+                                                                        title="Propietario del evento">person</i></button>
+
+                                                                <button
+                                                                    *ngIf="infoCurrentSrv.infoEvent.owner == false && user.statusInvitation == 1 && user.id == infoProfileSvc.info_profile.id"
+                                                                    type="button"
+                                                                    class="btn-small btn-floating cursor-normal green"><i
+                                                                        class="material-icons"
+                                                                        title="Perteneces al evento">person</i></button>
+                                                            </ng-container>
+
+                                                            <button *ngIf="!loading.deletingParticipant" type="button"
+                                                                class="waves-effect waves-light btn-small btn-floating blue darken-3"
+                                                                title="Quitar del evento"
+                                                                [disabled]="!((user.statusInvitation == 1 && infoCurrentSrv.infoEvent.owner) || (user.statusInvitation == 3 && !infoCurrentSrv.infoEvent.owner && user.id == infoProfileSvc.info_profile.id))"><i
+                                                                    class="material-icons"
+                                                                    (click)="deleteParticipants(user.id, infoCurrentSrv.infoEvent.id, infoCurrentSrv.infoEvent.typeEvent)">delete</i></button>
+
+                                                            <!-- Fix error loading deleting participant -->
+                                                            <button *ngIf="loading.deletingParticipant" type="button"
+                                                                class="waves-effect waves-light btn-small btn-floating blue darken-3"
+                                                                [disabled]="true"><i
+                                                                    class="material-icons">delete</i></button>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </ng-container>
+
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

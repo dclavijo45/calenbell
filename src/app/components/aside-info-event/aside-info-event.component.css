@@ -1,4 +1,56 @@
-.max-min-h-460px{
-    max-height: 460px;
-    min-height: 460px;
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap");
+
+.max-min-h-460px {
+  max-height: 460px;
+  min-height: 460px;
+}
+
+.border-radius-5px {
+  border-radius: 5px;
+}
+
+.border-color-cus-1 {
+  border-color: #e8eaf6;
+}
+
+.font-family-1 {
+  font-family: "Montserrat", sans-serif;
+}
+
+.font-family-2 {
+  font-family: "Lato", sans-serif;
+}
+
+.max-min-h-100px {
+  max-height: 100px;
+  min-height: 100px;
+}
+
+.w-h-40px {
+  width: 40px;
+  height: 40px;
+}
+
+.pt-1--6 {
+  padding-top: 1.6%;
+}
+
+.max-min-h-150px {
+  max-height: 150px;
+  min-height: 150px;
+}
+
+.max-min-h-105px {
+  max-height: 105px;
+  min-height: 105px;
+}
+
+.p-cus-1 {
+  padding-top: 3%;
+  padding-bottom: 3.3%;
+}
+
+.max-h-62px {
+  max-height: 62px;
 }
