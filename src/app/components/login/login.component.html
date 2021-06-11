@@ -1,4 +1,5 @@
-<div class="section overflow-hidden mt-3-mobile" [ngStyle]="{'opacity': opacityView}">
+<div [ngClass]="TC.MODE.bg_general[TC.THEME_ACTIVE]" class="section overflow-hidden mt-3-mobile h-100"
+    [ngStyle]="{'opacity': opacityView}">
     <div class="row">
         <div class="col s12 center">
             <div [ngClass]="{'log-in': login, 'active': loading}" class="container-cus-1 mx-auto mt-6">
@@ -8,20 +9,17 @@
                         <div class="info-item">
                             <div class="table-cus-1">
                                 <div class="table-cell">
-                                    <p (mousedown)="false">
+                                    <p>
                                         ¿Ya tienes una cuenta?
                                     </p>
-                                    <div (click)="login=!login" class="btn-cus-1" (mousedown)="false">
+                                    <div (click)="login=!login; setFocused(1)" class="btn-cus-1">
                                         Inicia sesión
                                     </div>
-                                    <span class="mt-2 d-block" (mousedown)="false">ó</span>
-                                    <span class="style-cus-1" (mousedown)="false">Crear cuenta con</span>
-                                    <div (mousedown)="false" (click)="googleInit('register')"
-                                        class="btn-cus-1 px-2 mt-15px" (mousedown)="false">
-                                        <span class="font-size-20px">
-                                            <span class="blue-text">G</span><span class="red-text">o</span><span
-                                                class="yellow-text">o</span><span class="blue-text">g</span><span
-                                                class="green-text">l</span><span class="red-text">e</span>
+                                    <span class="mt-2 d-block">ó</span>
+                                    <span class="style-cus-1">Crear cuenta con</span>
+                                    <div (click)="googleInit('register')" class="btn-cus-1 px-2 mt-15px">
+                                        <span>
+                                            Google
                                         </span>
                                     </div>
                                 </div>
@@ -30,19 +28,17 @@
                         <div class="info-item">
                             <div class="table-cus-1">
                                 <div class="table-cell">
-                                    <p (mousedown)="false">
+                                    <p>
                                         ¿No tienes una cuenta?
                                     </p>
-                                    <div (mousedown)="false" (click)="login=!login" class="btn-cus-1 px-2">
+                                    <div (click)="login=!login; setFocused(2)" class="btn-cus-1 px-2">
                                         Crear
                                     </div>
-                                    <span class="mt-2 d-block" (mousedown)="false">ó</span>
-                                    <span class="style-cus-1" (mousedown)="false">Iniciar sesión con</span>
+                                    <span class="mt-2 d-block">ó</span>
+                                    <span class="style-cus-1">Iniciar sesión con</span>
                                     <div (click)="googleInit('login')" class="btn-cus-1 px-2 mt-2">
-                                        <span class="font-size-20px">
-                                            <span class="blue-text">G</span><span class="red-text">o</span><span
-                                                class="yellow-text">o</span><span class="blue-text">g</span><span
-                                                class="green-text">l</span><span class="red-text">e</span>
+                                        <span>
+                                            Google
                                         </span>
                                     </div>
                                 </div>
@@ -64,36 +60,57 @@
                                         </div>
                                     </div>
                                     <span [formGroup]="formLogin"
-                                        *ngIf="!recoveryPwd && !recoveryPwdCode && !recoveryPwdSetPwd">
-                                        <h5 class="center-align" [ngClass]="{'d-none': loading}" (mousedown)="false">
+                                        *ngIf="!recoveryPwd && !recoveryPwdCode && !recoveryPwdSetPwd && !loading">
+                                        <h5 class="center-align" [ngClass]="{'d-none': loading}">
                                             Iniciar sesión</h5>
 
                                         <input #user type="text" formControlName="user" (keydown.enter)="loginUser()"
-                                            placeholder="Usuario" maxlength="40" autofocus>
+                                            placeholder="Usuario" maxlength="40">
+                                        <span *ngIf="rf_userLogin.invalid && rf_userLogin.dirty"
+                                            class="color-invalid position-absolute d-block w-100 font-weight-500 mt--5">
+                                            <!-- Errors -->
+                                            <span *ngIf="rf_userLogin.errors.required">Escribe tu usuario</span>
+
+                                            <span *ngIf="rf_userLogin.errors.minlength">El usuario debe tener
+                                                mínimo 4
+                                                carácteres</span>
+
+                                        </span>
 
                                         <input type="password" formControlName="password" placeholder="Contraseña"
                                             (keydown.enter)="loginUser()" maxlength="255">
+                                        <span *ngIf="rf_passwordLogin.invalid && rf_passwordLogin.dirty"
+                                            class="color-invalid position-absolute d-block w-100 font-weight-500 mt--5">
+                                            <!-- Errors -->
+                                            <span *ngIf="rf_passwordLogin.errors.required">Escribe tu contraseña</span>
 
-                                        <p class="grey-text text-darken-4 hover-cus-1" [ngClass]="{'d-none': loading}"
-                                            (mousedown)="false" (click)="recoveryPwd = !recoveryPwd">
+                                            <span *ngIf="rf_passwordLogin.errors.minlength">La contraseña debe tener
+                                                mínimo 6
+                                                carácteres</span>
+
+                                        </span>
+
+                                        <p class="grey-text text-darken-4 hover-cus-1 mb-2"
+                                            [ngClass]="{'d-none': loading, 'mt-14': rf_passwordLogin.invalid}"
+                                            (click)="recoveryPwd = !recoveryPwd">
                                             Olvidaste tu
                                             contraseña?</p>
 
                                         <button [ngClass]="{'d-none': loading}" (click)="GoogleAttemp=false;loginUser()"
-                                            class="btn waves-effect waves-light pink accent-1 mt-2" (mousedown)="false"
-                                            [disabled]="!formLogin.valid">
+                                            class="btn waves-effect waves-light pink accent-1 mt-2"
+                                            [disabled]="formLogin.invalid">
                                             Iniciar sesión
                                         </button>
 
                                         <div class="btn waves-effect waves-light pink accent-1 mt-2 ml-2 mobile"
-                                            [ngClass]="{'d-none': loading}" (click)="login=!login" (mousedown)="false">
+                                            [ngClass]="{'d-none': loading}" (click)="login=!login">
                                             Crear cuenta
                                         </div>
 
                                     </span>
 
                                     <span [formGroup]="formRecoveryPwd" *ngIf="recoveryPwd && !loading">
-                                        <h5 class="center-align" [ngClass]="{'d-none': loading}" (mousedown)="false">
+                                        <h5 class="center-align" [ngClass]="{'d-none': loading}">
                                             Recupera tu cuenta</h5>
 
                                         <input type="text" formControlName="account" (keydown.enter)="recoveryAccount()"
@@ -110,7 +127,7 @@
                                     </span>
 
                                     <span [formGroup]="formRecoveryPwdCode" *ngIf="recoveryPwdCode && !loading">
-                                        <h5 class="center-align" [ngClass]="{'d-none': loading}" (mousedown)="false">
+                                        <h5 class="center-align" [ngClass]="{'d-none': loading}">
                                             Recupera tu cuenta</h5>
 
                                         <input type="number" formControlName="code"
@@ -130,7 +147,7 @@
                                     </span>
 
                                     <span [formGroup]="formRecoverySetPwd" *ngIf="recoveryPwdSetPwd && !loading">
-                                        <h5 class="center-align" [ngClass]="{'d-none': loading}" (mousedown)="false">
+                                        <h5 class="center-align" [ngClass]="{'d-none': loading}">
                                             Recupera tu cuenta</h5>
 
                                         <input type="password" formControlName="password"
@@ -167,29 +184,74 @@
                                             <div class="indeterminate blue accent-2"></div>
                                         </div>
                                     </div>
-                                    <h5 class="center-align" [ngClass]="{'d-none': loading}" (mousedown)="false">Crea tu
+
+                                    <h5 class="center-align" [ngClass]="{'d-none': loading}">Crea tu
                                         cuenta</h5>
-                                    <input type="text" formControlName="name" (keydown.enter)="registerUser()"
-                                        placeholder="Nombres" maxlength="30">
+
+                                    <input #nameRegister type="text" formControlName="name"
+                                        (keydown.enter)="registerUser()" placeholder="Nombres" maxlength="30">
+                                    <span *ngIf="rf_nameRegister.invalid &&  rf_nameRegister.dirty && !loading"
+                                        class="color-invalid position-absolute d-block w-100 font-weight-500 mt--5">
+                                        <!-- Errors -->
+                                        <span *ngIf="rf_nameRegister.errors.required">Escribe un nombre</span>
+
+                                        <span
+                                            *ngIf="rf_nameRegister.errors.minlength && !rf_nameRegister.errors.pattern">El
+                                            nombre debe tener mínimo 3
+                                            letras</span>
+
+                                        <span *ngIf="rf_nameRegister.errors.pattern">El nombre solo debe tener
+                                            letras</span>
+
+                                    </span>
 
                                     <input type="email" formControlName="email" (keydown.enter)="registerUser()"
                                         placeholder="Correo" maxlength="255">
+                                    <span *ngIf="rf_emailRegister.invalid && rf_emailRegister.dirty && !loading"
+                                        class="color-invalid position-absolute d-block w-100 font-weight-500 mt--5">
+                                        <!-- Errors -->
+                                        <span *ngIf="rf_emailRegister.errors.required">Escribe un correo</span>
+                                        <span
+                                            *ngIf="rf_emailRegister.invalid && !rf_emailRegister.errors.required">Ingresa
+                                            un correo válido</span>
+
+                                    </span>
 
                                     <input type="text" formControlName="user"
                                         (keydown.enter)="GoogleAttempt=false;registerUser()" placeholder="Usuario"
                                         maxlength="40">
+                                    <span *ngIf="rf_userRegister.invalid &&  rf_userRegister.dirty && !loading"
+                                        class="color-invalid position-absolute d-block w-100 font-weight-500 mt--5">
+                                        <!-- Errors -->
+                                        <span *ngIf="rf_userRegister.errors.required">Escribe un usuario</span>
+
+                                        <span *ngIf="rf_userRegister.errors.minlength">El usuario debe ser mínimo de 4
+                                            carácteres</span>
+
+                                    </span>
 
                                     <input type="password" formControlName="password" (keydown.enter)="registerUser()"
-                                        placeholder="Contraseña" maxlength="255">
+                                        placeholder="Contraseña" maxlength="255" class="mb-6">
+                                    <span *ngIf="rf_passwordRegister.invalid &&  rf_passwordRegister.dirty && !loading"
+                                        class="color-invalid position-absolute d-block w-100 font-weight-500 mt--5">
+                                        <!-- Errors -->
+                                        <span *ngIf="rf_passwordRegister.errors.required">Escribe una contraseña</span>
+
+                                        <span *ngIf="rf_passwordRegister.errors.minlength">La
+                                            contraseña debe tener
+                                            mínimo 6
+                                            carácteres</span>
+
+                                    </span>
 
                                     <div class="btn waves-effect waves-light pink accent-1 mt-2 mobile"
-                                        [ngClass]="{'d-none': loading}" (click)="login=!login" (mousedown)="false">
+                                        [ngClass]="{'d-none': loading}" (click)="login=!login">
                                         Volver
                                     </div>
 
-                                    <button class="btn waves-effect waves-light pink accent-1 mt-2 ml-2"
-                                        [ngClass]="{'d-none': loading}" (click)="registerUser()" (mousedown)="false"
-                                        [disabled]="!formRegister.valid">
+                                    <button *ngIf="formRegister.valid"
+                                        class="btn waves-effect waves-light pink accent-1 mt-2 ml-2"
+                                        [ngClass]="{'d-none': loading}" (click)="registerUser()">
                                         Crear cuenta
                                     </button>
 

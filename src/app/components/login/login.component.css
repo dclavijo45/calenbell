@@ -2,16 +2,16 @@
 @import url(https://fonts.googleapis.com/css?family=Oswald|Roboto);
 
 @media (max-width: 480px) {
-    .mobile{
-        display: inline-block !important;
-    }
-    .mt-3-mobile{
-        margin-top: 3%;
-    }
+  .mobile {
+    display: inline-block !important;
+  }
+  .mt-3-mobile {
+    margin-top: 3%;
+  }
 }
 
-.mobile{
-    display: none;
+.mobile {
+  display: none;
 }
 .table-cus-1 {
   display: table;
@@ -299,17 +299,42 @@ input[type="email"]:focus {
   cursor: pointer;
 }
 
-.font-size-20px{
-    font-size: 20px;
-    font-weight: 500;
+.font-size-20px {
+  font-size: 20px;
+  font-weight: 500;
 }
 
-.mt-15px{
-    margin-top: 15px !important;
+.mt-15px {
+  margin-top: 15px !important;
 }
 
-.style-cus-1{
-    /* margin-top: 10px; */
-    display: block;
-    margin-bottom: 10px;
+.style-cus-1 {
+  /* margin-top: 10px; */
+  display: block;
+  margin-bottom: 10px;
+}
+
+.color-invalid {
+  color: #f44336 !important;
+  opacity: 0.8;
+}
+
+.color-valid {
+  color: #4caf50 !important;
+}
+
+.mt--5 {
+  margin-top: -5% !important;
+}
+
+.z-index-5 {
+  z-index: 5;
+}
+
+.mt-14 {
+  margin-top: 14% !important;
+}
+
+.mt-8 {
+  margin-top: 8% !important;
 }
