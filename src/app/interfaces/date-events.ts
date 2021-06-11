@@ -7,4 +7,5 @@ export interface DateEvents {
     description: string[],
     title: string[],
     time: string[],
+    owner: boolean[]
 }
