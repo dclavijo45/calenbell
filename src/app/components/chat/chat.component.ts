@@ -5,7 +5,7 @@ import { IInfoMyProfileChat } from 'src/app/interfaces/i-info-my-profile-chat';
 import { IInfoSentMessage } from 'src/app/interfaces/i-info-sent-message';
 import { IResponseGetContactsG } from 'src/app/interfaces/i-response-get-contactsg';
 import { IResponseInitChat } from 'src/app/interfaces/i-response-init-chat';
-import { ISocketMessage } from 'src/app/interfaces/i-socket-message';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ISocketSentMessage } from 'src/app/interfaces/i-socket-sent-message';
 import { LoginResponse } from 'src/app/interfaces/login-response';
 import { SearchContactsData } from 'src/app/interfaces/search-contacts-data';
@@ -20,8 +20,9 @@ import { AddContactsRequest } from 'src/app/interfaces/add-contacts-request';
 import { AddContactsResponse } from 'src/app/interfaces/add-contacts-response';
 import { DeleteContactsResponse } from 'src/app/interfaces/delete-contacts-response';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
-import { Observable, Subscription } from 'rxjs';
-import { map, finalize } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { ThemeColorService } from 'src/app/services/theme-color.service';
 
 @Component({
     selector: 'app-chat',
@@ -34,7 +35,8 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
         public socketWebSvc: SocketWebService,
         private _client: ClientService,
         private _auth: TokenAuthStateService,
-        private setScrollSvc: SetScrollService) { }
+        private setScrollSvc: SetScrollService,
+        public TC: ThemeColorService) { }
 
     private _server: string = this._client._server;
 
@@ -45,37 +47,32 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
         online: false,
         photo: 'https://image.shutterstock.com/image-vector/male-avatar-profile-picture-use-260nw-193292033.jpg',
         id: null
-    }
+    };
     private info_profile_LC: LoginResponse = JSON.parse(localStorage.getItem('info_profile'));
 
     // chat
-    public CHATS: IChats[] = []
     public inputFieldMessage: string = '';
-    public infoSentMessage: IInfoSentMessage = {
-        subject: {
-            name: null,
-            photo: null,
-            online: null,
-            id_subject: null
-        },
-        typeMessage: null,
-        token: null
-    };
     public isChatting: boolean = false;
     public loadingGetTokenSocket: boolean = false;
     @ViewChild('input1') InputMessage: ElementRef;
 
+    // fix vert options
+    fixOptions = {
+        infoProfile: {
+            reconnect: false
+        }
+    }
+
     // contacts
-    public CONTACTS: IContactsChat[] = [];
-    public BK_CONTACTS: IContactsChat[] = [];
-    public isAddingContacts: boolean = false;
-    public loadingSearchingContacts: boolean = false;
-    public loadingGettingContacts: boolean = true;
-    public inputSearchContacts: string = '';
-    public inputFilterContacts: string = '';
+    BK_CONTACTS: IContactsChat[] = [];
+    isAddingContacts: boolean = false;
+    loadingSearchingContacts: boolean = false;
+    inputSearchContacts: string = '';
+    inputFilterContacts: string = '';
     @ViewChild('input2') InputSearch: ElementRef;
-    public resultSearchContacts: SearchContactsResponse = null;
-    private subSearchContacts$: Subscription = null;
+    resultSearchContacts: SearchContactsResponse = null;
+    private subSearchContacts$: Subscription;
+    searchFieldCtrl: FormControl = new FormControl('', []);
 
     // style effect
     public opacityView: number = 0;
@@ -92,128 +89,40 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
         this.infoProfile.name = this.info_profile_LC.name
         this.infoProfile.id = this.info_profile_LC.id;
 
-        // Get contactsG
-        this.getContacts();
     }
 
     ngAfterViewInit(): void {
         // init view style
         this.initStyleEffect();
-
-        // listen new messages from socket server
-        this.socketWebSvc.listenerNewMessage().subscribe(
-            (message: ISocketMessage) => {
-
-                // Validate if chat with user and type message
-                const findChat: IChats = message.type == 1 ?
-                    this.CHATS.find((chat) => chat.subject.id_subject == message.transmitter && chat.type == message.type) :
-                    this.CHATS.find((chat) => chat.subject.id_subject == message.id_group && chat.type == message.type);
-
-                const findContact: IContactsChat = message.type == 1 ? this.CONTACTS.find((contact) => contact.id_contact_g == message.transmitter) :
-                    this.CONTACTS.find((contact) => contact.id_contact_g == message.id_group);
-
-                const read: boolean = this.infoSentMessage.typeMessage == 1 ?
-                    this.infoSentMessage.subject.id_subject == message.transmitter && this.infoSentMessage.typeMessage == message.type ? true : false :
-                    this.infoSentMessage.subject.id_subject == message.id_group && this.infoSentMessage.typeMessage == message.type ? true : false;
-
-                if (this.CHATS.includes(findChat)) {
-
-                    // validate if chat group or one-one
-                    if (message.type == 1) {
-                        this.CHATS[this.CHATS.indexOf(findChat)].messages.push({
-                            text: message.message,
-                            read,
-                            by_me: false,
-                            subject: {
-                                id_subject: message.transmitter,
-                                name: findContact.name,
-                                photo: findContact.photo,
-                                online: false
-                            }
-                        });
-                    } else {
-                        this.CHATS[this.CHATS.indexOf(findChat)].messages.push({
-                            text: message.message,
-                            read,
-                            by_me: false,
-                            subject: {
-                                id_subject: message.transmitter,
-                                name: message.info_profile_group.name,
-                                photo: message.info_profile_group.photo,
-                                online: message.info_profile_group.online
-                            }
-                        });
-                    }
-
-                } else {
-
-                    // validate if chat group or one-one
-                    if (message.type == 1) {
-                        this.CHATS.push({
-                            type: message.type,
-                            subject: {
-                                photo: findContact.photo,
-                                id_subject: message.transmitter,
-                                name: findContact.name,
-                                online: false
-                            },
-                            messages: [
-                                {
-                                    text: message.message,
-                                    read,
-                                    by_me: false,
-                                    subject: {
-                                        photo: findContact.photo,
-                                        id_subject: message.transmitter,
-                                        name: findContact.name,
-                                        online: false
-                                    }
-                                }
-                            ]
-                        });
-                    } else {
-                        this.CHATS.push({
-                            type: message.type,
-                            subject: {
-                                photo: findContact.photo,
-                                id_subject: findContact.id_contact_g,
-                                name: findContact.name,
-                                online: null
-                            },
-                            messages: [
-                                {
-                                    text: message.message,
-                                    read,
-                                    by_me: false,
-                                    subject: {
-                                        photo: message.info_profile_group.photo,
-                                        id_subject: message.transmitter,
-                                        name: message.info_profile_group.name,
-                                        online: message.info_profile_group.online
-                                    }
-                                }
-                            ]
-                        });
-                    }
-
-                    console.log(this.CHATS);
-
-
-                }
-
-                // Set scroll to end
-                setTimeout(() => {
-                    this.setScrollSvc.setScroll(true);
-                }, 200);
-
-            }
-        );
-
     }
 
     ngOnDestroy(): void {
         // kill status tag
         this._rootStatusPage.changeRootPageNumberStatus(null);
+
+        // reset info sent message
+        this.socketWebSvc.infoSentMessage = {
+            subject: {
+                name: null,
+                photo: null,
+                online: null,
+                id_subject: null
+            },
+            typeMessage: null,
+            token: null
+        };
+    }
+
+    // Fix options fun
+    fixOptionsInfoProfile(vert): void {
+        const status: boolean = this.fixOptions.infoProfile.reconnect;
+
+        if (!status) {
+            this.fixOptions.infoProfile.reconnect = true;
+
+            vert.click();
+        };
+
     }
 
     // utils
@@ -230,7 +139,6 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
     // Styles
 
     initStyleEffect(): Promise<boolean> {
-        // style effect
         return new Promise((resolve) => {
             let intervalOpacityClear: Promise<boolean> = new Promise((resolve) => {
                 setTimeout(() => {
@@ -278,91 +186,106 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
     // Chat
 
     initChat(id_contact_g: number, contact_type: number): void {
+
+        const infoSentMessage: IInfoSentMessage = this.socketWebSvc.infoSentMessage;
+
+        // Validate if not in current view chat
+        if (id_contact_g == infoSentMessage.subject.id_subject && contact_type == infoSentMessage.typeMessage) {
+            return;
+        };
+
         // set style
         let styleInit: Promise<boolean> = this.initStyleEffect();
         styleInit.then((res) => {
             this.isChatting = true;
             this.isAddingContacts = false;
-        });
 
-        // set info contact message
-        const findContact: IContactsChat = this.CONTACTS.find((contact) => contact.id_contact_g == id_contact_g && contact.type == contact_type);
+            // set info contact message
+            const findContact: IContactsChat = this.socketWebSvc.CONTACTS.find((contact) => contact.id_contact_g == id_contact_g && contact.type == contact_type);
 
-        if (this.CONTACTS.includes(findContact)) {
+            if (this.socketWebSvc.CONTACTS.includes(findContact)) {
 
-            // set info contact to sent messages
-            this.infoSentMessage.subject.id_subject = id_contact_g;
-            this.infoSentMessage.subject.name = findContact.name;
-            this.infoSentMessage.subject.photo = findContact.photo;
-            this.infoSentMessage.subject.online = false;
-            this.infoSentMessage.typeMessage = findContact.type;
+                // set info contact to sent messages
+                infoSentMessage.subject.id_subject = id_contact_g;
+                infoSentMessage.subject.name = findContact.name;
+                infoSentMessage.subject.photo = findContact.photo;
+                infoSentMessage.subject.online = false;
+                infoSentMessage.typeMessage = findContact.type;
 
-            // get auth for socket
-            this._client.postRequest(`${this._server}/user/init/chat`, {
-                chat_type: findContact.type,
-                receiver: findContact.id_contact_g,
-                group: findContact.id_contact_g
-            },
-                localStorage.getItem('token')).subscribe(
-                    (res: IResponseInitChat) => {
+                // get auth for socket
+                this._client.postRequest(`${this._server}/user/init/chat`, {
+                    chat_type: findContact.type,
+                    receiver: findContact.id_contact_g,
+                    group: findContact.id_contact_g
+                },
+                    localStorage.getItem('token')).subscribe(
+                        (res: IResponseInitChat) => {
 
-                        res.auth_token == false ? this._auth.logout() : true;
+                            if (!res.auth_token) {
+                                this._auth.logout();
+                                return;
+                            };
 
-                        // res.invitation_status == 1 ? alert("are friends!") : alert("are not friends!");
+                            infoSentMessage.token = res.token;
+                        },
+                        (error) => {
+                            console.log("****ERROR****");
+                            console.log(error);
 
-                        this.infoSentMessage.token = res.token;
-                    },
-                    (error) => {
-                        console.log("****ERROR****");
-                        console.log(error);
-
-                        const Notify = new Promise((resolve) => {
-                            notie.alert({
-                                type: 'error',
-                                text: "No hay internet",
-                                stay: false,
-                                time: 3,
-                                position: "top"
+                            const Notify = new Promise((resolve) => {
+                                notie.alert({
+                                    type: 'error',
+                                    text: "No hay internet",
+                                    stay: false,
+                                    time: 3,
+                                    position: "top"
+                                });
+                                setTimeout(function () {
+                                    resolve(true);
+                                }, 2000);
+                            })
+                            Notify.then((e) => {
+                                console.error("INTERNET ERROR");
                             });
-                            setTimeout(function () {
-                                resolve(true);
-                            }, 2000);
-                        })
-                        Notify.then((e) => {
-                            console.error("INTERNET ERROR");
-                        });
-                    }
-                );
+                        }
+                    );
 
-        } else {
-            alert("Not find contact");
-            return;
-        };
+            };
 
-        // check messages as read (only chat view --> subject)
-        const findChat: IChats = this.CHATS.find((chat) => chat.subject.id_subject == id_contact_g && chat.type == contact_type);
+            // check messages as read and update localstorage (only chat view --> subject)
+            const CHATS: IChats[] = this.socketWebSvc.CHATS;
 
-        if (this.CHATS.includes(findChat)) {
+            const findChat: IChats = CHATS.find((chat) => chat.subject.id_subject == id_contact_g && chat.type == contact_type);
 
-            // Set messages of user as read
-            const findMessages: IMessagesList[] = this.CHATS[this.CHATS.indexOf(findChat)].messages;
+            if (CHATS.includes(findChat)) {
 
-            findMessages.map((chat) => chat.read = true);
+                // Set messages of user as read
+                const findMessages: IMessagesList[] = CHATS[CHATS.indexOf(findChat)].messages;
 
-            // Set scroll to end
+                findMessages.map((chat) => chat.read = true);
+
+                // check messages withour read
+                this.socketWebSvc.checkMessagesWithoutRead();
+
+                // update localstorage
+                localStorage.setItem('chats', JSON.stringify(CHATS))
+
+                // Set scroll to end
+                setTimeout(() => {
+                    this.setScrollSvc.setScroll(true);
+                }, 200);
+
+            };
+
+            // set focus input message
             setTimeout(() => {
-                this.setScrollSvc.setScroll(true);
-            }, 200);
+                try {
+                    this.InputMessage.nativeElement.focus();
+                } catch (e) {
+                }
+            }, 1000);
 
-        };
-
-        // set focus input message
-        setTimeout(() => {
-            try {
-                this.InputMessage.nativeElement.focus();
-            } catch (e) {
-            }
-        }, 1000);
+        });
 
     }
 
@@ -371,26 +294,31 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         };
 
-        const data: ISocketSentMessage = this.infoSentMessage.typeMessage == 1 ? {
+        const infoSentMessage: IInfoSentMessage = this.socketWebSvc.infoSentMessage;
+
+        const data: ISocketSentMessage = infoSentMessage.typeMessage == 1 ? {
             message: this.inputFieldMessage,
-            token: this.infoSentMessage.token
+            token: infoSentMessage.token
         } : {
             message: this.inputFieldMessage,
-            token: this.infoSentMessage.token,
+            token: infoSentMessage.token,
             info_profile_group: {
                 photo: this.infoProfile.photo,
                 online: false,
                 name: this.infoProfile.name
             }
-        }
+        };
 
         if (data.token != null) {
+
             // Validate if not exist chat
+            const CHATS: IChats[] = this.socketWebSvc.CHATS;
 
-            const findChat: IChats = this.CHATS.find((chat) => chat.subject.id_subject == this.infoSentMessage.subject.id_subject && chat.type == this.infoSentMessage.typeMessage);
+            const findChat: IChats = CHATS.find((chat) => chat.subject.id_subject == infoSentMessage.subject.id_subject && chat.type == infoSentMessage.typeMessage);
 
-            if (this.CHATS.includes(findChat)) {
-                this.CHATS[this.CHATS.indexOf(findChat)].messages.push({
+            if (CHATS.includes(findChat)) {
+
+                CHATS[CHATS.indexOf(findChat)].messages.push({
                     text: this.inputFieldMessage,
                     read: true,
                     by_me: true,
@@ -401,13 +329,16 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
                         name: this.infoProfile.name
                     }
                 });
+
+                // update localstorage
+                localStorage.setItem('chats', JSON.stringify(CHATS));
             } else {
-                this.CHATS.push({
-                    type: this.infoSentMessage.typeMessage,
+                CHATS.push({
+                    type: infoSentMessage.typeMessage,
                     subject: {
-                        photo: this.infoSentMessage.subject.photo,
-                        name: this.infoSentMessage.subject.name,
-                        id_subject: this.infoSentMessage.subject.id_subject,
+                        photo: infoSentMessage.subject.photo,
+                        name: infoSentMessage.subject.name,
+                        id_subject: infoSentMessage.subject.id_subject,
                         online: false
                     },
                     messages: [
@@ -424,10 +355,13 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
                         }
                     ]
                 });
+
+                // update localstorage
+                localStorage.setItem('chats', JSON.stringify(CHATS));
             };
 
             // Send message to group or user
-            this.infoSentMessage.typeMessage == 1 ? this.socketWebSvc.emit('message-one-one', { data }) : this.socketWebSvc.emit('message-group', { data })
+            infoSentMessage.typeMessage == 1 ? this.socketWebSvc.emit('message-one-one', { data }) : this.socketWebSvc.emit('message-group', { data })
 
 
             // Clean input message
@@ -447,45 +381,40 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
     checkMsgWithoutRead(id_contact_g: number, contact_type: number): number {
         let msgNotRead: number = 0;
 
-        this.CHATS.some((chat) => {
-            if (chat.subject.id_subject == id_contact_g && chat.type == contact_type) {
-
-                return chat.messages.some((message) => {
-                    message.read == false ? msgNotRead++ : true;
-                });
-
-            };
-        });
+        this.socketWebSvc.CHATS.forEach((chat) => chat.subject.id_subject == id_contact_g && chat.type == contact_type ? chat.messages.forEach((msg) => !msg.read ? msgNotRead++ : true) : true);
 
         return msgNotRead;
     }
 
     getLatestMessage(id_contact_g: number, contact_type: number): string {
-        const findMessages: IChats = this.CHATS.find((chat) => chat.subject.id_subject == id_contact_g && chat.type == contact_type);
+        const findMessages: IChats = this.socketWebSvc.CHATS
+            .find((chat) => chat.subject.id_subject == id_contact_g && chat.type == contact_type);
 
-        return this.CHATS.includes(findMessages) ?
-            findMessages.messages[findMessages.messages.length - 1].text.length >= 16
-                ?
-                findMessages.messages[findMessages.messages.length - 1].text.slice(0, 15) + '...' :
-                findMessages.messages[findMessages.messages.length - 1].text
-            :
-            null;
+        const messages: IMessagesList[] = findMessages ? findMessages.messages : null;
+
+        if (this.socketWebSvc.CHATS.includes(findMessages)) {
+            if (messages[messages.length - 1].text.length >= 16) {
+                return messages[messages.length - 1]
+                    .text.slice(0, 15) + '...';
+
+            } else return messages[messages.length - 1].text;
+
+        } else return null;
     }
 
     getMessages(): IMessagesList[] {
-
-        const findMessages: IChats = this.CHATS.find((chat) => chat.subject.id_subject == this.infoSentMessage.subject.id_subject && chat.type == this.infoSentMessage.typeMessage);
+        const findMessages: IChats = this.socketWebSvc.CHATS.find((chat) => chat.subject.id_subject == this.socketWebSvc.infoSentMessage.subject.id_subject && chat.type == this.socketWebSvc.infoSentMessage.typeMessage);
 
         if (findMessages == undefined) {
             const messages: IChats = {
                 messages: [],
                 subject: {
-                    id_subject: this.infoSentMessage.subject.id_subject,
-                    name: this.infoSentMessage.subject.name,
-                    photo: this.infoSentMessage.subject.photo,
+                    id_subject: this.socketWebSvc.infoSentMessage.subject.id_subject,
+                    name: this.socketWebSvc.infoSentMessage.subject.name,
+                    photo: this.socketWebSvc.infoSentMessage.subject.photo,
                     online: false
                 },
-                type: this.infoSentMessage.typeMessage
+                type: this.socketWebSvc.infoSentMessage.typeMessage
             };
 
             return messages.messages;
@@ -497,16 +426,26 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
     cleanChat(id_subject: number, type: number): void {
         let position: number = 0;
 
-        this.CHATS.some((chat) => {
-            if (chat.subject.id_subject == id_subject && chat.type == type) return this.CHATS.splice(position, 1);
+        this.socketWebSvc.CHATS.some((chat) => {
+            if (chat.subject.id_subject == id_subject && chat.type == type) {
+
+                this.socketWebSvc.CHATS.splice(position, 1);
+
+                // update localstorage
+                return localStorage.setItem('chats', JSON.stringify(this.socketWebSvc.CHATS));
+            };
 
             position++;
         });
+
     }
 
     reconectServer(): void {
         if (!this.socketWebSvc.statusConnection) {
+            this.socketWebSvc.disconnectServerSocket();
+
             this.socketWebSvc.connectServerSocket(localStorage.getItem('token'));
+
             this.getContacts();
         }
     }
@@ -515,20 +454,23 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
 
     getContacts(): void {
         // reset contacts list
-        this.CONTACTS = [];
+        this.socketWebSvc.CONTACTS = [];
 
-        this.loadingGettingContacts = true;
+        this.socketWebSvc.loadingGettingContacts = true;
 
         this._client.getRequest(`${this._server}/user/manage/contactsg`, localStorage.getItem('token')).subscribe(
             (res: IResponseGetContactsG) => {
                 // verify auth
-                res.auth_token == false ? this._auth.logout() : true;
+                if (!res.auth_token) {
+                    this._auth.logout();
+                    return;
+                };
 
-                this.loadingGettingContacts = false;
+                this.socketWebSvc.loadingGettingContacts = false;
 
                 // saving contacts to list
                 res.contacts.forEach((contact) => {
-                    this.CONTACTS.push({
+                    this.socketWebSvc.CONTACTS.push({
                         type: contact.type,
                         id_contact_g: contact.id,
                         name: contact.name,
@@ -537,7 +479,7 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
                 });
 
                 // joining to group to socket server
-                this.CONTACTS.forEach((contact) => {
+                this.socketWebSvc.CONTACTS.forEach((contact) => {
                     if (contact.type == 2) {
                         this._client.postRequest(`${this._server}/user/init/chat`, {
                             chat_type: contact.type,
@@ -547,7 +489,10 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
                             localStorage.getItem('token')).subscribe(
                                 (res: IResponseInitChat) => {
 
-                                    res.auth_token == false ? this._auth.logout() : true;
+                                    if (!res.auth_token) {
+                                        this._auth.logout();
+                                        return;
+                                    };
 
                                     const token: string = res.token;
 
@@ -561,7 +506,7 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
                                     console.log("****ERROR****");
                                     console.log(error);
 
-                                    this.loadingGettingContacts = true;
+                                    this.socketWebSvc.loadingGettingContacts = true;
 
                                     const Notify = new Promise((resolve) => {
                                         notie.alert({
@@ -574,13 +519,13 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
                                         setTimeout(function () {
                                             resolve(true);
                                         }, 2000);
-                                    })
+                                    });
                                     Notify.then((e) => {
                                         console.error("INTERNET ERROR");
                                     });
                                 }
                             );
-                    }
+                    };
                 });
 
             },
@@ -588,18 +533,30 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
                 console.log("***ERROR***");
                 console.log(error);
 
-                this.loadingGettingContacts = false;
+                this.socketWebSvc.loadingGettingContacts = false;
             }
         );
     }
 
     AddContacts(): void {
-        // hide chat view and show contacts add view
+        // hide chat view and show contacts add view and reset viewchat contactg
         let styleInit: Promise<boolean> = this.initStyleEffect();
         styleInit.then((res) => {
             this.isChatting = false;
 
             this.isAddingContacts = true;
+
+            // reset viewchat contactg
+            this.socketWebSvc.infoSentMessage = {
+                subject: {
+                    name: null,
+                    photo: null,
+                    online: null,
+                    id_subject: null
+                },
+                typeMessage: null,
+                token: null
+            };
 
             // set focus input search
             setTimeout(() => {
@@ -628,44 +585,52 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.subSearchContacts$ ? this.subSearchContacts$.unsubscribe() : true;
 
-        this.subSearchContacts$ = this._client.postRequest(`${this._server}/user/search/contacts`, data, token).subscribe(
-            (response: SearchContactsResponse) => {
-                response.auth_token == false ? this._auth.logout() : true;
+        this.subSearchContacts$ = this._client.postRequest(`${this._server}/user/search/contacts`, data, token)
+            .pipe(
+                debounceTime(500)
+            )
+            .subscribe(
+                (response: SearchContactsResponse) => {
 
-                this.loadingSearchingContacts = false;
+                    if (!response.auth_token) {
+                        this._auth.logout();
+                        return;
+                    };
 
-                this.resultSearchContacts = response;
+                    this.loadingSearchingContacts = false;
 
-            },
-            (error) => {
-                console.log("***ERROR***");
+                    this.resultSearchContacts = response;
 
-                console.log(error);
+                },
+                (error) => {
+                    console.log("***ERROR***");
 
-                this.loadingSearchingContacts = false;
+                    console.log(error);
 
-                const Notify = new Promise((resolve) => {
-                    notie.alert({
-                        type: 'error',
-                        text: "No hay internet",
-                        stay: false,
-                        time: 3,
-                        position: "top"
+                    this.loadingSearchingContacts = false;
+
+                    const Notify = new Promise((resolve) => {
+                        notie.alert({
+                            type: 'error',
+                            text: "No hay internet",
+                            stay: false,
+                            time: 3,
+                            position: "top"
+                        });
+                        setTimeout(function () {
+                            resolve(true);
+                        }, 2000);
                     });
-                    setTimeout(function () {
-                        resolve(true);
-                    }, 2000);
-                })
-                Notify.then((e) => {
-                    console.error("INTERNET ERROR");
-                });
-            }
-        );
+                    Notify.then((e) => {
+                        console.error("INTERNET ERROR");
+                    });
+                }
+            );
 
     }
 
     areFriendsDraw(friend: number): boolean {
-        const findFriend = this.CONTACTS.find((contact) => contact.id_contact_g == friend && contact.type == 1);
+        const findFriend = this.socketWebSvc.CONTACTS.find((contact) => contact.id_contact_g == friend && contact.type == 1);
 
         return findFriend !== undefined ? true : false;
     }
@@ -681,26 +646,21 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
         this._client.postRequest(`${this._server}/user/manage/contactsg`, data, localStorage.getItem('token')).subscribe(
             (response: AddContactsResponse) => {
                 // check auth
-                response.auth_token == false ? this._auth.logout() : true;
+                if (!response.auth_token) {
+                    this._auth.logout();
+                    return;
+                };
 
                 this.loadingSearchingContacts = false;
 
                 // verify sent
                 if (response.send) {
-                    const Notify = new Promise((resolve) => {
-                        notie.alert({
-                            type: 'info',
-                            text: "Solicitud de amistad enviada!",
-                            stay: false,
-                            time: 3,
-                            position: "top"
-                        });
-                        setTimeout(function () {
-                            resolve(true);
-                        }, 3000);
-                    })
-                    Notify.then((e) => {
-                        console.error("QUERY FRIENDS SUCCESS");
+                    notie.alert({
+                        type: 'info',
+                        text: "Solicitud de amistad enviada!",
+                        stay: false,
+                        time: 3,
+                        position: "top"
                     });
                 } else {
                     if (response.reason == 1) {
@@ -720,21 +680,14 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
                             console.error("QUERY FRIENDS CANCEL");
                             this.getContacts();
                         });
+
                     } else if (response.reason == 2) {
-                        const Notify = new Promise((resolve) => {
-                            notie.alert({
-                                type: 'error',
-                                text: "No puedes enviarte solicitud a ti mismo!",
-                                stay: false,
-                                time: 3,
-                                position: "top"
-                            });
-                            setTimeout(function () {
-                                resolve(true);
-                            }, 3000);
-                        })
-                        Notify.then((e) => {
-                            console.error("QUERY FRIENDS ERROR");
+                        notie.alert({
+                            type: 'error',
+                            text: "No puedes enviarte solicitud a ti mismo!",
+                            stay: false,
+                            time: 3,
+                            position: "top"
                         });
                     }
                 }
@@ -778,14 +731,14 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
                 // set payload for send request
                 const payload: string = `${contact},${type}`
 
-                this.loadingGettingContacts = true;
+                this.socketWebSvc.loadingGettingContacts = true;
 
                 this._client.deleteRequest(`${this._server}/user/manage/contactsg`, payload, localStorage.getItem('token')).subscribe(
                     (response: DeleteContactsResponse) => {
                         // verify auth
                         response.auth_token === false ? this._auth.logout() : true;
 
-                        this.loadingGettingContacts = false;
+                        this.socketWebSvc.loadingGettingContacts = false;
 
                         if (response.deleted) {
                             const Notify = new Promise((resolve) => {
@@ -803,9 +756,9 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
                             Notify.then((e) => {
                                 console.log("CONTACT DELETED SUCCESS");
 
-                                const isDeletedView: boolean = this.infoSentMessage.typeMessage == 1 ?
-                                    this.infoSentMessage.subject.id_subject == contact && this.infoSentMessage.typeMessage == type ? true : false :
-                                    this.infoSentMessage.subject.id_subject == contact && this.infoSentMessage.typeMessage == type ? true : false;
+                                const isDeletedView: boolean = this.socketWebSvc.infoSentMessage.typeMessage == 1 ?
+                                    this.socketWebSvc.infoSentMessage.subject.id_subject == contact && this.socketWebSvc.infoSentMessage.typeMessage == type ? true : false :
+                                    this.socketWebSvc.infoSentMessage.subject.id_subject == contact && this.socketWebSvc.infoSentMessage.typeMessage == type ? true : false;
 
                                 this.isChatting = !isDeletedView;
                             });
@@ -862,7 +815,7 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
                         }
 
                         // reset list contacts
-                        this.CONTACTS = [];
+                        this.socketWebSvc.CONTACTS = [];
 
                         // get new list contacts
                         this.getContacts();
@@ -871,7 +824,7 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
                     (error) => {
                         console.log("***ERROR***");
                         console.log(error);
-                        this.loadingGettingContacts = false;
+                        this.socketWebSvc.loadingGettingContacts = false;
                     }
                 );
             };
@@ -884,30 +837,29 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // Backup
         if (this.BK_CONTACTS.length == 0 && filter.length >= 1) {
-            this.BK_CONTACTS = this.CONTACTS;
+            this.BK_CONTACTS = this.socketWebSvc.CONTACTS;
 
             // Reset contacts
-            this.CONTACTS = [];
+            this.socketWebSvc.CONTACTS = [];
         };
 
         // Restore
         if (this.BK_CONTACTS.length >= 1 && filter.length == 0) {
-            this.CONTACTS = this.BK_CONTACTS;
+            this.socketWebSvc.CONTACTS = this.BK_CONTACTS;
 
             // Reset backup
             this.BK_CONTACTS = [];
         };
 
         if (this.BK_CONTACTS.length >= 1 && filter.length >= 1) {
+
             // clean list contacts
-            this.CONTACTS = [];
+            this.socketWebSvc.CONTACTS = [];
 
             this.BK_CONTACTS.some((contact) => {
-                if (contact.name.toLowerCase().includes(filter.toLowerCase())) this.CONTACTS.push(contact);
+                if (contact.name.toLowerCase().includes(filter.toLowerCase())) this.socketWebSvc.CONTACTS.push(contact);
             });
-        }
-
-        console.log("results", this.CONTACTS);
+        };
 
     }
 

@@ -1,4 +1,4 @@
-<div class="section overflow-hidden">
+<div [ngClass]="TC.MODE.bg_general[TC.THEME_ACTIVE]" class="section overflow-hidden">
     <div class="row">
         <div class="col l3">
             <app-aside-info></app-aside-info>
@@ -27,8 +27,8 @@
                         <!-- profile options -->
                         <div class="col l6 mt-2">
                             <i class="material-icons font-size-30px cursor-pointer p-1 hover-more-options border-radius-50 hide-selected right"
-                                (click)="hideOrShowOptions(SubMenu2)" (blur)="blurHideOptions(SubMenu2)"
-                                tabindex="0">more_vert</i>
+                                (click)="hideOrShowOptions(SubMenu2)" (blur)="blurHideOptions(SubMenu2)" tabindex="0"
+                                #infoProfileOptions (click)="fixOptionsInfoProfile(infoProfileOptions)">more_vert</i>
 
                             <!-- Submenu options -->
                             <div class="col l1 hide-selected mb-0 position-absolute not-visible box-shadow-1 hover-cus-1 cursor-pointer margin-cus-1 indigo lighten-5"
@@ -52,8 +52,9 @@
                         <!-- Input field for search-->
                         <div class="input-field col l9 mb-0">
                             <i class="material-icons prefix">search</i>
-                            <input id="search_input3" type="text" (ngModelChange)="filterContacts($event)"
-                                [(ngModel)]="inputFilterContacts" maxlength="70">
+                            <input [formControl]="searchFieldCtrl" id="search_input3" type="text"
+                                (ngModelChange)="filterContacts($event)" [(ngModel)]="inputFilterContacts"
+                                maxlength="70">
                             <label for="search_input3">Buscar contactos</label>
                         </div>
 
@@ -61,8 +62,9 @@
                         <div class="col l3 mb-0 mt-2">
                             <div class="row mb-0">
                                 <div class="col l12 mb-0 center">
-                                    <button class="btn waves-effect waves-light blue lighten-2"><i
-                                            class="material-icons" (click)="AddContacts()">add</i></button>
+                                    <button type="button"
+                                        class="btn btn-floating waves-effect waves-light blue lighten-2"><i
+                                            class="material-icons" (click)="AddContacts()">person_add</i></button>
                                 </div>
 
                                 <div class="col l12 font-family-1 mt-2 center">
@@ -75,8 +77,8 @@
                     <!-- ContactsG list -->
                     <div class="row max-min-h-374px mb-0 overflow-y-auto scroll-2 box-shadow-1 grey lighten-5">
                         <!-- Verify and revise contacts -->
-                        <ng-container *ngIf="CONTACTS.length >= 1 && !loadingGettingContacts">
-                            <ng-container *ngFor="let contactG of CONTACTS ">
+                        <ng-container *ngIf="socketWebSvc.CONTACTS.length >= 1 && !socketWebSvc.loadingGettingContacts">
+                            <ng-container *ngFor="let contactG of socketWebSvc.CONTACTS ">
 
                                 <!-- Verify if is a normal contact -->
                                 <ng-container *ngIf="contactG.type == 1">
@@ -94,7 +96,10 @@
 
                                                 <!-- Alert number messages without read -->
                                                 <span class="box-number-message red"
-                                                    *ngIf="checkMsgWithoutRead(contactG.id_contact_g, contactG.type) != 0">{{checkMsgWithoutRead(contactG.id_contact_g,
+                                                    *ngIf="checkMsgWithoutRead(contactG.id_contact_g, contactG.type) != 0">
+                                                    {{checkMsgWithoutRead(contactG.id_contact_g,
+                                                    contactG.type) >= 100 ? '99+' :
+                                                    checkMsgWithoutRead(contactG.id_contact_g,
                                                     contactG.type)}}</span>
                                             </div>
 
@@ -113,7 +118,7 @@
                                                 </div>
 
                                                 <!-- Latest message -->
-                                                <div class="row mb-0" *ngIf="true">
+                                                <div class="row mb-0">
                                                     <div class="col l12 font-size-13px pl-0">
                                                         {{getLatestMessage(contactG.id_contact_g, contactG.type)}}
                                                     </div>
@@ -121,7 +126,7 @@
                                             </div>
 
                                             <!-- Options contact -->
-                                            <div class="col l3 pt-6 center cursor-normal">
+                                            <div class="col l3 pt-6 center cursor-normal position-relative">
                                                 <div class="row mb-0">
                                                     <div class="col l12 font-weight-100">
                                                         <i class="material-icons font-size-30px cursor-pointer p-3 hover-more-options border-radius-50 hide-selected center"
@@ -131,7 +136,7 @@
                                                         </i>
 
                                                         <!-- Submenu options -->
-                                                        <div class="col l1 mb-0 position-absolute ml--6 mt--2--4 not-visible box-shadow-1 hover-cus-1 cursor-pointer indigo lighten-5"
+                                                        <div class="col l1 mb-0 position-absolute ml--88 mt--31--4 not-visible box-shadow-1 hover-cus-1 cursor-pointer w-125px indigo lighten-5"
                                                             #SubMenu
                                                             (click)="deleteContact(contactG.id_contact_g, contactG.type)">
 
@@ -139,9 +144,8 @@
                                                             <div class="row mb-0">
                                                                 <div class="col l12 mb-0 py-1">
                                                                     <span
-                                                                        class="position-relative mr-13 font-cus-1">Borrar
-                                                                        <i
-                                                                            class="material-icons position-absolute right red-text">delete_forever</i></span>
+                                                                        class="position-relative mr-1 font-cus-1">Borrar
+                                                                        contacto</span>
                                                                 </div>
                                                             </div>
 
@@ -167,7 +171,10 @@
 
                                                 <!-- Alert number messages without read -->
                                                 <span class="box-number-message red"
-                                                    *ngIf="checkMsgWithoutRead(contactG.id_contact_g, contactG.type) != 0">{{checkMsgWithoutRead(contactG.id_contact_g,
+                                                    *ngIf="checkMsgWithoutRead(contactG.id_contact_g, contactG.type) != 0">
+                                                    {{checkMsgWithoutRead(contactG.id_contact_g,
+                                                    contactG.type) >= 100 ? '99+' :
+                                                    checkMsgWithoutRead(contactG.id_contact_g,
                                                     contactG.type)}}</span>
                                             </div>
 
@@ -202,21 +209,21 @@
 
                         <!-- Verify if not contacts -->
                         <ng-container
-                            *ngIf="CONTACTS.length == 0 && !loadingGettingContacts && inputFilterContacts.length == 0">
+                            *ngIf="socketWebSvc.CONTACTS.length == 0 && !socketWebSvc.loadingGettingContacts && inputFilterContacts.length == 0">
                             <div class="col l12 center mt-4">
                                 No tienes contactos y no estas en grupos
                             </div>
                         </ng-container>
 
                         <!-- Verify if not results in filter -->
-                        <ng-container *ngIf="inputFilterContacts.length >= 1 && CONTACTS.length == 0">
+                        <ng-container *ngIf="inputFilterContacts.length >= 1 && socketWebSvc.CONTACTS.length == 0">
                             <div class="col l12 center mt-4 break-word">
                                 No tienes contactos con nombres <b>{{inputFilterContacts}}</b>.
                             </div>
                         </ng-container>
 
                         <!-- Loading -->
-                        <ng-container *ngIf="loadingGettingContacts">
+                        <ng-container *ngIf="socketWebSvc.loadingGettingContacts">
                             <div class="col l12 center mt-4">
                                 <div class="loading-1 black-text">
                                     <div></div>
@@ -234,10 +241,11 @@
                 </div>
 
                 <!-- Init. information -->
-                <div class="col l7 max-min-h-510px bg-img-1 grey lighten-5 box-shadow-1">
+                <div class="col l7 max-min-h-510px ">
 
                     <!-- Bg fix color opacity -->
-                    <div class="row mb-0" [ngStyle]="{'opacity': opacityView}">
+                    <div class="row mb-0 ml-0 bg-img-1 grey lighten-5 box-shadow-1"
+                        [ngStyle]="{'opacity': opacityView}">
                         <div class="col l12 max-min-h-510px box-shadow-1">
 
                             <!-- View init box -->
@@ -304,14 +312,15 @@
 
                                                                     <!-- Options profile user -->
                                                                     <div class="col l2 py-4 center">
-                                                                        <button
+                                                                        <button type="button"
                                                                             class="btn waves-effect waves-light blue center"
                                                                             *ngIf="!areFriendsDraw(user.id)">
                                                                             <i class="material-icons font-size-25px"
                                                                                 (click)="AddActionContacts(user.id)">add</i>
                                                                         </button>
 
-                                                                        <button class="btn cursor-normal green center"
+                                                                        <button type="button"
+                                                                            class="btn cursor-normal green center"
                                                                             *ngIf="areFriendsDraw(user.id)">
                                                                             <i
                                                                                 class="material-icons font-size-25px">people</i>
@@ -366,7 +375,7 @@
                                 <!-- profile info message -->
 
                                 <!-- Verify if type contact is one-one -->
-                                <ng-container *ngIf="infoSentMessage.typeMessage == 1">
+                                <ng-container *ngIf="socketWebSvc.infoSentMessage.typeMessage == 1">
                                     <div class="row p-1 grey lighten-5 mb-0">
 
                                         <!-- profile img message and name -->
@@ -375,14 +384,17 @@
                                             <div class="row mb-0">
                                                 <!-- Profile img -->
                                                 <div class="col l2 center">
-                                                    <img [src]="infoSentMessage.subject.photo" alt="img profile"
+                                                    <img [src]="socketWebSvc.infoSentMessage.subject.photo"
+                                                        alt="img profile"
                                                         class="img-thumbnail border-radius-50 w-h-45px" width="45"
                                                         height="45">
                                                 </div>
 
                                                 <!-- Profile name -->
                                                 <div class="col l10 py-3 pl-0 font-weight-500">
-                                                    {{infoSentMessage.subject.name}}
+                                                    {{socketWebSvc.infoSentMessage.subject.name.length >= 40 ?
+                                                    socketWebSvc.infoSentMessage.subject.name.slice(0, 40)+ '...' :
+                                                    socketWebSvc.infoSentMessage.subject.name}}
                                                 </div>
                                             </div>
 
@@ -397,7 +409,7 @@
                                             <!-- Submenu options -->
                                             <div class="col l1 mb-0 position-absolute not-visible box-shadow-1 hover-cus-1 cursor-pointer margin-cus-2 indigo lighten-5"
                                                 #SubMenu3
-                                                (click)="cleanChat(infoSentMessage.subject.id_subject, infoSentMessage.typeMessage)">
+                                                (click)="cleanChat(socketWebSvc.infoSentMessage.subject.id_subject, socketWebSvc.infoSentMessage.typeMessage)">
 
                                                 <!-- Delete contact-->
                                                 <div class="row mb-0">
@@ -415,7 +427,7 @@
                                 </ng-container>
 
                                 <!-- Verify if type contact is a group -->
-                                <ng-container *ngIf="infoSentMessage.typeMessage == 2">
+                                <ng-container *ngIf="socketWebSvc.infoSentMessage.typeMessage == 2">
                                     <div class="row p-1 grey lighten-5 mb-0">
 
                                         <!-- profile img message -->
@@ -424,11 +436,13 @@
                                                 <!-- Profile img -->
                                                 <div class="col l2 mt-3 center">
                                                     <span
-                                                        class="img-thumbnail border-radius-50 w-h-45px">{{infoSentMessage.subject.photo}}</span>
+                                                        class="img-thumbnail border-radius-50 w-h-45px">{{socketWebSvc.infoSentMessage.subject.photo}}</span>
                                                 </div>
 
                                                 <div class="col l10 py-3 pl-0 font-weight-500">
-                                                    {{infoSentMessage.subject.name}}
+                                                    {{socketWebSvc.infoSentMessage.subject.name.length >= 40 ?
+                                                    socketWebSvc.infoSentMessage.subject.name.slice(0, 40)+'...' :
+                                                    socketWebSvc.infoSentMessage.subject.name}}
                                                 </div>
                                             </div>
                                         </div>
@@ -442,7 +456,7 @@
                                             <!-- Submenu options -->
                                             <div class="col l1 mb-0 position-absolute not-visible box-shadow-1 hover-cus-1 cursor-pointer margin-cus-2 indigo lighten-5"
                                                 #SubMenu4
-                                                (click)="cleanChat(infoSentMessage.subject.id_subject, infoSentMessage.typeMessage)">
+                                                (click)="cleanChat(socketWebSvc.infoSentMessage.subject.id_subject, socketWebSvc.infoSentMessage.typeMessage)">
 
                                                 <!-- Delete contact-->
                                                 <div class="row mb-0">
@@ -464,11 +478,11 @@
                                     <div class="col l12 max-min-h-385px overflow-y-auto scroll-1" SetLocationScroll>
                                         <!-- Verify if chat view and find chats -->
                                         <ng-container
-                                            *ngIf="infoSentMessage.subject.id_subject >= 0 && getMessages().length >= 1">
+                                            *ngIf="socketWebSvc.infoSentMessage.subject.id_subject >= 0 && getMessages().length >= 1">
                                             <!-- Verify if group or one-one -->
 
                                             <!-- One-One -->
-                                            <ng-container *ngIf="infoSentMessage.typeMessage == 1">
+                                            <ng-container *ngIf="socketWebSvc.infoSentMessage.typeMessage == 1">
                                                 <!-- Revise chats -->
                                                 <ng-container *ngFor="let chat of getMessages()">
 
@@ -532,7 +546,7 @@
                                             </ng-container>
 
                                             <!-- Group -->
-                                            <ng-container *ngIf="infoSentMessage.typeMessage == 2">
+                                            <ng-container *ngIf="socketWebSvc.infoSentMessage.typeMessage == 2">
                                                 <!-- Revise chats -->
                                                 <ng-container *ngFor="let chat of getMessages()">
 
@@ -643,7 +657,6 @@
 
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
