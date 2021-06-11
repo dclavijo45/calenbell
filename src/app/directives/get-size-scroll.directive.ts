@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Renderer2, HostListener } from '@angular/core';
+import { Directive, ElementRef, HostListener } from '@angular/core';
 import { EventsRequest } from '../interfaces/events-request';
 import { CreateCalendarService } from '../services/create-calendar.service';
 import { InfoCurrentEventService } from '../services/info-current-event.service';
@@ -11,6 +11,10 @@ export class GetSizeScrollDirective {
     constructor(private elementRef: ElementRef,
         private infoCurrentEventService: InfoCurrentEventService,
         private createCalendarService: CreateCalendarService) {
+    }
+
+    @HostListener('scroll') onMouseEnter() {
+        this.getScrollTop();
     }
 
     // every event = 62
@@ -83,7 +87,4 @@ export class GetSizeScrollDirective {
 
     }
 
-    @HostListener('scroll') onMouseEnter() {
-        this.getScrollTop();
-    }
 }
