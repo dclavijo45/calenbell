@@ -186,7 +186,7 @@ input[type="number"] {
 }
 
 .mr-2 {
-  margin-right: 2%;
+  margin-right: 2% !important;
 }
 
 .mx-2 {
@@ -272,6 +272,10 @@ input[type="number"] {
 
 .font-weight-500 {
   font-weight: 500;
+}
+
+.font-weight-400 {
+    font-weight: 400;
 }
 
 .position-fixed {
@@ -753,3 +757,14 @@ input[type="number"] {
   width: 70% !important;
 }
 
+.position-inherit {
+    position: inherit !important;
+}
+
+.mouse-events-none {
+    pointer-events: none;
+}
+
+.pr-6 {
+    padding-right: 6% !important;
+}
