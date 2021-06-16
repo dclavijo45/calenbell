@@ -9,6 +9,7 @@ import notie from 'notie';
 import { LoadingParticipantsStatus } from 'src/app/interfaces/loading-participants-status';
 import { DeleteParticipantResponse } from 'src/app/interfaces/delete-participant-response';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
+import { ThemeColorService } from 'src/app/services/theme-color.service';
 
 @Component({
     selector: 'app-aside-info-event',
@@ -19,7 +20,8 @@ export class AsideInfoEventComponent {
 
     constructor(public infoCurrentSrv: InfoCurrentEventService,
         public infoProfileSvc: InfoProfileService, private _client: ClientService,
-        private _auth: TokenAuthStateService) { }
+        private _auth: TokenAuthStateService,
+        public TC: ThemeColorService) { }
 
     private subAddParticipant$: Subscription;
 

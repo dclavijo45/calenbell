@@ -1,7 +1,7 @@
 <div class="row">
-    <div class="col s12 grey lighten-5 border-radius-10px box-shadow-1">
+    <div [ngClass]="TC.MODE.aside_info_e.bg[TC.THEME_ACTIVE]" class="col s12 border-radius-10px box-shadow-1">
         <div>
-            <h5 class="text-center">Información del evento</h5>
+            <h5 [ngClass]="TC.MODE.aside_info_e.title[TC.THEME_ACTIVE]" class="text-center">Información del evento</h5>
         </div>
         <div class="max-min-h-460px overflow-hidden scroll-1">
             <div class="row mt-13" *ngIf="infoCurrentSrv.infoEvent.id != null">
@@ -12,8 +12,9 @@
                         <div class="col s12 break-word">
                             <fieldset
                                 class="border-radius-5px border-color-cus-1 max-h-62px scroll-2 overflow-y-auto pb-6">
-                                <legend class="indigo-text text-lighten-1">&nbsp; Título &nbsp;</legend>
-                                <span class="">
+                                <legend [ngClass]="TC.MODE.aside_info_e.title_field[TC.THEME_ACTIVE]">&nbsp; Título
+                                    &nbsp;</legend>
+                                <span [ngClass]="TC.MODE.aside_info_e.info_field[TC.THEME_ACTIVE]">
                                     {{infoCurrentSrv.infoEvent.title}}
                                 </span>
                             </fieldset>
@@ -28,8 +29,9 @@
                                 <!-- Time -->
                                 <div class="col s6">
                                     <fieldset class="border-radius-5px border-color-cus-1">
-                                        <legend class="indigo-text text-lighten-1">&nbsp; Hora &nbsp;</legend>
-                                        <span class="">
+                                        <legend [ngClass]="TC.MODE.aside_info_e.title_field[TC.THEME_ACTIVE]">&nbsp;
+                                            Hora &nbsp;</legend>
+                                        <span [ngClass]="TC.MODE.aside_info_e.info_field[TC.THEME_ACTIVE]">
                                             {{infoCurrentSrv.infoEvent.hour}}
                                         </span>
                                     </fieldset>
@@ -38,8 +40,9 @@
                                 <!-- Date -->
                                 <div class="col l6">
                                     <fieldset class="border-radius-5px border-color-cus-1">
-                                        <legend class="indigo-text text-lighten-1">&nbsp; Fecha &nbsp;</legend>
-                                        <span class="">
+                                        <legend [ngClass]="TC.MODE.aside_info_e.title_field[TC.THEME_ACTIVE]">&nbsp;
+                                            Fecha &nbsp;</legend>
+                                        <span [ngClass]="TC.MODE.aside_info_e.info_field[TC.THEME_ACTIVE]">
                                             {{infoCurrentSrv.infoEvent.date.day + '/' +
                                             infoCurrentSrv.infoEvent.date.month + '/' +
                                             infoCurrentSrv.infoEvent.date.year}}
@@ -55,8 +58,9 @@
                         <div class="col s12 break-word">
                             <fieldset
                                 class="border-radius-5px border-color-cus-1 overflow-y-auto scroll-2 max-min-h-100px pb-6">
-                                <legend class="indigo-text text-lighten-1">&nbsp; Descripción &nbsp;</legend>
-                                <span class="">
+                                <legend [ngClass]="TC.MODE.aside_info_e.title_field[TC.THEME_ACTIVE]">&nbsp; Descripción
+                                    &nbsp;</legend>
+                                <span [ngClass]="TC.MODE.aside_info_e.info_field[TC.THEME_ACTIVE]">
                                     {{infoCurrentSrv.infoEvent.description}}
                                 </span>
                             </fieldset>
@@ -67,7 +71,8 @@
                     <div class="row mb-0">
                         <div class="col s12">
                             <fieldset class="border-radius-5px border-color-cus-1 max-min-h-150px pr-0">
-                                <legend class="indigo-text text-lighten-1">&nbsp; Participantes / Amigos &nbsp;</legend>
+                                <legend [ngClass]="TC.MODE.aside_info_e.title_field[TC.THEME_ACTIVE]">&nbsp;
+                                    Participantes / Amigos &nbsp;</legend>
 
                                 <!-- Users -->
                                 <div class="row mb-0 mr-0">
@@ -76,7 +81,8 @@
                                         <ng-container *ngFor="let user of infoCurrentSrv.infoEvent.participants">
                                             <div class="row mb-1 pl-4">
                                                 <div class="col s12 box-shadow-contact">
-                                                    <div class="row mb-0">
+                                                    <div [ngClass]="TC.MODE.aside_info_e.bg_participant[TC.THEME_ACTIVE]"
+                                                        class="row mb-0 border-radius-5px">
 
                                                         <!-- Img profile-->
                                                         <div class="col s2 px-0">
