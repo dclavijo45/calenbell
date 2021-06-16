@@ -9,6 +9,7 @@ import { TokenAuthStateService } from 'src/app/services/token-auth-state.service
 import notie from 'notie';
 import { GetEventsRequest } from 'src/app/interfaces/get-events-request';
 import { ChangeDetectionStrategy } from '@angular/core';
+import { ThemeColorService } from 'src/app/services/theme-color.service';
 
 @Component({
     selector: 'app-aside-info',
@@ -22,7 +23,8 @@ export class AsideInfoComponent implements OnInit {
         private Router: Router,
         private _client: ClientService,
         private _auth: TokenAuthStateService,
-        private infoCurrentEventService: InfoCurrentEventService, private cdr: ChangeDetectorRef) { }
+        private infoCurrentEventService: InfoCurrentEventService, private cdr: ChangeDetectorRef,
+        public TC: ThemeColorService,) { }
 
     private _server: string = this._client._server;
     private _token: string = localStorage.getItem('token');
@@ -66,6 +68,11 @@ export class AsideInfoComponent implements OnInit {
     ngOnInit(): void {
 
         this.getEvents();
+
+        // Listen new theme color
+        this.TC.listenChangeTheme().subscribe(
+            (status) => this.cdr.detectChanges()
+        );
 
         this.createCalendarService.isChanged().subscribe(
             (data: DateEvents) => {

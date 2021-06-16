@@ -63,9 +63,13 @@
   font-size: 13px;
   margin-top: 12%;
   margin-bottom: 18%;
-  color: #787e77;
   /* font-family: consolas; */
 }
+
+.text-color-cus-1 {
+    color: #787e77;
+}
+
 .calendar__today {
   background: #7f8de5; /*Color de resalte de dia*/
   color: white;
@@ -91,6 +95,10 @@
   color: #4a414c;
   font-weight: 800;
   opacity: 0.6;
+}
+
+.opacity-0-6 {
+    opacity: 0.6
 }
 
 .style-cus-2 {
@@ -192,12 +200,20 @@
   font-size: 17px;
 }
 
-.hover-cus-1:hover {
+.hover-cus-1-l:hover {
   background-color: #e0e0e0 !important;
 }
 
-.hover-cus-2:hover {
+.hover-cus-1-d:hover {
+  background-color: #424242 !important;
+}
+
+.hover-cus-2-l:hover {
   background-color: #00897b !important;
+}
+
+.hover-cus-2-d:hover {
+  background-color: #424242 !important;
 }
 
 .border-radius-5px {

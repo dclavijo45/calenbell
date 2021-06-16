@@ -1,26 +1,30 @@
 <div class="row">
     <div class="col s12">
         <!-- Calendario -->
-        <div class="calendario grey lighten-5 border-radius-10px">
+        <div [ngClass]="TC.MODE.calendar[TC.THEME_ACTIVE]" class="calendario border-radius-10px">
             <div class="calendar box-shadow-1">
                 <div class="calendar__info">
-                    <div class="calendar__prev material-icons black-text hover-cus-1 border-radius-5px" id="prev-month"
-                        (click)="prevMonth()">
+                    <div [ngClass]="TC.MODE.calendar_arrows[TC.THEME_ACTIVE]"
+                        class="calendar__prev material-icons border-radius-5px" id="prev-month" (click)="prevMonth()">
                         chevron_left</div>
-                    <div class="calendar__month" id="month">{{daysMonth.month}}</div>
-                    <div class="calendar__year" id="year">{{daysMonth.year}}</div>
-                    <div class="calendar__next material-icons black-text hover-cus-1 border-radius-5px" id="next-month"
+                    <div [ngClass]="TC.MODE.calendar_month_year[TC.THEME_ACTIVE]" class="calendar__month" id="month">
+                        {{daysMonth.month}}</div>
+                    <div [ngClass]="TC.MODE.calendar_month_year[TC.THEME_ACTIVE]" class="calendar__year" id="year">
+                        {{daysMonth.year}}</div>
+
+                    <div [ngClass]="TC.MODE.calendar_arrows[TC.THEME_ACTIVE]"
+                        class="calendar__next material-icons border-radius-5px" id="next-month"
                         (click)="nextMonthClick()">
                         chevron_right</div>
                 </div>
-                <div class="calendar__week">
-                    <div class="calendar__day calendar__item style-cus-1">Lu</div>
-                    <div class="calendar__day calendar__item style-cus-1">Ma</div>
-                    <div class="calendar__day calendar__item style-cus-1">Mi</div>
-                    <div class="calendar__day calendar__item style-cus-1">Ju</div>
-                    <div class="calendar__day calendar__item style-cus-1">Vi</div>
-                    <div class="calendar__day calendar__item style-cus-1">Sa</div>
-                    <div class="calendar__day calendar__item style-cus-1">Do</div>
+                <div [ngClass]="TC.MODE.calendar_month_year[TC.THEME_ACTIVE]" class="calendar__week">
+                    <div class="calendar__day calendar__item">Lu</div>
+                    <div class="calendar__day calendar__item">Ma</div>
+                    <div class="calendar__day calendar__item">Mi</div>
+                    <div class="calendar__day calendar__item">Ju</div>
+                    <div class="calendar__day calendar__item ">Vi</div>
+                    <div class="calendar__day calendar__item">Sa</div>
+                    <div class="calendar__day calendar__item">Do</div>
                 </div>
                 <!-- <div class="progress" *ngIf="loading">
                     <div class="indeterminate"></div>
@@ -29,15 +33,18 @@
                     <ng-container *ngFor="let item of daysMonth.data">
 
                         <!--Dias de mes pasado-->
-                        <div *ngIf="item.isLast && (!item.today && !item.event)"
-                            class="calendar__date calendar__item calendar__last-days style-cus-2 cursor-normal">
+                        <div [ngClass]="TC.MODE.calendar_days_last[TC.THEME_ACTIVE]"
+                            *ngIf="item.isLast && (!item.today && !item.event)"
+                            class="calendar__date calendar__item style-cus-2 cursor-normal">
                             {{item.day}}
                         </div>
 
                         <!--Dia de hoy-->
                         <div *ngIf="item.today && (!item.event && !item.isLast)"
-                            class="calendar__date calendar__item style-cus-2 teal lighten-1 white-text hover-cus-2 cursor-pointer"
-                            (click)="createEventSelectDate(item.day, this.daysMonth.month, this.daysMonth.year)">
+                            [ngClass]="TC.MODE.calendar_day_today[TC.THEME_ACTIVE]"
+                            class="calendar__date calendar__item style-cus-2 white-text cursor-pointer"
+                            (click)="createEventSelectDate(item.day, this.daysMonth.month, this.daysMonth.year)"
+                            title="Dia de hoy">
                             {{item.day}}
                             <ng-container *ngIf="eventsRequest.length >= 1">
                                 <span class="floating-ball-fix-l2">{{eventsRequest.length}}</span>
@@ -45,9 +52,10 @@
                         </div>
 
                         <!--Dias con eventos-->
+                        <!-- [ngClass]="randomClasses()" -->
                         <div *ngIf="item.event && (!item.isLast && !item.today)"
-                            class="calendar__date calendar__item style-cus-2 hover-cus-1 rex cursor-pointer"
-                            [ngClass]="randomClasses()"
+                            [ngClass]="TC.MODE.calendar_day_event[TC.THEME_ACTIVE]"
+                            class="calendar__date calendar__item style-cus-2 rex cursor-pointer"
                             (click)="createEventSelectDate(item.day, this.daysMonth.month, this.daysMonth.year)">
                             {{item.day}}
                             <span class=""
@@ -64,7 +72,8 @@
 
                         <!--Dias normales-->
                         <div *ngIf="!item.event && (!item.isLast && !item.today)"
-                            class="calendar__date calendar__item style-cus-2 hover-cus-1 cursor-pointer"
+                            [ngClass]="TC.MODE.calendar_normal_days[TC.THEME_ACTIVE]"
+                            class="calendar__date calendar__item style-cus-2 cursor-pointer"
                             (click)="createEventSelectDate(item.day, this.daysMonth.month, this.daysMonth.year)">
                             {{item.day}}
                         </div>
@@ -77,29 +86,30 @@
         </div>
 
         <!-- Eventos de hoy -->
-        <div class="mt-4 grey lighten-5 border-radius-10px box-shadow-1">
+        <div [ngClass]="TC.MODE.events_today[TC.THEME_ACTIVE]" class="mt-4 border-radius-10px box-shadow-1">
             <h5 class="pt-2 center">Eventos de hoy</h5>
             <div class="min-max-h-125px px-4 overflow-auto scroll-1">
-                <!-- <div class="progress" *ngIf="loading">
-                    <div class="indeterminate"></div>
-                </div> -->
                 <table class="white border-radius-5px position-relative">
-                    <thead>
+                    <thead [ngClass]="TC.MODE.events_today_thead[TC.THEME_ACTIVE]">
                         <tr>
                             <!--Not found events today-->
                             <ng-container *ngIf="eventsRequest.length == 0">
-                                <th class="text-center">No hay eventos de hoy</th>
+                                <th [ngClass]="TC.MODE.events_today_no_events[TC.THEME_ACTIVE]" class="text-center">No
+                                    hay eventos de hoy</th>
                             </ng-container>
 
                             <ng-container *ngIf="eventsRequest.length >= 1">
-                                <th class="text-center">Título</th>
-                                <th class="text-center">Hora</th>
-                                <th class="text-center">Fecha</th>
+                                <th [ngClass]="TC.MODE.events_today_titles[TC.THEME_ACTIVE]" class="text-center">Título
+                                </th>
+                                <th [ngClass]="TC.MODE.events_today_titles[TC.THEME_ACTIVE]" class="text-center">Hora
+                                </th>
+                                <th [ngClass]="TC.MODE.events_today_titles[TC.THEME_ACTIVE]" class="text-center">Fecha
+                                </th>
                             </ng-container>
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody [ngClass]="TC.MODE.events_today_tbody[TC.THEME_ACTIVE]">
                         <ng-container *ngFor="let item of eventsRequest | slice:0:lazyLoadCharge">
                             <!--Detect today date-->
                             <ng-container>
