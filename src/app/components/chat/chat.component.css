@@ -25,9 +25,9 @@
   max-height: 374px;
 }
 
-.max-min-h-385px {
-  min-height: 385px;
-  max-height: 385px;
+.max-min-h-390px {
+  min-height: 390px;
+  max-height: 390px;
 }
 
 .max-min-h-510px {
@@ -35,9 +35,14 @@
   max-height: 510px;
 }
 
-.bg-img-1 {
+.bg-img-1-l {
   /* Vector de Agua creado por macrovector - www.freepik.es */
   background: url("https://www.dropbox.com/s/o52p7zqcbwctjvi/bg-img-chat.png?dl=1");
+}
+
+.bg-img-1-d {
+  /* Vector de Estrella creado por macrovector - www.freepik.es */
+  background: url("https://www.dropbox.com/s/4lhmgys9lqjkwom/moon_dark.jpg?dl=1");
 }
 
 .font-size-13px {
@@ -59,8 +64,13 @@
   border: 1px solid #fafafa;
 }
 
-.hover-contact:hover {
+.hover-contact-l:hover {
   background-color: #e0e0e0 !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.hover-contact-d:hover {
+  background-color: #424242 !important;
   transition: all 0.2s ease-in-out;
 }
 
@@ -73,19 +83,21 @@
   min-height: 60px;
 }
 
-/* TEST CHAT STYLE */
-
 /* CSS talk bubble */
+
 .talk-bubble {
   display: inline-block;
   position: relative;
   width: 70%;
   height: auto;
-  background-color: lightyellow;
+  border-radius: 5px;
 }
 
-/* Right triangle placed top left flush. */
-.tri-right.border.left-top:before {
+.bg-color-cus-2 {
+    background-color: lightyellow;
+}
+
+.tri-right.border.left-top-l:before {
   content: " ";
   position: absolute;
   width: 0;
@@ -97,7 +109,7 @@
   border: 32px solid;
   border-color: #666 transparent transparent transparent;
 }
-.tri-right.left-top:after {
+.tri-right.left-top-l:after {
   content: " ";
   position: absolute;
   width: 0;
@@ -110,160 +122,32 @@
   border-color: lightyellow transparent transparent transparent;
 }
 
-/* Right triangle, left side slightly down */
-.tri-right.border.left-in:before {
+.tri-right.border.left-top-d:before {
   content: " ";
   position: absolute;
   width: 0;
   height: 0;
   left: -40px;
   right: auto;
-  top: 30px;
+  top: -8px;
   bottom: auto;
-  border: 20px solid;
-  border-color: #666 #666 transparent transparent;
+  border: 32px solid;
+  border-color: #666 transparent transparent transparent;
 }
-.tri-right.left-in:after {
+.tri-right.left-top-d:after {
   content: " ";
   position: absolute;
   width: 0;
   height: 0;
   left: -20px;
   right: auto;
-  top: 38px;
+  top: 0px;
   bottom: auto;
-  border: 12px solid;
-  border-color: lightyellow lightyellow transparent transparent;
-}
-
-/*Right triangle, placed bottom left side slightly in*/
-.tri-right.border.btm-left:before {
-  content: " ";
-  position: absolute;
-  width: 0;
-  height: 0;
-  left: -8px;
-  right: auto;
-  top: auto;
-  bottom: -40px;
-  border: 32px solid;
-  border-color: transparent transparent transparent #666;
-}
-.tri-right.btm-left:after {
-  content: " ";
-  position: absolute;
-  width: 0;
-  height: 0;
-  left: 0px;
-  right: auto;
-  top: auto;
-  bottom: -20px;
   border: 22px solid;
-  border-color: transparent transparent transparent lightyellow;
+  border-color: #424242 transparent transparent transparent;
 }
 
-/*Right triangle, placed bottom left side slightly in*/
-.tri-right.border.btm-left-in:before {
-  content: " ";
-  position: absolute;
-  width: 0;
-  height: 0;
-  left: 30px;
-  right: auto;
-  top: auto;
-  bottom: -40px;
-  border: 20px solid;
-  border-color: #666 transparent transparent #666;
-}
-.tri-right.btm-left-in:after {
-  content: " ";
-  position: absolute;
-  width: 0;
-  height: 0;
-  left: 38px;
-  right: auto;
-  top: auto;
-  bottom: -20px;
-  border: 12px solid;
-  border-color: lightyellow transparent transparent lightyellow;
-}
-
-/*Right triangle, placed bottom right side slightly in*/
-.tri-right.border.btm-right-in:before {
-  content: " ";
-  position: absolute;
-  width: 0;
-  height: 0;
-  left: auto;
-  right: 30px;
-  bottom: -40px;
-  border: 20px solid;
-  border-color: #666 #666 transparent transparent;
-}
-.tri-right.btm-right-in:after {
-  content: " ";
-  position: absolute;
-  width: 0;
-  height: 0;
-  left: auto;
-  right: 38px;
-  bottom: -20px;
-  border: 12px solid;
-  border-color: lightyellow lightyellow transparent transparent;
-}
-
-/*Right triangle, placed bottom right side slightly in*/
-.tri-right.border.btm-right:before {
-  content: " ";
-  position: absolute;
-  width: 0;
-  height: 0;
-  left: auto;
-  right: -8px;
-  bottom: -40px;
-  border: 20px solid;
-  border-color: #666 #666 transparent transparent;
-}
-.tri-right.btm-right:after {
-  content: " ";
-  position: absolute;
-  width: 0;
-  height: 0;
-  left: auto;
-  right: 0px;
-  bottom: -20px;
-  border: 12px solid;
-  border-color: lightyellow lightyellow transparent transparent;
-}
-
-/* Right triangle, right side slightly down*/
-.tri-right.border.right-in:before {
-  content: " ";
-  position: absolute;
-  width: 0;
-  height: 0;
-  left: auto;
-  right: -40px;
-  top: 30px;
-  bottom: auto;
-  border: 20px solid;
-  border-color: #666 transparent transparent #666;
-}
-.tri-right.right-in:after {
-  content: " ";
-  position: absolute;
-  width: 0;
-  height: 0;
-  left: auto;
-  right: -20px;
-  top: 38px;
-  bottom: auto;
-  border: 12px solid;
-  border-color: lightyellow transparent transparent lightyellow;
-}
-
-/* Right triangle placed top right flush. */
-.tri-right.border.right-top:before {
+.tri-right.border.right-top-l:before {
   content: " ";
   position: absolute;
   width: 0;
@@ -275,7 +159,7 @@
   border: 32px solid;
   border-color: #666 transparent transparent transparent;
 }
-.tri-right.right-top:after {
+.tri-right.right-top-l:after {
   content: " ";
   position: absolute;
   width: 0;
@@ -288,10 +172,35 @@
   border-color: lightyellow transparent transparent transparent;
 }
 
-/* talk bubble contents */
+.tri-right.border.right-top-d:before {
+  content: " ";
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: auto;
+  right: -40px;
+  top: -8px;
+  bottom: auto;
+  border: 32px solid;
+  border-color: #666 transparent transparent transparent;
+}
+.tri-right.right-top-d:after {
+  content: " ";
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: auto;
+  right: -20px;
+  top: 0px;
+  bottom: auto;
+  border: 20px solid;
+  border-color: #424242 transparent transparent transparent;
+}
+
 .talktext {
   padding: 3%;
   text-align: left;
+  margin-left: 1%;
   line-height: 1.5em;
 }
 .talktext p {
@@ -330,8 +239,18 @@
   margin-top: -31.4% !important;
 }
 
-.hover-more-options:hover {
+.hover-more-options-l:hover {
   background-color: #bdbdbd;
+  transition: all 0.2s ease-in-out;
+}
+
+.hover-more-options-d:hover {
+  background-color: #424242;
+  transition: all 0.2s ease-in-out;
+}
+.hover-more-options-c-d:hover {
+  background-color: #212121;
+  transition: all 0.2s ease-in-out;
 }
 
 .mr-13 {
@@ -345,6 +264,7 @@
 
 .hover-cus-1:hover {
   background-color: #c5cae9 !important;
+  transition: all 0.2s ease-in-out;
 }
 
 .margin-cus-1 {
@@ -359,4 +279,25 @@
 
 .w-125px {
   width: 125px !important;
+}
+
+input.dark-mode:not([type]):focus:not([readonly]), input.dark-mode[type=text]:not(.browser-default):focus:not([readonly]){
+    border-bottom: 1px solid #eeeeee;
+    box-shadow: 0 1px 0 0 #e0e0e0;
+}
+
+input.dark-mode:not([type]):focus:not([readonly]) + label,
+input.dark-mode[type=text]:not(.browser-default):focus:not([readonly]) + label{
+  color: #eeeeee;
+}
+
+.input-field .prefix.dark-mode.active {
+  color: #eeeeee !important;
+}
+
+input.dark-mode-msg:not([type]):focus:not([readonly]),
+input.dark-mode-msg[type=text]:not(.browser-default):focus:not([readonly]) {
+  border-bottom: 1px solid #eeeeee;
+  -webkit-box-shadow: 0 1px 0 0 #eeeeee;
+          box-shadow: 0 1px 0 0 #eeeeee;
 }

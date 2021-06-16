@@ -6,19 +6,20 @@
 
         <div class="col l9 ">
             <div class="row mb-0 pr-1">
-                <div class="col l5 grey lighten-5">
-                    <!-- init chat list with messages and contacts -->
+                <!-- init chat list with messages and contacts -->
+                <div class="col l5">
 
                     <!-- Info profile -->
-                    <div class="row p-1 grey lighten-5 mb-0 box-shadow-1">
+                    <div [ngClass]="TC.MODE.chat.info.bg[TC.THEME_ACTIVE]" class="row p-1 mb-0 box-shadow-1">
 
                         <!-- profile img and status-->
                         <div class="col l6">
                             <img [src]="infoProfile.photo" alt="img profile"
                                 class="img-thumbnail border-radius-50 w-h-45px" width="45" height="45">
 
-                            <span class="position-absolute ml-1 mt-1 green-text text-accent-5"
-                                *ngIf="socketWebSvc.statusConnection">En linea</span>
+                            <span [ngClass]="TC.MODE.chat.info.profile.text_status[TC.THEME_ACTIVE]"
+                                class="position-absolute ml-1 mt-1" *ngIf="socketWebSvc.statusConnection">En
+                                linea</span>
                             <span class="position-absolute ml-1 mt-1 red-text text-accent-5"
                                 *ngIf="!socketWebSvc.statusConnection">{{socketWebSvc.reasonDisconnection == 1 ?
                                 'Sesión iniciada desde otro dispositivo': 'Sin conexión'}}</span>
@@ -26,15 +27,17 @@
 
                         <!-- profile options -->
                         <div class="col l6 mt-2">
-                            <i class="material-icons font-size-30px cursor-pointer p-1 hover-more-options border-radius-50 hide-selected right"
+                            <i [ngClass]="TC.MODE.chat.info.profile.options[TC.THEME_ACTIVE]"
+                                class="material-icons font-size-30px cursor-pointer p-1 border-radius-50 hide-selected right"
                                 (click)="hideOrShowOptions(SubMenu2)" (blur)="blurHideOptions(SubMenu2)" tabindex="0"
                                 #infoProfileOptions (click)="fixOptionsInfoProfile(infoProfileOptions)">more_vert</i>
 
                             <!-- Submenu options -->
-                            <div class="col l1 hide-selected mb-0 position-absolute not-visible box-shadow-1 hover-cus-1 cursor-pointer margin-cus-1 indigo lighten-5"
+                            <div [ngClass]="TC.MODE.chat.info.profile.options_submenu[TC.THEME_ACTIVE]"
+                                class="col l1 hide-selected mb-0 position-absolute not-visible box-shadow-1 hover-cus-1 cursor-pointer margin-cus-1 "
                                 #SubMenu2 (click)="reconectServer()">
 
-                                <!-- Delete contact-->
+                                <!-- Reconnect to socket server -->
                                 <div class="row mb-0">
                                     <div class="col l12 mb-0 py-1 center">
                                         <span class="position-relative mr-13 font-cus-1">Reconectar
@@ -47,14 +50,19 @@
                     </div>
 
                     <!-- Search contacts -->
-                    <div class="row p-1 mb-0 grey lighten-5  box-shadow-1">
+                    <div [ngClass]="TC.MODE.chat.info.search_contacts[TC.THEME_ACTIVE]"
+                        class="row p-1 mb-0 box-shadow-1">
 
                         <!-- Input field for search-->
                         <div class="input-field col l9 mb-0">
-                            <i class="material-icons prefix">search</i>
-                            <input [formControl]="searchFieldCtrl" id="search_input3" type="text"
+                            <i [ngClass]="TC.MODE.chat.info.input_search_contacts[TC.THEME_ACTIVE]"
+                                class="material-icons prefix">search</i>
+
+                            <input [ngClass]="TC.MODE.chat.info.input_search_contacts[TC.THEME_ACTIVE]"
+                                [formControl]="searchFieldCtrl" id="search_input3" type="text"
                                 (ngModelChange)="filterContacts($event)" [(ngModel)]="inputFilterContacts"
                                 maxlength="70">
+
                             <label for="search_input3">Buscar contactos</label>
                         </div>
 
@@ -62,12 +70,14 @@
                         <div class="col l3 mb-0 mt-2">
                             <div class="row mb-0">
                                 <div class="col l12 mb-0 center">
-                                    <button type="button"
-                                        class="btn btn-floating waves-effect waves-light blue lighten-2"><i
+                                    <button type="button" [ngClass]="TC.MODE.chat.info.btn.bg[TC.THEME_ACTIVE]"
+                                        class="btn btn-floating waves-effect "><i
+                                            [ngClass]="TC.MODE.chat.info.btn.text_bg[TC.THEME_ACTIVE]"
                                             class="material-icons" (click)="AddContacts()">person_add</i></button>
                                 </div>
 
-                                <div class="col l12 font-family-1 mt-2 center">
+                                <div [ngClass]="TC.MODE.chat.info.btn.text[TC.THEME_ACTIVE]"
+                                    class="col l12 font-family-1 mt-2 center">
                                     Contactos
                                 </div>
                             </div>
@@ -75,14 +85,17 @@
                     </div>
 
                     <!-- ContactsG list -->
-                    <div class="row max-min-h-374px mb-0 overflow-y-auto scroll-2 box-shadow-1 grey lighten-5">
+                    <div [ngClass]="TC.MODE.chat.info.contact_list[TC.THEME_ACTIVE]"
+                        class="row max-min-h-374px mb-0 overflow-y-auto scroll-2 box-shadow-1">
                         <!-- Verify and revise contacts -->
                         <ng-container *ngIf="socketWebSvc.CONTACTS.length >= 1 && !socketWebSvc.loadingGettingContacts">
+
                             <ng-container *ngFor="let contactG of socketWebSvc.CONTACTS ">
 
                                 <!-- Verify if is a normal contact -->
                                 <ng-container *ngIf="contactG.type == 1">
-                                    <div class="col l12 box-shadow-contact hover-contact cursor-pointer">
+                                    <div [ngClass]="TC.MODE.chat.info.contact_list_friends.bg[TC.THEME_ACTIVE]"
+                                        class="col l12 box-shadow-contact cursor-pointer">
                                         <div class="row mb-0">
 
                                             <!-- Profile img contact -->
@@ -110,7 +123,7 @@
                                                 <!-- Name -->
                                                 <div class="row mb-0">
                                                     <div class="col l12 font-size-18px pl-0"
-                                                        [ngClass]="{'line-heigth-2--7': getLatestMessage(contactG.id_contact_g, contactG.type) == null}">
+                                                        [ngClass]="{'line-heigth-2--7': getLatestMessage(contactG.id_contact_g, contactG.type) == null, 'grey-text text-lighten-3': TC.THEME_ACTIVE == 1}">
                                                         {{contactG.name.length >= 14 ?
                                                         contactG.name.slice(0, 14) + '...' :
                                                         contactG.name}}
@@ -119,7 +132,8 @@
 
                                                 <!-- Latest message -->
                                                 <div class="row mb-0">
-                                                    <div class="col l12 font-size-13px pl-0">
+                                                    <div [ngClass]="TC.MODE.chat.info.contact_list_friends.latest_msg[TC.THEME_ACTIVE]"
+                                                        class="col l12 font-size-13px pl-0">
                                                         {{getLatestMessage(contactG.id_contact_g, contactG.type)}}
                                                     </div>
                                                 </div>
@@ -129,14 +143,16 @@
                                             <div class="col l3 pt-6 center cursor-normal position-relative">
                                                 <div class="row mb-0">
                                                     <div class="col l12 font-weight-100">
-                                                        <i class="material-icons font-size-30px cursor-pointer p-3 hover-more-options border-radius-50 hide-selected center"
+                                                        <i [ngClass]="TC.MODE.chat.info.contact_list_friends.options_contact[TC.THEME_ACTIVE]"
+                                                            class="material-icons font-size-30px cursor-pointer p-3 border-radius-50 hide-selected center"
                                                             (click)="hideOrShowOptions(SubMenu)"
                                                             (blur)="blurHideOptions(SubMenu)" tabindex="0">
                                                             more_vert
                                                         </i>
 
                                                         <!-- Submenu options -->
-                                                        <div class="col l1 mb-0 position-absolute ml--88 mt--31--4 not-visible box-shadow-1 hover-cus-1 cursor-pointer w-125px indigo lighten-5"
+                                                        <div [ngClass]="TC.MODE.chat.info.contact_list_friends.more_options[TC.THEME_ACTIVE]"
+                                                            class="col l1 mb-0 position-absolute ml--88 mt--31--4 not-visible box-shadow-1 hover-cus-1 cursor-pointer w-125px"
                                                             #SubMenu
                                                             (click)="deleteContact(contactG.id_contact_g, contactG.type)">
 
@@ -159,7 +175,8 @@
 
                                 <!-- Verify if is a group -->
                                 <ng-container *ngIf="contactG.type == 2">
-                                    <div class="col l12 box-shadow-contact hover-contact cursor-pointer"
+                                    <div [ngClass]="TC.MODE.chat.info.contact_list_friends.bg[TC.THEME_ACTIVE]"
+                                        class="col l12 box-shadow-contact cursor-pointer"
                                         (click)="initChat(contactG.id_contact_g, contactG.type)">
                                         <div class="row mb-0">
 
@@ -183,7 +200,7 @@
                                                 <!-- Name -->
                                                 <div class="row mb-0">
                                                     <div class="col l12 font-size-18px pl-0"
-                                                        [ngClass]="{'line-heigth-2--7': getLatestMessage(contactG.id_contact_g, contactG.type) == null}">
+                                                        [ngClass]="{'line-heigth-2--7': getLatestMessage(contactG.id_contact_g, contactG.type) == null, 'grey-text text-lighten-3': TC.THEME_ACTIVE == 1}">
                                                         <span class="font-weight-600 font-family-1">Grupo
                                                         </span>{{contactG.name.length
                                                         >= 14 ?
@@ -195,7 +212,8 @@
 
                                                 <!-- Latest message -->
                                                 <div class="row mb-0" *ngIf="true">
-                                                    <div class="col l12 font-size-13px pl-0">
+                                                    <div [ngClass]="TC.MODE.chat.info.contact_list_friends.latest_msg[TC.THEME_ACTIVE]"
+                                                        class="col l12 font-size-13px pl-0">
                                                         {{getLatestMessage(contactG.id_contact_g, contactG.type)}}
                                                     </div>
                                                 </div>
@@ -210,14 +228,16 @@
                         <!-- Verify if not contacts -->
                         <ng-container
                             *ngIf="socketWebSvc.CONTACTS.length == 0 && !socketWebSvc.loadingGettingContacts && inputFilterContacts.length == 0">
-                            <div class="col l12 center mt-4">
+                            <div [ngClass]="TC.MODE.chat.info.contact_list_friends.not_contact_group[TC.THEME_ACTIVE]"
+                                class="col l12 center mt-4">
                                 No tienes contactos y no estas en grupos
                             </div>
                         </ng-container>
 
                         <!-- Verify if not results in filter -->
                         <ng-container *ngIf="inputFilterContacts.length >= 1 && socketWebSvc.CONTACTS.length == 0">
-                            <div class="col l12 center mt-4 break-word">
+                            <div [ngClass]="TC.MODE.chat.info.contact_list_friends.not_found_search[TC.THEME_ACTIVE]"
+                                class="col l12 center mt-4 break-word">
                                 No tienes contactos con nombres <b>{{inputFilterContacts}}</b>.
                             </div>
                         </ng-container>
@@ -244,7 +264,7 @@
                 <div class="col l7 max-min-h-510px ">
 
                     <!-- Bg fix color opacity -->
-                    <div class="row mb-0 ml-0 bg-img-1 grey lighten-5 box-shadow-1"
+                    <div [ngClass]="TC.MODE.chat.view_init.img_bg[TC.THEME_ACTIVE]" class="row mb-0 ml-0 box-shadow-1"
                         [ngStyle]="{'opacity': opacityView}">
                         <div class="col l12 max-min-h-510px box-shadow-1">
 
@@ -260,12 +280,14 @@
                             <!-- Adding contacts -->
                             <ng-container *ngIf="!isChatting && isAddingContacts">
                                 <div class="row mb-0">
-                                    <div class="col l12 max-min-h-510px grey lighten-5">
+                                    <div [ngClass]="TC.MODE.chat.add_contacts.bg[TC.THEME_ACTIVE]"
+                                        class="col l12 max-min-h-510px">
 
                                         <!-- Title add contacts -->
                                         <div class="row mb-0">
                                             <div class="col l12 center">
-                                                <h5 class="font-family-1">Agregar contactos</h5>
+                                                <h5 [ngClass]="TC.MODE.chat.add_contacts.title[TC.THEME_ACTIVE]"
+                                                    class="font-family-1">Agregar contactos</h5>
                                             </div>
                                         </div>
 
@@ -273,9 +295,11 @@
                                         <div class="row mb-0">
                                             <div class="col l12">
                                                 <div class="input-field">
-                                                    <i class="material-icons prefix">search</i>
-                                                    <input #input2 id="search_input2" type="text" maxlength="30"
-                                                        (ngModelChange)="searchingContacts($event)"
+                                                    <i [ngClass]="TC.MODE.chat.add_contacts.input.prefix[TC.THEME_ACTIVE]"
+                                                        class="material-icons prefix">search</i>
+                                                    <input #input2 id="search_input2" type="text"
+                                                        [ngClass]="TC.MODE.chat.add_contacts.input.field[TC.THEME_ACTIVE]"
+                                                        maxlength="30" (ngModelChange)="searchingContacts($event)"
                                                         [(ngModel)]="inputSearchContacts">
                                                     <label for="search_input2">Buscar usuarios</label>
                                                 </div>
@@ -305,7 +329,7 @@
                                                                     </div>
 
                                                                     <!-- Name profile user -->
-                                                                    <div
+                                                                    <div [ngClass]="TC.MODE.chat.add_contacts.name[TC.THEME_ACTIVE]"
                                                                         class="col l8 font-size-18px pl-0 py-4 line-heigth-2">
                                                                         {{user.name}}
                                                                     </div>
@@ -313,6 +337,7 @@
                                                                     <!-- Options profile user -->
                                                                     <div class="col l2 py-4 center">
                                                                         <button type="button"
+                                                                            [ngClass]="TC.MODE.chat.add_contacts.btn.btn_add[TC.THEME_ACTIVE]"
                                                                             class="btn waves-effect waves-light blue center"
                                                                             *ngIf="!areFriendsDraw(user.id)">
                                                                             <i class="material-icons font-size-25px"
@@ -320,6 +345,7 @@
                                                                         </button>
 
                                                                         <button type="button"
+                                                                            [ngClass]="TC.MODE.chat.add_contacts.btn.btn_delete[TC.THEME_ACTIVE]"
                                                                             class="btn cursor-normal green center"
                                                                             *ngIf="areFriendsDraw(user.id)">
                                                                             <i
@@ -339,7 +365,8 @@
                                                     *ngIf="resultSearchContacts != null && inputSearchContacts.trim().length >= 1 && !loadingSearchingContacts">
                                                     <ng-container *ngIf="resultSearchContacts.users.length == 0">
                                                         <div class="row">
-                                                            <div class="col l12 center">
+                                                            <div [ngClass]="TC.MODE.chat.add_contacts.not_found_search[TC.THEME_ACTIVE]"
+                                                                class="col l12 center">
                                                                 No se ha encontrado usuarios con nombres
                                                                 <b>{{inputSearchContacts}}</b>.
                                                             </div>
@@ -376,7 +403,8 @@
 
                                 <!-- Verify if type contact is one-one -->
                                 <ng-container *ngIf="socketWebSvc.infoSentMessage.typeMessage == 1">
-                                    <div class="row p-1 grey lighten-5 mb-0">
+                                    <div [ngClass]="TC.MODE.chat.messages.bg_profile[TC.THEME_ACTIVE]"
+                                        class="row p-1 mb-0">
 
                                         <!-- profile img message and name -->
                                         <div class="col l9">
@@ -391,7 +419,8 @@
                                                 </div>
 
                                                 <!-- Profile name -->
-                                                <div class="col l10 py-3 pl-0 font-weight-500">
+                                                <div [ngClass]="TC.MODE.chat.messages.name[TC.THEME_ACTIVE]"
+                                                    class="col l10 py-3 pl-0 font-weight-500">
                                                     {{socketWebSvc.infoSentMessage.subject.name.length >= 40 ?
                                                     socketWebSvc.infoSentMessage.subject.name.slice(0, 40)+ '...' :
                                                     socketWebSvc.infoSentMessage.subject.name}}
@@ -402,12 +431,14 @@
 
                                         <!-- options message -->
                                         <div class="col l3 mt-1">
-                                            <i class="material-icons font-size-30px cursor-pointer p-3 hover-more-options border-radius-50 hide-selected right"
+                                            <i [ngClass]="TC.MODE.chat.messages.clean_chat[TC.THEME_ACTIVE]"
+                                                class="material-icons font-size-30px cursor-pointer p-3 border-radius-50 hide-selected right"
                                                 (click)="hideOrShowOptions(SubMenu3)" (blur)="blurHideOptions(SubMenu3)"
                                                 tabindex="0">more_vert</i>
 
                                             <!-- Submenu options -->
-                                            <div class="col l1 mb-0 position-absolute not-visible box-shadow-1 hover-cus-1 cursor-pointer margin-cus-2 indigo lighten-5"
+                                            <div [ngClass]="TC.MODE.chat.messages.clean_chat_submenu[TC.THEME_ACTIVE]"
+                                                class="col l1 mb-0 position-absolute not-visible box-shadow-1 hover-cus-1 cursor-pointer margin-cus-2"
                                                 #SubMenu3
                                                 (click)="cleanChat(socketWebSvc.infoSentMessage.subject.id_subject, socketWebSvc.infoSentMessage.typeMessage)">
 
@@ -428,7 +459,8 @@
 
                                 <!-- Verify if type contact is a group -->
                                 <ng-container *ngIf="socketWebSvc.infoSentMessage.typeMessage == 2">
-                                    <div class="row p-1 grey lighten-5 mb-0">
+                                    <div [ngClass]="TC.MODE.chat.messages.bg_profile[TC.THEME_ACTIVE]"
+                                        class="row p-1 mb-0 max-min-h-60px">
 
                                         <!-- profile img message -->
                                         <div class="col l9">
@@ -439,7 +471,8 @@
                                                         class="img-thumbnail border-radius-50 w-h-45px">{{socketWebSvc.infoSentMessage.subject.photo}}</span>
                                                 </div>
 
-                                                <div class="col l10 py-3 pl-0 font-weight-500">
+                                                <div [ngClass]="TC.MODE.chat.messages.name[TC.THEME_ACTIVE]"
+                                                    class="col l10 py-3 pl-0 font-weight-500">
                                                     {{socketWebSvc.infoSentMessage.subject.name.length >= 40 ?
                                                     socketWebSvc.infoSentMessage.subject.name.slice(0, 40)+'...' :
                                                     socketWebSvc.infoSentMessage.subject.name}}
@@ -449,12 +482,14 @@
 
                                         <!-- options message -->
                                         <div class="col l3 mt-1">
-                                            <i class="material-icons font-size-30px cursor-pointer p-3 hover-more-options border-radius-50 hide-selected right"
+                                            <i [ngClass]="TC.MODE.chat.messages.clean_chat[TC.THEME_ACTIVE]"
+                                                class="material-icons font-size-30px cursor-pointer p-3 border-radius-50 hide-selected right"
                                                 (click)="hideOrShowOptions(SubMenu4)" (blur)="blurHideOptions(SubMenu4)"
                                                 tabindex="0">more_vert</i>
 
                                             <!-- Submenu options -->
-                                            <div class="col l1 mb-0 position-absolute not-visible box-shadow-1 hover-cus-1 cursor-pointer margin-cus-2 indigo lighten-5"
+                                            <div [ngClass]="TC.MODE.chat.messages.clean_chat_submenu[TC.THEME_ACTIVE]"
+                                                class="col l1 mb-0 position-absolute not-visible box-shadow-1 hover-cus-1 cursor-pointer margin-cus-2"
                                                 #SubMenu4
                                                 (click)="cleanChat(socketWebSvc.infoSentMessage.subject.id_subject, socketWebSvc.infoSentMessage.typeMessage)">
 
@@ -475,7 +510,7 @@
 
                                 <!-- Box messages -->
                                 <div class="row mb-0">
-                                    <div class="col l12 max-min-h-385px overflow-y-auto scroll-1" SetLocationScroll>
+                                    <div class="col l12 max-min-h-390px overflow-y-auto scroll-1" SetLocationScroll>
                                         <!-- Verify if chat view and find chats -->
                                         <ng-container
                                             *ngIf="socketWebSvc.infoSentMessage.subject.id_subject >= 0 && getMessages().length >= 1">
@@ -499,8 +534,10 @@
 
                                                             <!-- chat message receptor -->
                                                             <div class="col l8 pl-0">
-                                                                <div class="talk-bubble tri-right left-top mt-4 left">
-                                                                    <div class="talktext">
+                                                                <div [ngClass]="TC.MODE.chat.messages.chat_one.bubble_left[TC.THEME_ACTIVE]"
+                                                                    class="talk-bubble tri-right mt-4 left">
+                                                                    <div [ngClass]="TC.MODE.chat.messages.chat_one.msg[TC.THEME_ACTIVE]"
+                                                                        class="talktext">
                                                                         <p class="break-word">
                                                                             {{chat.text}}</p>
                                                                     </div>
@@ -523,9 +560,10 @@
 
                                                             <!-- chat message emisor -->
                                                             <div class="col l8 pr-0">
-                                                                <div
-                                                                    class="talk-bubble tri-right right-top  mt-4 right">
-                                                                    <div class="talktext">
+                                                                <div [ngClass]="TC.MODE.chat.messages.chat_one.bubble_right[TC.THEME_ACTIVE]"
+                                                                    class="talk-bubble tri-right mt-4 right">
+                                                                    <div [ngClass]="TC.MODE.chat.messages.chat_one.msg[TC.THEME_ACTIVE]"
+                                                                        class="talktext">
                                                                         <p class="break-word">
                                                                             {{chat.text}}</p>
                                                                     </div>
@@ -579,8 +617,10 @@
 
                                                             <!-- chat message receptor -->
                                                             <div class="col l8 pl-0">
-                                                                <div class="talk-bubble tri-right left-top mt-4 left">
-                                                                    <div class="talktext">
+                                                                <div [ngClass]="TC.MODE.chat.messages.chat_one.bubble_left[TC.THEME_ACTIVE]"
+                                                                    class="talk-bubble tri-right mt-4 left">
+                                                                    <div [ngClass]="TC.MODE.chat.messages.chat_one.msg[TC.THEME_ACTIVE]"
+                                                                        class="talktext">
                                                                         <p class="break-word">
                                                                             {{chat.text}}</p>
                                                                     </div>
@@ -603,9 +643,10 @@
 
                                                             <!-- chat message emisor -->
                                                             <div class="col l8 pr-0">
-                                                                <div
-                                                                    class="talk-bubble tri-right right-top  mt-4 right">
-                                                                    <div class="talktext">
+                                                                <div [ngClass]="TC.MODE.chat.messages.chat_one.bubble_right[TC.THEME_ACTIVE]"
+                                                                    class="talk-bubble tri-right mt-4 right">
+                                                                    <div [ngClass]="TC.MODE.chat.messages.chat_one.msg[TC.THEME_ACTIVE]"
+                                                                        class="talktext">
                                                                         <p class="break-word">
                                                                             {{chat.text}}</p>
                                                                     </div>
@@ -631,13 +672,15 @@
 
                                 <!-- Input field message -->
                                 <div class="row mb-0">
-                                    <div class="col l12 max-min-h-60px grey lighten-5">
+                                    <div [ngClass]="TC.MODE.chat.messages.input_field[TC.THEME_ACTIVE]"
+                                        class="col l12 max-min-h-60px">
                                         <div class="row mb-0">
 
                                             <!-- Input -->
                                             <div class="col l10">
-                                                <input type="text" placeholder="Escribe un mensaje"
-                                                    [(ngModel)]="inputFieldMessage"
+                                                <input type="text"
+                                                    [ngClass]="TC.MODE.chat.messages.input_field_entry[TC.THEME_ACTIVE]"
+                                                    placeholder="Escribe un mensaje" [(ngModel)]="inputFieldMessage"
                                                     (keypress)="$event.keyCode == 13 ? sendMessage() : null" #input1
                                                     maxlength="249">
                                             </div>
