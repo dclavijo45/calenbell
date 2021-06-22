@@ -9,8 +9,12 @@
     color: #f44336 !important;
 }
 
-.color-valid{
+.color-valid {
     color: #4caf50 !important;
+}
+
+.color-valid-dark {
+color: #e0e0e0 !important;
 }
 
 .emojis-box{
@@ -139,4 +143,9 @@
 .box-exit {
     margin-left: 102%;
     margin-top: -16%;
+}
+
+input.valid-dark:not([type]), input.valid-dark:not([type]):focus, input.valid-dark[type=text]:not(.browser-default), input.valid-dark[type=text]:not(.browser-default):focus, input.valid-dark[type=password]:not(.browser-default), input.valid-dark[type=password]:not(.browser-default):focus, input.valid-dark[type=email]:not(.browser-default), input.valid-dark[type=email]:not(.browser-default):focus, input.valid-dark[type=url]:not(.browser-default), input.valid-dark[type=url]:not(.browser-default):focus, input.valid-dark[type=time]:not(.browser-default), input.valid-dark[type=time]:not(.browser-default):focus, input.valid-dark[type=date]:not(.browser-default), input.valid-dark[type=date]:not(.browser-default):focus, input.valid-dark[type=datetime]:not(.browser-default), input.valid-dark[type=datetime]:not(.browser-default):focus, input.valid-dark[type=datetime-local]:not(.browser-default), input.valid-dark[type=datetime-local]:not(.browser-default):focus, input.valid-dark[type=tel]:not(.browser-default), input.valid-dark[type=tel]:not(.browser-default):focus, input.valid-dark[type=number]:not(.browser-default), input.valid-dark[type=number]:not(.browser-default):focus, input.valid-dark[type=search]:not(.browser-default), input.valid-dark[type=search]:not(.browser-default):focus, textarea.materialize-textarea.valid-dark, textarea.materialize-textarea.valid-dark:focus, .select-wrapper.valid-dark > input.select-dropdown, .select-wrapper.valid-dark > input.select-dropdown:focus {
+    border-bottom: 1px solid #eeeeee ;
+    box-shadow: 0 1px 0 0 #e0e0e0 ;
 }

@@ -8,17 +8,20 @@
             <div class="container">
                 <div class="row" [formGroup]="formEvent">
                     <div class="row">
-                        <div class="col l12 center">
+                        <div [ngClass]="TC.MODE.manage_event.title[TC.THEME_ACTIVE]" class="col l12 center">
                             <h2>{{actionEvent == 'edit' ? 'Guardar Evento' : 'Crear evento'}}</h2>
                         </div>
                     </div>
 
                     <div class="col l6">
                         <div class="input-field">
-                            <i class="material-icons prefix">assignment</i>
-                            <input formControlName="titulo" id="tituloEvento" type="text" class=""
-                                [ngClass]="{'valid': dataEntry.title && formEvent.touched, 'invalid': !formEvent.value.titulo && formEvent.touched}"
-                                (ngModelChange)="fixErrorFormEvent()" maxlength="70" [(ngModel)]="dataEntry.title">
+                            <i [ngClass]="TC.MODE.manage_event.icon_color[TC.THEME_ACTIVE]"
+                                class="material-icons prefix">assignment</i>
+                            <input formControlName="titulo" id="tituloEvento" type="text"
+                                [ngClass]="{'valid': dataEntry.title && formEvent.touched && TC.THEME_ACTIVE == 0,
+                                'valid-dark': dataEntry.title && formEvent.touched && TC.THEME_ACTIVE == 1,
+                                'invalid': !formEvent.value.titulo && formEvent.touched, 'grey-text text-lighten-3': TC.THEME_ACTIVE == 1}" (ngModelChange)="fixErrorFormEvent()"
+                                maxlength="70" [(ngModel)]="dataEntry.title">
                             <label *ngIf="actionEvent != 'edit'" for="tituloEvento">Título del
                                 evento</label>
                             <span *ngIf="actionEvent == 'edit'" class="mode-edit"
@@ -28,21 +31,23 @@
                         </div>
 
                         <div class="input-field">
-                            <i class="material-icons prefix">alarm</i>
+                            <i [ngClass]="TC.MODE.manage_event.icon_color[TC.THEME_ACTIVE]"
+                                class="material-icons prefix">alarm</i>
                             <input formControlName="hora" type="text"
                                 class="timepicker line-select-input-hide cursor-pointer" #horaEvento
-                                [ngClass]="{'valid': dataEntry.hour && formEvent.touched && dataEntry.dateIsValid === true && dataEntry.hourIsValid === true, 'invalid': (!dataEntry.hour || dataEntry.hourIsValid === false || dataEntry.dateIsValid === false) && formEvent.touched}"
+                                [ngClass]="{'valid': dataEntry.hour && formEvent.touched && dataEntry.dateIsValid === true && dataEntry.hourIsValid === true && TC.THEME_ACTIVE == 0,'valid-dark': dataEntry.hour && formEvent.touched && dataEntry.dateIsValid === true && dataEntry.hourIsValid === true && TC.THEME_ACTIVE == 1, 'invalid': (!dataEntry.hour || dataEntry.hourIsValid === false || dataEntry.dateIsValid === false) && formEvent.touched, 'grey-text text-lighten-3': TC.THEME_ACTIVE == 1}"
                                 placeholder="Hora del evento" (change)="setHour(horaEvento.value)"
                                 [(ngModel)]="dataEntry.hour" (keydown)="false" (paste)="false" (mouseover)="false"
                                 (mousedown)="false">
                         </div>
 
                         <div class="input-field">
-                            <i class="material-icons prefix">event</i>
+                            <i [ngClass]="TC.MODE.manage_event.icon_color[TC.THEME_ACTIVE]"
+                                class="material-icons prefix">event</i>
                             <input formControlName="fecha" type="text"
                                 class="datepicker line-select-input-hide cursor-pointer" placeholder="Fecha del evento"
                                 #fechaEvento
-                                [ngClass]="{'valid': dataEntry.date && formEvent.touched && dataEntry.dateIsValid === true, 'invalid': (!dataEntry.date || dataEntry.dateIsValid === false) && formEvent.touched}"
+                                [ngClass]="{'valid': dataEntry.date && formEvent.touched && dataEntry.dateIsValid === true && TC.THEME_ACTIVE == 0,'valid-dark': dataEntry.date && formEvent.touched && dataEntry.dateIsValid === true && TC.THEME_ACTIVE == 1, 'invalid': (!dataEntry.date || dataEntry.dateIsValid === false) && formEvent.touched, 'grey-text text-lighten-3': TC.THEME_ACTIVE == 1}"
                                 (change)="setDate(fechaEvento.value)" [(ngModel)]="dataEntry.date" (keydown)="false"
                                 (paste)="false" (mouseover)="false" (mousedown)="false">
                         </div>
@@ -50,9 +55,10 @@
 
                     <div class="col l6">
                         <div class="input-field">
-                            <i class="material-icons prefix">announcement</i>
+                            <i [ngClass]="TC.MODE.manage_event.icon_color[TC.THEME_ACTIVE]"
+                                class="material-icons prefix">announcement</i>
                             <input formControlName="descripcion" id="descripcionEvento" type="text" class=""
-                                [ngClass]="{'valid': dataEntry.description&& formEvent.touched, 'invalid': !formEvent.value.descripcion&& formEvent.touched}"
+                                [ngClass]="{'valid': dataEntry.description&& formEvent.touched && TC.THEME_ACTIVE == 0,'valid-dark': dataEntry.description&& formEvent.touched && TC.THEME_ACTIVE == 1, 'invalid': !formEvent.value.descripcion&& formEvent.touched, 'grey-text text-lighten-3': TC.THEME_ACTIVE == 1}"
                                 (ngModelChange)="fixErrorFormEvent()" maxlength="250"
                                 [(ngModel)]="dataEntry.description">
                             <label *ngIf="actionEvent != 'edit'" for="descripcionEvento">Descripción del
@@ -64,21 +70,27 @@
                         </div>
 
                         <div class="input-field position-relative">
-                            <i class="material-icons prefix " *ngIf="!formEvent.touched">drag_handle</i>
+                            <i [ngClass]="TC.MODE.manage_event.icon_color[TC.THEME_ACTIVE]"
+                                class="material-icons prefix " *ngIf="!formEvent.touched">drag_handle</i>
 
                             <i class="material-icons prefix color-valid"
-                                *ngIf="dataEntry.type_ev && formEvent.touched">check</i>
+                                *ngIf="dataEntry.type_ev && formEvent.touched && TC.THEME_ACTIVE == 0">check</i>
+
+                            <i class="material-icons prefix white-text"
+                                *ngIf="dataEntry.type_ev && formEvent.touched && TC.THEME_ACTIVE == 1">check</i>
 
                             <i class="material-icons prefix color-invalid"
                                 *ngIf="!dataEntry.type_ev && formEvent.touched">close</i>
 
                             <select formControlName="tipo_evento" (ngModelChange)="fixErrorFormEvent()"
-                                [(ngModel)]="dataEntry.type_ev">
+                                [(ngModel)]="dataEntry.type_ev"
+                                [ngClass]="TC.MODE.manage_event.text_field[TC.THEME_ACTIVE]">
                                 <option value="" disabled
                                     [selected]="dataEntry.type_ev == 0 || dataEntry.type_ev == null">
                                     Seleccione un tipo de evento</option>
 
-                                <option value="1" [selected]="dataEntry.type_ev == 1">Evento individual</option>
+                                <option value="1" [selected]="dataEntry.type_ev == 1">Evento individual
+                                </option>
 
                                 <option value="2" [selected]="dataEntry.type_ev == 2">Evento
                                     grupal</option>
@@ -93,19 +105,20 @@
                         </div>
 
                         <div class="input-field active-emojis-box">
-                            <i class="material-icons prefix cursor-normal">insert_emoticon</i>
+                            <i [ngClass]="TC.MODE.manage_event.icon_color[TC.THEME_ACTIVE]"
+                                class="material-icons prefix cursor-normal">insert_emoticon</i>
                             <input type="text" formControlName="icono" id="iconoEvento"
-                                [ngClass]="{'valid': dataEntry.icon && formEvent.touched}"
+                                [ngClass]="{'valid': dataEntry.icon && formEvent.touched && TC.THEME_ACTIVE == 0, 'valid-dark': dataEntry.icon && formEvent.touched && TC.THEME_ACTIVE == 1, 'grey-text text-lighten-3': TC.THEME_ACTIVE == 1}"
                                 (ngModelChange)="fixErrorFormEvent()" [(ngModel)]="dataEntry.icon" class="cursor-normal"
                                 (mousedown)="false">
                             <span class="mode-edit-emoji"
-                                [ngClass]="{'color-valid': dataEntry.icon && formEvent.touched}">Icono
+                                [ngClass]="{'color-valid': dataEntry.icon && formEvent.touched && TC.THEME_ACTIVE == 0, 'color-valid-dark': dataEntry.icon && formEvent.touched && TC.THEME_ACTIVE == 1}">Icono
                                 personalizado (Opcional)</span>
 
                             <span class="emojis-box emojis-box-floating grey lighten-5 p-2 box-shadow-1">
                                 <div class="row mb-0">
                                     <div class="col l3 left-align red-text">
-                                        <!-- #region empty -->
+                                        <!--  empty -->
                                     </div>
 
                                     <div class="col l2 offset-l5 right-align"><i class="fas fa-backspace cursor-pointer"
@@ -146,6 +159,7 @@
 
                             <button (click)="manageEvent()"
                                 [disabled]="loading || (!formEvent.valid || (!dataEntry.hourIsValid && !dataEntry.dateIsValid) || dataEntry.type_ev == 0)"
+                                [ngClass]="TC.MODE.manage_event.btn_edit_add[TC.THEME_ACTIVE]"
                                 class="waves-effect waves-light btn"><i class="material-icons left">{{actionEvent ==
                                     'edit' ? 'create' : 'content_paste'}}</i>{{actionEvent == 'edit' ? 'Editar evento' :
                                 'Crear evento'}}</button>
