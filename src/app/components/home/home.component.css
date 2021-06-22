@@ -5,12 +5,20 @@
     max-height: 301px;
 }
 
-.hover-cus-1:hover {
+.hover-cus-1-l:hover {
     background-color: #e0e0e0 !important;
 }
 
-.nth-child-cus-1:nth-child(even) {
+.hover-cus-1-d:hover {
+    background-color: #616161 !important;
+}
+
+.nth-child-cus-1-l:nth-child(even) {
     background-color: #eeeeee;
+}
+
+.nth-child-cus-1-d:nth-child(even) {
+    background-color: #424242 ;
 }
 
 .p-cus-1{
@@ -32,4 +40,20 @@
     border-right: 2px solid #26a69a;
     border-bottom: 2px solid #26a69a;
     transform: rotate(40deg);
+}
+
+input.dark-mode:not([type]):focus:not([readonly]),
+input.dark-mode[type=text]:not(.browser-default):focus:not([readonly]){
+  border-bottom: 1px solid #eeeeee ;
+  -webkit-box-shadow: 0 1px 0 0 #eeeeee ;
+          box-shadow: 0 1px 0 0 #eeeeee ;
+}
+
+.input-field .prefix.dark-mode.active {
+  color: #eeeeee !important;
+}
+
+input.dark-mode:not([type]):focus:not([readonly]) + label,
+input.dark-mode[type=text]:not(.browser-default):focus:not([readonly]) + label{
+  color: #eeeeee;
 }

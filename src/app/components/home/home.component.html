@@ -1,4 +1,4 @@
-<div [ngClass]="TC.MODE.bg_general[TC.THEME_ACTIVE]" class="section overflow-hidden">
+<div [ngClass]="TC.MODE.bg_general[TC.THEME_ACTIVE]" class="section overflow-hidden h-100">
     <div class="row">
         <div class="col l3">
             <app-aside-info></app-aside-info>
@@ -10,13 +10,18 @@
                     <div class="row">
                         <div class="col l12">
                             <div class="input-field">
-                                <i class="material-icons prefix">search</i>
-                                <input type="text" class="" [(ngModel)]="inputSearchValue"
-                                    (ngModelChange)="searchEvents(inputSearchValue)" maxlength="250">
+                                <i [ngClass]="TC.MODE.input_search.prefix[TC.THEME_ACTIVE]"
+                                    class="material-icons prefix">search</i>
+
+                                <input type="text" [ngClass]="TC.MODE.input_search.input[TC.THEME_ACTIVE]"
+                                    [(ngModel)]="inputSearchValue" (ngModelChange)="searchEvents(inputSearchValue)"
+                                    maxlength="250">
+
                                 <label for="icon_prefix">Buscar eventos</label>
 
                                 <a routerLink="/controlevento"
-                                    class="btn-floating btn-small waves-effect waves-light left mt-2 cyan darken-4 mr-4"><i
+                                    [ngClass]="TC.MODE.options_table.btn_add[TC.THEME_ACTIVE]"
+                                    class="btn-floating btn-small waves-effect waves-light left mt-2 mr-4"><i
                                         class="material-icons">add</i></a>
 
                                 <button type="button" class="waves-effect waves-light btn left mt-2 cyan lighten-1 mr-4"
@@ -30,7 +35,8 @@
                     </div>
 
                     <div class="max-h-301px overflow-auto scroll-1 box-shadow-1" GetSizeScroll>
-                        <table class="white border-radius-5px position-relative">
+                        <table [ngClass]="TC.MODE.table.bg[TC.THEME_ACTIVE]"
+                            class="border-radius-5px position-relative">
                             <ng-container *ngIf="eventsRequest.length >= 1 && !loading">
                                 <thead>
                                     <tr>
@@ -44,11 +50,12 @@
                                                         (click)="checkBoxSelectAllClick()"
                                                         [(ngModel)]="checkBoxSelectAll "><span></span></label></span>
                                         </th>
-                                        <th>Título</th>
-                                        <th>Hora</th>
-                                        <th>Fecha</th>
-                                        <th>Descripción</th>
-                                        <th class="text-center">Ícono</th>
+                                        <th [ngClass]="TC.MODE.table.titles[TC.THEME_ACTIVE]">Título</th>
+                                        <th [ngClass]="TC.MODE.table.titles[TC.THEME_ACTIVE]">Hora</th>
+                                        <th [ngClass]="TC.MODE.table.titles[TC.THEME_ACTIVE]">Fecha</th>
+                                        <th [ngClass]="TC.MODE.table.titles[TC.THEME_ACTIVE]">Descripción</th>
+                                        <th [ngClass]="TC.MODE.table.titles[TC.THEME_ACTIVE]" class="text-center">Ícono
+                                        </th>
                                     </tr>
                                 </thead>
                             </ng-container>
@@ -57,7 +64,8 @@
                             <ng-container *ngIf="eventsRequest.length == 0 && !loading && eventsBackup.length == 0">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">No hay eventos que mostrar</th>
+                                        <th [ngClass]="TC.MODE.table.titles[TC.THEME_ACTIVE]" class="text-center">No hay
+                                            eventos que mostrar</th>
                                     </tr>
                                 </thead>
                             </ng-container>
@@ -67,7 +75,8 @@
                                 *ngIf="inputSearchValue.length > 0 && !loading && eventsBackup.length > 0 && eventsRequest.length == 0">
                                 <thead class="break-word">
                                     <tr>
-                                        <th class="text-center">No se encontraron resultados para
+                                        <th [ngClass]="TC.MODE.table.titles[TC.THEME_ACTIVE]" class="text-center">No se
+                                            encontraron resultados para
                                             <i>{{inputSearchValue}}.</i>
                                         </th>
                                     </tr>
@@ -79,8 +88,8 @@
                                 <ng-container *ngIf="eventsRequest.length > 0 && !loading">
 
                                     <ng-container *ngFor="let item of eventsRequest | slice:0:lazyLoadCharge">
-                                        <tr class="nth-child-cus-1 hover-cus-1 cursor-pointer"
-                                            (click)="viewInfoProduct(item.id)">
+                                        <tr [ngClass]="TC.MODE.table.nthchild_events[TC.THEME_ACTIVE]"
+                                            class="cursor-pointer" (click)="viewInfoProduct(item.id)">
                                             <td class="center"><label>
                                                     <input type="checkbox" *ngIf="item.owner"
                                                         (click)="checkBoxClick(item.id)" [(ngModel)]="item.check">
