@@ -13,6 +13,9 @@
     overflow: hidden;
     transform: skewY(9deg);
     transform-origin: 100%;
+}
+
+.bg-color-cus-1 {
     background-color: #448aff;
 }
 
