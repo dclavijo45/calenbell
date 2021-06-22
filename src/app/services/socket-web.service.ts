@@ -242,13 +242,13 @@ export class SocketWebService {
         token: null
     };
 
-    public detectNewMessage: Subject<ISocketMessage> = new Subject<ISocketMessage>();
+    detectNewMessage: Subject<ISocketMessage> = new Subject<ISocketMessage>();
 
-    public listenerNewMessage(): Observable<ISocketMessage> {
+    listenerNewMessage(): Observable<ISocketMessage> {
         return this.detectNewMessage.asObservable();
     }
 
-    public checkMessagesWithoutRead(): void {
+    checkMessagesWithoutRead(): void {
         this.chatsWithoutRead = 0;
 
         this.chatsWithoutRead = this.CHATS.reduce((acc, chat) => {
@@ -263,13 +263,13 @@ export class SocketWebService {
 
     }
 
-    public statusConnection: boolean = false;
+    statusConnection: boolean = false;
 
-    public reasonDisconnection: number = null;
+    reasonDisconnection: number = null;
 
     private ioSocket: Socket;
 
-    public connectServerSocket(token: string): void {
+    connectServerSocket(token: string): void {
         /***
          * @TODO Use token for query as auth. Connect to server (if is not connected) and listen events when connect to server and disconnec to server
          */
@@ -289,7 +289,7 @@ export class SocketWebService {
         this.listenMessages();
     }
 
-    public disconnectServerSocket(): void {
+    disconnectServerSocket(): void {
         this.ioSocket.disconnect();
     }
 
@@ -311,11 +311,11 @@ export class SocketWebService {
         this.ioSocket.on('message', (data: ISocketMessage) => this.detectNewMessage.next(data));
     }
 
-    public emit(channel: string, data: any) {
+    emit(channel: string, data: any) {
         this.ioSocket.emit(channel, data);
     }
 
-    public joinGroup(token: string): void {
+    joinGroup(token: string): void {
         this.ioSocket.emit('join-group', {
             data: {
                 token
