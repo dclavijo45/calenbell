@@ -1,8 +1,9 @@
-<div [ngClass]="TC.MODE.bg_general[TC.THEME_ACTIVE]" class="section overflow-hidden mt-3-mobile h-100"
+<div [ngClass]="TC.MODE.bg_general[TC.THEME_ACTIVE]" class="section overflow-hidden h-100 pt-4"
     [ngStyle]="{'opacity': opacityView}">
     <div class="row">
         <div class="col s12 center">
-            <div [ngClass]="{'log-in': login, 'active': loading}" class="container-cus-1 mx-auto mt-6">
+            <div [ngClass]="{'log-in': login, 'active': loading, 'bg-cus-1-l': TC.THEME_ACTIVE == 0,
+        'grey darken-3': TC.THEME_ACTIVE == 1}" class="container-cus-1 mx-auto mt-6">
                 <div class="box-cus-1"></div>
                 <div class="container-forms">
                     <div class="container-info">
@@ -47,7 +48,7 @@
                     </div>
 
                     <div class="container-form"
-                        [ngClass]="{'w-90': recoveryPwd || recoveryPwdCode || recoveryPwdSetPwd}">
+                        [ngClass]="{'w-90': recoveryPwd || recoveryPwdCode || recoveryPwdSetPwd, 'grey darken-4': TC.THEME_ACTIVE == 1, 'white':TC.THEME_ACTIVE == 0}">
                         <div class="form-item log-in">
                             <div class="table-cus-1">
                                 <div class="table-cell">
@@ -61,11 +62,14 @@
                                     </div>
                                     <span [formGroup]="formLogin"
                                         *ngIf="!recoveryPwd && !recoveryPwdCode && !recoveryPwdSetPwd && !loading">
-                                        <h5 class="center-align" [ngClass]="{'d-none': loading}">
+                                        <h5 *ngIf="!loading" [ngClass]="TC.MODE.login.login_text[TC.THEME_ACTIVE]"
+                                            class="center-align">
                                             Iniciar sesión</h5>
 
-                                        <input #user type="text" formControlName="user" (keydown.enter)="loginUser()"
-                                            placeholder="Usuario" maxlength="40">
+                                        <input #user type="text" [ngClass]="TC.MODE.login.input.text[TC.THEME_ACTIVE]"
+                                            formControlName="user" (keydown.enter)="loginUser()" placeholder="Usuario"
+                                            maxlength="40">
+
                                         <span *ngIf="rf_userLogin.invalid && rf_userLogin.dirty"
                                             class="color-invalid position-absolute d-block w-100 font-weight-500 mt--5">
                                             <!-- Errors -->
@@ -77,8 +81,10 @@
 
                                         </span>
 
-                                        <input type="password" formControlName="password" placeholder="Contraseña"
+                                        <input type="password" [ngClass]="TC.MODE.login.input.text[TC.THEME_ACTIVE]"
+                                            formControlName="password" placeholder="Contraseña"
                                             (keydown.enter)="loginUser()" maxlength="255">
+
                                         <span *ngIf="rf_passwordLogin.invalid && rf_passwordLogin.dirty"
                                             class="color-invalid position-absolute d-block w-100 font-weight-500 mt--5">
                                             <!-- Errors -->
@@ -90,35 +96,40 @@
 
                                         </span>
 
-                                        <p class="grey-text text-darken-4 hover-cus-1 mb-2"
-                                            [ngClass]="{'d-none': loading, 'mt-14': rf_passwordLogin.invalid}"
+                                        <br *ngIf="rf_passwordLogin.errors?.minlength">
+                                        <p class="mb-2" *ngIf="!loading"
+                                            [ngClass]="TC.MODE.login.remember_pwd.text[TC.THEME_ACTIVE]"
                                             (click)="recoveryPwd = !recoveryPwd">
                                             Olvidaste tu
                                             contraseña?</p>
 
-                                        <button [ngClass]="{'d-none': loading}" (click)="GoogleAttemp=false;loginUser()"
-                                            class="btn waves-effect waves-light pink accent-1 mt-2"
-                                            [disabled]="formLogin.invalid">
+                                        <button *ngIf="!loading" [ngClass]="TC.MODE.login.btn_login[TC.THEME_ACTIVE]"
+                                            (click)="GoogleAttemp=false;loginUser()"
+                                            class="btn waves-effect waves-light mt-2" [disabled]="formLogin.invalid">
                                             Iniciar sesión
                                         </button>
 
-                                        <div class="btn waves-effect waves-light pink accent-1 mt-2 ml-2 mobile"
-                                            [ngClass]="{'d-none': loading}" (click)="login=!login">
+                                        <div class="btn waves-effect waves-light mt-2 ml-2 mobile" *ngIf="!loading"
+                                            (click)="login=!login">
                                             Crear cuenta
                                         </div>
 
                                     </span>
 
                                     <span [formGroup]="formRecoveryPwd" *ngIf="recoveryPwd && !loading">
-                                        <h5 class="center-align" [ngClass]="{'d-none': loading}">
+                                        <h5 *ngIf="!loading"
+                                            [ngClass]="TC.MODE.login.recovery_pwd.title[TC.THEME_ACTIVE]"
+                                            class="center-align">
                                             Recupera tu cuenta</h5>
 
-                                        <input type="text" formControlName="account" (keydown.enter)="recoveryAccount()"
+                                        <input type="text" [ngClass]="TC.MODE.login.input.text[TC.THEME_ACTIVE]"
+                                            formControlName="account" (keydown.enter)="recoveryAccount()"
                                             placeholder="Ingrese número o correo" class="text-center" maxlength="255">
 
                                         <p class="red-text" *ngIf="recoveryAttemptCode == 1">Código no validado!</p>
 
-                                        <button class="btn waves-effect waves-light pink accent-1"
+                                        <button [ngClass]="TC.MODE.login.recovery_pwd.btn_return[TC.THEME_ACTIVE]"
+                                            class="btn waves-effect waves-light"
                                             (click)="cancelRecoveryPwd()">Volver</button>
 
                                         <button class="btn waves-effect waves-light blue accent-3 ml-3"
@@ -127,18 +138,23 @@
                                     </span>
 
                                     <span [formGroup]="formRecoveryPwdCode" *ngIf="recoveryPwdCode && !loading">
-                                        <h5 class="center-align" [ngClass]="{'d-none': loading}">
+                                        <h5 *ngIf="!loading"
+                                            [ngClass]="TC.MODE.login.recovery_pwd.title[TC.THEME_ACTIVE]"
+                                            class="center-align">
                                             Recupera tu cuenta</h5>
 
-                                        <input type="number" formControlName="code"
-                                            (keydown.enter)="validateRecoveryAccCode()"
-                                            placeholder="Ingrese el código enviado" class="text-center" maxlength="6">
+                                        <input type="number" [ngClass]="TC.MODE.login.input.text[TC.THEME_ACTIVE]"
+                                            formControlName="code" (keydown.enter)="validateRecoveryAccCode()"
+                                            placeholder="Ingrese el código enviado" class="text-center">
 
-                                        <p *ngIf="timeClock.active">Expirará en
+                                        <p *ngIf="timeClock.active"
+                                            [ngClass]="TC.MODE.login.recovery_pwd.title[TC.THEME_ACTIVE]">Expirará en
                                             {{timeClock.minute}}:{{timeClock.second <=9 ? "0" +timeClock.second :
                                                 timeClock.second}}</p>
 
-                                                <button class="btn waves-effect waves-light pink accent-1"
+                                                <button
+                                                    [ngClass]="TC.MODE.login.recovery_pwd.btn_return[TC.THEME_ACTIVE]"
+                                                    class="btn waves-effect waves-light"
                                                     (click)="cancelRecoveryPwd()">Volver</button>
 
                                                 <button class="btn waves-effect waves-light blue accent-3 ml-3"
@@ -147,22 +163,27 @@
                                     </span>
 
                                     <span [formGroup]="formRecoverySetPwd" *ngIf="recoveryPwdSetPwd && !loading">
-                                        <h5 class="center-align" [ngClass]="{'d-none': loading}">
+                                        <h5 class="center-align" *ngIf="!loading"
+                                            [ngClass]="TC.MODE.login.recovery_pwd.title[TC.THEME_ACTIVE]">
                                             Recupera tu cuenta</h5>
 
-                                        <input type="password" formControlName="password"
-                                            placeholder="Crea una nueva contraseña" class="text-center"
-                                            (keydown.enter)="validateChangePwd()" maxlength="255">
+                                        <input type="password" [ngClass]="TC.MODE.login.input.text[TC.THEME_ACTIVE]"
+                                            formControlName="password" placeholder="Crea una nueva contraseña"
+                                            class="text-center" (keydown.enter)="validateChangePwd()" maxlength="255">
 
-                                        <input type="password" formControlName="check_password"
-                                            placeholder="Confirmar contraseña" class="text-center"
-                                            (keydown.enter)="validateChangePwd()" maxlength="255">
+                                        <input type="password" [ngClass]="TC.MODE.login.input.text[TC.THEME_ACTIVE]"
+                                            formControlName="check_password" placeholder="Confirmar contraseña"
+                                            class="text-center" (keydown.enter)="validateChangePwd()" maxlength="255">
 
-                                        <p *ngIf="timeClock.active">Recuperación expirará en
+                                        <p *ngIf="timeClock.active"
+                                            [ngClass]="TC.MODE.login.recovery_pwd.title[TC.THEME_ACTIVE]">Recuperación
+                                            expirará en
                                             {{timeClock.minute}}:{{timeClock.second <=9 ? "0" +timeClock.second :
                                                 timeClock.second}}</p>
 
-                                                <button class="btn waves-effect waves-light pink accent-1"
+                                                <button
+                                                    [ngClass]="TC.MODE.login.recovery_pwd.btn_return[TC.THEME_ACTIVE]"
+                                                    class="btn waves-effect waves-light"
                                                     (click)="cancelRecoveryPwd()">Cancelar</button>
 
                                                 <button class="btn waves-effect waves-light blue accent-3 ml-3"
@@ -185,11 +206,14 @@
                                         </div>
                                     </div>
 
-                                    <h5 class="center-align" [ngClass]="{'d-none': loading}">Crea tu
+                                    <h5 *ngIf="!loading" [ngClass]="TC.MODE.login.register_text[TC.THEME_ACTIVE]"
+                                        class="center-align">Crea tu
                                         cuenta</h5>
 
-                                    <input #nameRegister type="text" formControlName="name"
+                                    <input #nameRegister type="text"
+                                        [ngClass]="TC.MODE.login.input.text[TC.THEME_ACTIVE]" formControlName="name"
                                         (keydown.enter)="registerUser()" placeholder="Nombres" maxlength="30">
+
                                     <span *ngIf="rf_nameRegister.invalid &&  rf_nameRegister.dirty && !loading"
                                         class="color-invalid position-absolute d-block w-100 font-weight-500 mt--5">
                                         <!-- Errors -->
@@ -205,8 +229,10 @@
 
                                     </span>
 
-                                    <input type="email" formControlName="email" (keydown.enter)="registerUser()"
-                                        placeholder="Correo" maxlength="255">
+                                    <input type="email" [ngClass]="TC.MODE.login.input.text[TC.THEME_ACTIVE]"
+                                        formControlName="email" (keydown.enter)="registerUser()" placeholder="Correo"
+                                        maxlength="255">
+
                                     <span *ngIf="rf_emailRegister.invalid && rf_emailRegister.dirty && !loading"
                                         class="color-invalid position-absolute d-block w-100 font-weight-500 mt--5">
                                         <!-- Errors -->
@@ -217,9 +243,10 @@
 
                                     </span>
 
-                                    <input type="text" formControlName="user"
-                                        (keydown.enter)="GoogleAttempt=false;registerUser()" placeholder="Usuario"
-                                        maxlength="40">
+                                    <input type="text" [ngClass]="TC.MODE.login.input.text[TC.THEME_ACTIVE]"
+                                        formControlName="user" (keydown.enter)="GoogleAttempt=false;registerUser()"
+                                        placeholder="Usuario" maxlength="40">
+
                                     <span *ngIf="rf_userRegister.invalid &&  rf_userRegister.dirty && !loading"
                                         class="color-invalid position-absolute d-block w-100 font-weight-500 mt--5">
                                         <!-- Errors -->
@@ -230,8 +257,10 @@
 
                                     </span>
 
-                                    <input type="password" formControlName="password" (keydown.enter)="registerUser()"
+                                    <input type="password" [ngClass]="TC.MODE.login.input.text[TC.THEME_ACTIVE]"
+                                        formControlName="password" (keydown.enter)="registerUser()"
                                         placeholder="Contraseña" maxlength="255" class="mb-6">
+
                                     <span *ngIf="rf_passwordRegister.invalid &&  rf_passwordRegister.dirty && !loading"
                                         class="color-invalid position-absolute d-block w-100 font-weight-500 mt--5">
                                         <!-- Errors -->
@@ -249,9 +278,9 @@
                                         Volver
                                     </div>
 
-                                    <button *ngIf="formRegister.valid"
-                                        class="btn waves-effect waves-light pink accent-1 mt-2 ml-2"
-                                        [ngClass]="{'d-none': loading}" (click)="registerUser()">
+                                    <button *ngIf="formRegister.valid && !loading"
+                                        [ngClass]="TC.MODE.login.btn_register[TC.THEME_ACTIVE]"
+                                        class="btn waves-effect waves-light mt-2 ml-2" (click)="registerUser()">
                                         Crear cuenta
                                     </button>
 

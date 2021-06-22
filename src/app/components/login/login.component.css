@@ -32,12 +32,16 @@
   position: relative;
   width: 600px;
   height: 320px;
-  background-color: #999ede;
   -moz-transition: all 0.5s;
   -o-transition: all 0.5s;
   -webkit-transition: all 0.5s;
   transition: all 0.5s;
 }
+
+.bg-cus-1-l {
+    background-color: #999ede;
+}
+
 .container-cus-1 .box-cus-1 {
   position: absolute;
   left: 0;
@@ -52,7 +56,7 @@
   position: absolute;
   left: 152px;
   top: 50px;
-  background-color: #9297e0;
+  /* background-color: #9297e0; */
   transform: rotateX(52deg) rotateY(15deg) rotateZ(-38deg);
   width: 300px;
   height: 285px;
@@ -62,7 +66,7 @@
   transition: all 0.5s;
 }
 .container-cus-1 .box-cus-1:after {
-  background-color: #a5aae4;
+  /* background-color: #a5aae4; */
   top: -10px;
   left: 80px;
   width: 320px;
@@ -143,7 +147,7 @@
   top: -30px;
   width: 305px;
   height: 380px;
-  background-color: #fff;
+  /* background-color: #fff; */
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.2);
   -moz-transition: all 0.5s;
   -o-transition: all 0.5s;
@@ -293,10 +297,18 @@ input[type="email"]:focus {
   font-family: serif;
 }
 
-.hover-cus-1:hover {
+.hover-cus-1-l:hover {
   color: #000000;
   font-weight: 500;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.hover-cus-1-d:hover {
+  color: #eeeeee;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
 .font-size-20px {
