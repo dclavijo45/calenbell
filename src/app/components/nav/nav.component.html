@@ -8,14 +8,14 @@
 
         <ul class="right hide-on-med-and-down h-100">
             <li>
-                <a class="font-family-1 font-tags-link space-nav-fixed-hover p-0">{{infoProfileSvc.info_profile.name.length
+                <a class="font-family-1 font-tags-link p-0 mouse-events-none">{{infoProfileSvc.info_profile.name.length
                     >= 31 ?
                     infoProfileSvc.info_profile.name.slice(0, 31) + '...' :
                     infoProfileSvc.info_profile.name}}</a>
             </li>
 
             <li class="h-100">
-                <a class="h-100 space-nav-fixed-hover"><img [src]="infoProfileSvc.info_profile.photo"
+                <a class="h-100 mouse-events-none"><img [src]="infoProfileSvc.info_profile.photo"
                         class="img-thumbnail border-radius-50 w-h-45px mt-20" height="45" width="45"></a>
             </li>
 
@@ -41,7 +41,7 @@
 
 <!--Nav when is not logged-->
 <nav [ngClass]="TC.MODE.nav_footer[TC.THEME_ACTIVE]" *ngIf="!(_auth.isLoggedIn() | async) || (_rootPageStatus
-.listenRootPageStatus() | async)">
+.listenRootPageStatus() | async)" [ngStyle]="{'position': tagActive != 1 ? 'absolute' : ''}">
     <div class="nav-wrapper">
 
         <a class="brand-logo ml-1"><img src="https://www.dropbox.com/s/uo5uwlxd9tvvfsq/logo.png?dl=1" width="200"

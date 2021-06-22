@@ -26,32 +26,13 @@
     font-size: 1.2rem !important;
 }
 
-.space-nav-fixed {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    padding-right: 230px !important;
-    padding-left: 230px !important;
-}
-
-.space-nav-fixed-2 {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    padding-right: 290px !important;
-    padding-left: 290px !important;
-}
-
-.space-nav-fixed-hover:hover {
-    background-color: #0D47A1 !important;
-    cursor: default;
-}
-
 .w-h-45px {
     width: 45px !important;
     height: 45px !important;
 }
 
 .position-img-cus-1{
-    top: 8px;
+    top: 7px;
     position: relative;
     left: -5px;
 }
