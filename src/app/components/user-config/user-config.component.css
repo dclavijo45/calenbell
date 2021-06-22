@@ -4,19 +4,15 @@
 
 .tabs .tab a {
   color: rgba(6, 7, 7, 0.7);
-  /*Custom Text Color*/
 }
 
 .tabs .tab a:hover {
   color: rgba(0, 0, 0, 1);
-  /*Custom Color On Hover*/
 }
 
 .tabs .tab a:focus.active {
   color: rgba(6, 7, 7, 0.7);
-  /*Custom Text Color While Active*/
-  background-color: rgba(21, 101, 192, 0.08);
-  /*Custom Background Color While Active*/
+  background-color: transparent
 }
 
 .carousel-slider {
@@ -64,9 +60,14 @@
   padding-bottom: 2.45%;
 }
 
-.border-cus-1 {
+.border-cus-1-l {
   border-left: 1px solid #b4b4b4;
   border-right: 1px solid #b4b4b4;
+}
+
+.border-cus-1-d {
+  border-left: 1px solid #dbdbdb;
+  border-right: 1px solid #dbdbdb;
 }
 
 .pb-2--0-5 {
@@ -89,8 +90,12 @@
   font-size: 20px;
 }
 
-.hover-cus-1:hover {
+.hover-cus-1-l:hover {
   background-color: #e7e3e3 !important;
+}
+
+.hover-cus-1-d:hover {
+  background-color: #424242 !important;
 }
 
 .max-h-300px {
@@ -112,4 +117,13 @@
 
 .ml-0-5 {
     margin-left: 0.5% !important;
+}
+
+input.dark-mode:not([type]):focus:not([readonly]),
+input.dark-mode[type=text]:not(.browser-default):focus:not([readonly]),
+input.dark-mode:not([type]):focus:not([readonly]),
+input.dark-mode[type=password]:not(.browser-default):focus:not([readonly]) {
+  border-bottom: 1px solid #eeeeee;
+  -webkit-box-shadow: 0 1px 0 0 #eeeeee;
+          box-shadow: 0 1px 0 0 #eeeeee;
 }

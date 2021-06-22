@@ -6,14 +6,24 @@
 
         <div class="col l9">
             <div class="row mb-0 pr-1">
-                <div class="col l12 z-depth-1 pl-0 grey lighten-5 pr-0">
+                <div [ngClass]="TC.MODE.user_settings.carrousel.bg_border[TC.THEME_ACTIVE]"
+                    class="col l12 z-depth-1 pl-0 pr-0">
                     <div class="row-mb-0">
                         <div class="col l12 px-0">
-                            <ul class="tabs" #tabInstance>
-                                <li class="tab col l3"><a href="#entryprofile">Perfil</a></li>
-                                <li class="tab col l3"><a href="#entrysecurity">Seguridad</a></li>
-                                <li class="tab col l3"><a href="#entrycustomizable">Personalización</a></li>
-                                <li class="tab col l3"><a href="#entrynotify">Notificaciones</a></li>
+                            <ul [ngClass]="TC.MODE.user_settings.carrousel.bg_tabs[TC.THEME_ACTIVE]" class="tabs"
+                                #tabInstance>
+                                <li class="tab col l3"><a
+                                        [ngClass]="TC.MODE.user_settings.carrousel.text_tabs[TC.THEME_ACTIVE]"
+                                        href="#entryprofile">Perfil</a></li>
+                                <li class="tab col l3"><a
+                                        [ngClass]="TC.MODE.user_settings.carrousel.text_tabs[TC.THEME_ACTIVE]"
+                                        href="#entrysecurity">Seguridad</a></li>
+                                <li class="tab col l3"><a
+                                        [ngClass]="TC.MODE.user_settings.carrousel.text_tabs[TC.THEME_ACTIVE]"
+                                        href="#entrycustomizable">Personalización</a></li>
+                                <li class="tab col l3"><a
+                                        [ngClass]="TC.MODE.user_settings.carrousel.text_tabs[TC.THEME_ACTIVE]"
+                                        href="#entrynotify">Notificaciones</a></li>
                             </ul>
                         </div>
                     </div>
@@ -23,7 +33,8 @@
                             <div class="row mb-0">
 
                                 <div id="entryprofile"
-                                    class="col l12 grey lighten-5 max-h-300px overflow-y-auto scroll-1">
+                                    [ngClass]="TC.MODE.user_settings.carrousel.profile.bg[TC.THEME_ACTIVE]"
+                                    class="col l12 max-h-300px overflow-y-auto scroll-1">
 
                                     <div class="row mb-0">
                                         <div class="col l12">
@@ -35,8 +46,8 @@
                                                     <div class="row mb-0">
 
                                                         <!-- Img profile -->
-                                                        <div class="col l6 min-h-75px py-1 border-cus-1"
-                                                            *ngIf="!loading.img">
+                                                        <div [ngClass]="TC.MODE.user_settings.carrousel.profile.border[TC.THEME_ACTIVE]"
+                                                            class="col l6 min-h-75px py-1" *ngIf="!loading.img">
                                                             <div class="row mb-0">
                                                                 <div class="col l12">
 
@@ -45,13 +56,13 @@
 
                                                                             <div class="row mb-0">
                                                                                 <div class="col l12">
-                                                                                    <i
+                                                                                    <i [ngClass]="TC.MODE.user_settings.carrousel.profile.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="material-icons">assignment_ind</i>
                                                                                 </div>
                                                                             </div>
 
                                                                             <div class="row mb-0">
-                                                                                <div
+                                                                                <div [ngClass]="TC.MODE.user_settings.carrousel.profile.logo_info[TC.THEME_ACTIVE]"
                                                                                     class="col l12 font-family-1 font-weight-600">
                                                                                     Foto de perfil
 
@@ -74,6 +85,7 @@
                                                                         <!-- Arrow indicator -->
                                                                         <div class="col l2 center mt-1--5-6">
                                                                             <i *ngIf="actions.isUpdatingImgProfile"
+                                                                                [ngClass]="TC.MODE.user_settings.carrousel.profile.arrow_indicator[TC.THEME_ACTIVE]"
                                                                                 class="material-icons font-size-54px">east</i>
                                                                         </div>
 
@@ -93,12 +105,14 @@
                                                                                 <div class="col l6 center">
 
                                                                                     <i *ngIf="!actions.isUpdatingImgProfile"
-                                                                                        class="material-icons font-size-40px cursor-pointer border-radius-50 hover-cus-1"
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.profile.mode_edit[TC.THEME_ACTIVE]"
+                                                                                        class="material-icons font-size-40px cursor-pointer border-radius-50"
                                                                                         (click)="NewImg.click()"
                                                                                         title="Cambiar foto de perfil">mode_edit</i>
 
                                                                                     <i *ngIf="actions.isUpdatingImgProfile"
-                                                                                        class="material-icons font-size-40px cursor-pointer green-text border-radius-50 hover-cus-1"
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.profile.mode_done[TC.THEME_ACTIVE]"
+                                                                                        class="material-icons font-size-40px cursor-pointer border-radius-50"
                                                                                         title="Guardar nueva foto de perfil"
                                                                                         (click)="sendImgChange()">done</i>
                                                                                 </div>
@@ -129,7 +143,8 @@
                                                         </div>
 
                                                         <!-- Name profile -->
-                                                        <div class="col l6 min-h-75px pt-1 pb-2--4-5 border-cus-1"
+                                                        <div [ngClass]="TC.MODE.user_settings.carrousel.profile.border[TC.THEME_ACTIVE]"
+                                                            class="col l6 min-h-75px pt-1 pb-2--4-5"
                                                             *ngIf="!loading.name">
 
                                                             <div class="row mb-0">
@@ -142,8 +157,10 @@
                                                                             <div class="row mb-0">
                                                                                 <div
                                                                                     class="col l12 font-family-1 font-weight-600">
-                                                                                    <i class="material-icons">person</i>
+                                                                                    <i [ngClass]="TC.MODE.user_settings.carrousel.profile.logo_info[TC.THEME_ACTIVE]"
+                                                                                        class="material-icons">person</i>
                                                                                     <span
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.profile.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="position-absolute ml-1">Nombre</span>
                                                                                 </div>
                                                                             </div>
@@ -153,11 +170,14 @@
                                                                                     [formGroup]="formName">
                                                                                     <span
                                                                                         *ngIf="!actions.isUpdatingName"
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.profile.info_mode[TC.THEME_ACTIVE]"
                                                                                         class="ml-9">{{infoProfileSvc.info_profile.name}}</span>
 
                                                                                     <input #InputName
                                                                                         *ngIf="actions.isUpdatingName"
-                                                                                        type="text" class="ml-9 w-50"
+                                                                                        type="text"
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.profile.input[TC.THEME_ACTIVE]"
+                                                                                        class="ml-9 w-50"
                                                                                         placeholder="Escriba su nuevo nombre"
                                                                                         formControlName="name"
                                                                                         maxlength="31"
@@ -193,13 +213,15 @@
 
                                                                         </div>
 
+                                                                        <!-- Options -->
                                                                         <div class="col l2 center mt-2--3-5">
                                                                             <div class="row mb-0">
                                                                                 <div *ngIf="!actions.isUpdatingName"
                                                                                     class="row mb-0">
                                                                                     <div class="col l12">
                                                                                         <i (click)="setNameChange()"
-                                                                                            class="material-icons font-size-40px cursor-pointer border-radius-50 hover-cus-1"
+                                                                                            [ngClass]="TC.MODE.user_settings.carrousel.profile.mode_edit[TC.THEME_ACTIVE]"
+                                                                                            class="material-icons font-size-40px cursor-pointer border-radius-50"
                                                                                             title="Editar nombre">edit</i>
                                                                                     </div>
                                                                                 </div>
@@ -208,7 +230,8 @@
                                                                                     class="row mb-0">
 
                                                                                     <div class="col l6 ml-0 pl-0">
-                                                                                        <i [ngClass]="{'hover-cus-1 cursor-pointer green-text': formName.valid}"
+                                                                                        <i [ngClass]="{'hover-cus-1-l cursor-pointer green-text': formName.valid && TC.THEME_ACTIVE == 0,
+                                                                                    'hover-cus-1-d cursor-pointer grey-text text-lighten-3': formName.valid && TC.THEME_ACTIVE == 1}"
                                                                                             class="material-icons font-size-40px border-radius-50 "
                                                                                             title="Guardar nuevo nombre"
                                                                                             (click)="sendNameChange()">done</i>
@@ -246,7 +269,8 @@
                                                     <div class="row mb-0">
 
                                                         <!-- Username -->
-                                                        <div class="col l6 min-h-75px pt-1 pb-2--0-5 border-cus-1"
+                                                        <div [ngClass]="TC.MODE.user_settings.carrousel.profile.border[TC.THEME_ACTIVE]"
+                                                            class="col l6 min-h-75px pt-1 pb-2--0-5"
                                                             *ngIf="!loading.username">
                                                             <div class="row mb-0">
                                                                 <div class="col l12">
@@ -255,11 +279,12 @@
                                                                         <div class="col l10 mt-2">
 
                                                                             <div class="row mb-0">
-                                                                                <div
+                                                                                <div [ngClass]="TC.MODE.user_settings.carrousel.profile.logo_info[TC.THEME_ACTIVE]"
                                                                                     class="col l12 font-family-1 font-weight-600">
                                                                                     <i
                                                                                         class="material-icons">verified_user</i>
                                                                                     <span
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.profile.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="position-absolute ml-1">Nombre
                                                                                         de usuario</span>
                                                                                 </div>
@@ -270,6 +295,7 @@
                                                                                     [formGroup]="formUserName">
                                                                                     <span
                                                                                         *ngIf="!actions.isUpdatingUserName"
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.profile.info_mode[TC.THEME_ACTIVE]"
                                                                                         class="ml-9">{{infoProfileSvc.info_profile.user
                                                                                         |
                                                                                         validateUsernameConfig:
@@ -277,7 +303,9 @@
 
                                                                                     <input #InputUserName
                                                                                         *ngIf="actions.isUpdatingUserName"
-                                                                                        type="text" class="ml-9 w-70"
+                                                                                        type="text"
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.profile.input[TC.THEME_ACTIVE]"
+                                                                                        class="ml-9 w-70"
                                                                                         placeholder="Escriba su nuevo nombre de usuario"
                                                                                         formControlName="username"
                                                                                         maxlength="41"
@@ -311,13 +339,15 @@
 
                                                                         </div>
 
+                                                                        <!-- Options -->
                                                                         <div class="col l2 center mt-2--3-5">
                                                                             <div class="row mb-0">
                                                                                 <div *ngIf="!actions.isUpdatingUserName"
                                                                                     class="row mb-0">
                                                                                     <div class="col l12">
                                                                                         <i (click)="setUserNameChange()"
-                                                                                            class="material-icons font-size-40px cursor-pointer border-radius-50 hover-cus-1"
+                                                                                            [ngClass]="TC.MODE.user_settings.carrousel.profile.mode_edit[TC.THEME_ACTIVE]"
+                                                                                            class="material-icons font-size-40px cursor-pointer border-radius-50"
                                                                                             title="Editar nombre de usuario">edit</i>
                                                                                     </div>
                                                                                 </div>
@@ -326,7 +356,8 @@
                                                                                     class="row mb-0">
 
                                                                                     <div class="col l6 ml-0 pl-0">
-                                                                                        <i [ngClass]="{'cursor-pointer green-text hover-cus-1': formUserName.valid}"
+                                                                                        <i [ngClass]="{'cursor-pointer green-text hover-cus-1-l': formUserName.valid && TC.THEME_ACTIVE == 0,
+                                                                                    'cursor-pointer grey-text text-lighten-3 hover-cus-1-d': formUserName.valid && TC.THEME_ACTIVE == 1}"
                                                                                             class="material-icons font-size-40px border-radius-50"
                                                                                             title="Guardar nuevo nombre de usuario"
                                                                                             (click)="sendUserNameChange()">done</i>
@@ -352,7 +383,8 @@
                                                         </div>
 
                                                         <!-- Email -->
-                                                        <div class="col l6 min-h-75px pt-1 pb-2--0-5 border-cus-1"
+                                                        <div [ngClass]="TC.MODE.user_settings.carrousel.profile.border[TC.THEME_ACTIVE]"
+                                                            class="col l6 min-h-75px pt-1 pb-2--0-5"
                                                             *ngIf="!loading.email">
                                                             <div class="row mb-0">
                                                                 <div class="col l12 pl-0">
@@ -363,8 +395,10 @@
                                                                             <div class="row mb-0">
                                                                                 <div
                                                                                     class="col l12 font-family-1 font-weight-600">
-                                                                                    <i class="material-icons">email</i>
+                                                                                    <i [ngClass]="TC.MODE.user_settings.carrousel.profile.logo_info[TC.THEME_ACTIVE]"
+                                                                                        class="material-icons">email</i>
                                                                                     <span
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.profile.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="position-absolute ml-1">Correo</span>
                                                                                 </div>
                                                                             </div>
@@ -374,13 +408,16 @@
                                                                                     [formGroup]="formEmail">
                                                                                     <span
                                                                                         *ngIf="!actions.isUpdatingEmail"
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.profile.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="ml-9">{{infoProfileSvc.info_profile.user
                                                                                         | validateUsernameConfig:
                                                                                         infoProfileSvc.info_profile.email:'email'}}</span>
 
                                                                                     <input #InputEmail
                                                                                         *ngIf="actions.isUpdatingEmail"
-                                                                                        type="text" class="ml-9 w-50"
+                                                                                        type="text"
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.profile.input[TC.THEME_ACTIVE]"
+                                                                                        class="ml-9 w-50"
                                                                                         placeholder="Escriba su nuevo correo"
                                                                                         formControlName="email"
                                                                                         maxlength="256"
@@ -413,13 +450,15 @@
 
                                                                         </div>
 
+                                                                        <!-- Options -->
                                                                         <div class="col l2 center mt-2--3-5">
                                                                             <div class="row mb-0">
                                                                                 <div *ngIf="!actions.isUpdatingEmail"
                                                                                     class="row mb-0">
                                                                                     <div class="col l12">
                                                                                         <i (click)="setEmailChange()"
-                                                                                            class="material-icons font-size-40px cursor-pointer border-radius-50 hover-cus-1"
+                                                                                            [ngClass]="TC.MODE.user_settings.carrousel.profile.mode_edit[TC.THEME_ACTIVE]"
+                                                                                            class="material-icons font-size-40px cursor-pointer border-radius-50"
                                                                                             title="Editar correo">edit</i>
                                                                                     </div>
                                                                                 </div>
@@ -428,7 +467,8 @@
                                                                                     class="row mb-0">
 
                                                                                     <div class="col l6 ml-0 pl-0">
-                                                                                        <i [ngClass]="{'cursor-pointer green-text cursor-pointer green-text hover-cus-1': formEmail.valid}"
+                                                                                        <i [ngClass]="{'cursor-pointer green-text hover-cus-1-l': formEmail.valid && TC.THEME_ACTIVE == 0, 
+                                                                                    'cursor-pointer grey-text text-lighten-3 hover-cus-1-d': formEmail.valid && TC.THEME_ACTIVE == 1}"
                                                                                             class="material-icons font-size-40px border-radius-50"
                                                                                             title="Guardar nuevo correo"
                                                                                             (click)="sendEmailChange()">done</i>
@@ -468,8 +508,8 @@
                                                             <!-- Offset -->
                                                         </div>
 
-                                                        <div class="col l6 min-h-75px pt-1 pb-2 border-cus-1"
-                                                            *ngIf="!loading.tel">
+                                                        <div [ngClass]="TC.MODE.user_settings.carrousel.profile.border[TC.THEME_ACTIVE]"
+                                                            class="col l6 min-h-75px pt-1 pb-2" *ngIf="!loading.tel">
                                                             <div class="row mb-0">
                                                                 <div class="col l12 pl-0">
 
@@ -480,9 +520,10 @@
                                                                             <div class="row mb-0">
                                                                                 <div
                                                                                     class="col l12 font-family-1 font-weight-600">
-                                                                                    <i
+                                                                                    <i [ngClass]="TC.MODE.user_settings.carrousel.profile.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="material-icons">smartphone</i>
                                                                                     <span
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.profile.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="position-absolute ml-1">Número
                                                                                         de teléfono</span>
                                                                                 </div>
@@ -493,6 +534,7 @@
                                                                                     [formGroup]="formTel">
                                                                                     <span
                                                                                         *ngIf="!actions.isUpdatingNumberTel"
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.profile.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="ml-9">{{infoProfileSvc.info_profile.user
                                                                                         | validateUsernameConfig:
                                                                                         infoProfileSvc.info_profile.number_tel:
@@ -500,7 +542,9 @@
 
                                                                                     <input #InputTel
                                                                                         *ngIf="actions.isUpdatingNumberTel"
-                                                                                        type="text" class="ml-9 w-70"
+                                                                                        type="text"
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.profile.input[TC.THEME_ACTIVE]"
+                                                                                        class="ml-9 w-70"
                                                                                         placeholder="Escriba su nuevo número de teléfono"
                                                                                         formControlName="tel"
                                                                                         maxlength="10"
@@ -534,13 +578,15 @@
 
                                                                         </div>
 
+                                                                        <!-- Options -->
                                                                         <div class="col l2 center mt-2--3-5">
                                                                             <div class="row mb-0">
                                                                                 <div *ngIf="!actions.isUpdatingNumberTel"
                                                                                     class="row mb-0">
                                                                                     <div class="col l12">
                                                                                         <i (click)="setNumberTelChange()"
-                                                                                            class="material-icons font-size-40px cursor-pointer border-radius-50 hover-cus-1"
+                                                                                            [ngClass]="TC.MODE.user_settings.carrousel.profile.mode_edit[TC.THEME_ACTIVE]"
+                                                                                            class="material-icons font-size-40px cursor-pointer border-radius-50"
                                                                                             title="Editar número telefónico">edit</i>
                                                                                     </div>
                                                                                 </div>
@@ -549,7 +595,8 @@
                                                                                     class="row mb-0">
 
                                                                                     <div class="col l6 ml-0 pl-0">
-                                                                                        <i [ngClass]="{'cursor-pointer green-text hover-cus-1': formTel.valid}"
+                                                                                        <i [ngClass]="{'cursor-pointer green-text hover-cus-1-l': formTel.valid && TC.THEME_ACTIVE == 0, 
+                                                                                    'cursor-pointer grey-text text-lighten-3 hover-cus-1-d': formTel.valid && TC.THEME_ACTIVE == 1}"
                                                                                             class="material-icons font-size-40px border-radius-50"
                                                                                             title="Guardar nuevo número telefónico"
                                                                                             (click)="sendTelChange()">done</i>
@@ -590,7 +637,9 @@
 
                                 </div>
 
-                                <div id="entrysecurity" class="col l12 grey lighten-5">
+                                <div id="entrysecurity"
+                                    [ngClass]="TC.MODE.user_settings.carrousel.security.bg[TC.THEME_ACTIVE]"
+                                    class="col l12">
 
                                     <div class="row mb-0">
                                         <div class="col l12">
@@ -611,9 +660,10 @@
                                                                             <div class="row mb-0">
                                                                                 <div
                                                                                     class="col l12 font-family-1 font-weight-600">
-                                                                                    <i
+                                                                                    <i [ngClass]="TC.MODE.user_settings.carrousel.security.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="material-icons">vpn_key</i>
                                                                                     <span
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.security.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="position-absolute ml-1">Contraseña</span>
                                                                                 </div>
                                                                             </div>
@@ -622,6 +672,7 @@
                                                                                 <div class="col l12 font-family-2 font-weight-500"
                                                                                     [formGroup]="formPassword">
                                                                                     <span *ngIf="!actions.isUpdatingPwd"
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.security.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="ml-9">{{infoProfileSvc.info_profile.user
                                                                                         |
                                                                                         validateUsernameConfig:null:'password'}}</span>
@@ -629,6 +680,7 @@
                                                                                     <input #InputPassword
                                                                                         *ngIf="actions.isUpdatingPwd"
                                                                                         type="password"
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.security.input[TC.THEME_ACTIVE]"
                                                                                         class="ml-9 w-70"
                                                                                         placeholder="Escriba su nueva contraseña"
                                                                                         formControlName="password"
@@ -664,13 +716,15 @@
 
                                                                         </div>
 
+                                                                        <!-- Options -->
                                                                         <div class="col l2 center mt-2--3-5">
 
                                                                             <div *ngIf="!actions.isUpdatingPwd"
                                                                                 class="row mb-0">
                                                                                 <div class="col l12">
                                                                                     <i (click)="setPasswordChange()"
-                                                                                        class="material-icons font-size-40px cursor-pointer border-radius-50 hover-cus-1"
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.security.mode_edit[TC.THEME_ACTIVE]"
+                                                                                        class="material-icons font-size-40px cursor-pointer border-radius-50"
                                                                                         title="Cambiar contraseña">edit</i>
                                                                                 </div>
                                                                             </div>
@@ -678,7 +732,8 @@
                                                                             <div *ngIf="actions.isUpdatingPwd"
                                                                                 class="row mb-0">
                                                                                 <div class="col l6 ml-0 pl-0">
-                                                                                    <i [ngClass]="{'cursor-pointer green-text hover-cus-1': formPassword.valid}"
+                                                                                    <i [ngClass]="{'cursor-pointer green-text hover-cus-1-l': formPassword.valid && TC.THEME_ACTIVE == 0,
+                                                                                'cursor-pointer grey-text text-lighten-3 hover-cus-1-d': formPassword.valid && TC.THEME_ACTIVE == 1}"
                                                                                         class="material-icons font-size-40px border-radius-50"
                                                                                         title="Cambiar contraseña"
                                                                                         (click)="sendPwdChange()">done</i>
@@ -719,7 +774,9 @@
 
                                 </div>
 
-                                <div id="entrycustomizable" class="col l12 grey lighten-5">
+                                <div id="entrycustomizable"
+                                    [ngClass]="TC.MODE.user_settings.carrousel.customice.bg[TC.THEME_ACTIVE]"
+                                    class="col l12">
 
                                     <div class="row mb-0">
                                         <div class="col l12">
@@ -739,11 +796,12 @@
                                                                             <div class="row mb-0">
                                                                                 <div
                                                                                     class="col l12 font-family-1 font-weight-600">
-                                                                                    <i
+                                                                                    <i [ngClass]="TC.MODE.user_settings.carrousel.customice.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="material-icons">lightbulb</i>
                                                                                     <span
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.customice.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="position-absolute ml-1">Tema
-                                                                                        Oscuro/Claro</span>
+                                                                                        Claro/Oscuro</span>
                                                                                 </div>
                                                                             </div>
 
@@ -790,7 +848,9 @@
 
                                 </div>
 
-                                <div id="entrynotify" class="col l12 grey lighten-5">
+                                <div id="entrynotify"
+                                    [ngClass]="TC.MODE.user_settings.carrousel.notify.bg[TC.THEME_ACTIVE]"
+                                    class="col l12">
 
                                     <div class="row mb-0">
                                         <div class="col l12">
@@ -800,7 +860,8 @@
                                                     <div class="row mb-0">
 
                                                         <!-- Notify one-one -->
-                                                        <div class="col l6 min-h-75px py-2 border-cus-1">
+                                                        <div [ngClass]="TC.MODE.user_settings.carrousel.notify.border[TC.THEME_ACTIVE]"
+                                                            class="col l6 min-h-75px py-2">
                                                             <div class="row mb-0">
                                                                 <div class="col l12 pl-0">
 
@@ -811,9 +872,10 @@
                                                                             <div class="row mb-0">
                                                                                 <div
                                                                                     class="col l12 font-family-1 font-weight-600">
-                                                                                    <i
+                                                                                    <i [ngClass]="TC.MODE.user_settings.carrousel.notify.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="material-icons">chat_bubble</i>
                                                                                     <span
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.notify.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="position-absolute ml-1">Notificación
                                                                                         de mensajes uno a uno
                                                                                         (Mostrar/Ocultar)
@@ -850,7 +912,8 @@
                                                         </div>
 
                                                         <!-- Notify group -->
-                                                        <div class="col l6 min-h-75px py-2 border-cus-1">
+                                                        <div [ngClass]="TC.MODE.user_settings.carrousel.notify.border[TC.THEME_ACTIVE]"
+                                                            class="col l6 min-h-75px py-2">
                                                             <div class="row mb-0">
                                                                 <div class="col l12 pl-0">
 
@@ -861,8 +924,10 @@
                                                                             <div class="row mb-0">
                                                                                 <div
                                                                                     class="col l12 font-family-1 font-weight-600">
-                                                                                    <i class="material-icons">forum</i>
+                                                                                    <i [ngClass]="TC.MODE.user_settings.carrousel.notify.logo_info[TC.THEME_ACTIVE]"
+                                                                                        class="material-icons">forum</i>
                                                                                     <span
+                                                                                        [ngClass]="TC.MODE.user_settings.carrousel.notify.logo_info[TC.THEME_ACTIVE]"
                                                                                         class="position-absolute ml-1">Notificación
                                                                                         de mensajes en grupos
                                                                                         (Mostrar/Ocultar)
