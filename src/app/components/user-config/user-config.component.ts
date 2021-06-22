@@ -285,13 +285,11 @@ export class UserConfigComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     setNumberTelChange(): void {
-        if (this.infoProfileSvc.info_profile.user != 'GoogleUser') {
-            this.actions.isUpdatingNumberTel = true;
+        this.actions.isUpdatingNumberTel = true;
 
-            setTimeout(() => {
-                this.InputTel.nativeElement.focus();
-            }, 250);
-        };
+        setTimeout(() => {
+            this.InputTel.nativeElement.focus();
+        }, 250)
     }
 
     setPasswordChange(): void {
@@ -316,6 +314,8 @@ export class UserConfigComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.TC.changeThemeColor(0);
         };
+
+        this.TC.emitChangeState();
     }
 
     setNotifyModeOneOneChange(): void {
